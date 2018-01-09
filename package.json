@@ -9,8 +9,10 @@
   "dependencies": {
     "react": "16.0.0",
     "react-native": "0.51.0",
+    "react-native-linear-gradient": "^2.4.0",
     "react-native-sensitive-info": "^5.1.0",
     "react-redux": "^5.0.6",
+    "react-router-native": "^4.2.0",
     "redux": "^3.7.2",
     "redux-observable": "^0.17.0",
     "redux-persist": "^5.4.0",
@@ -25,5 +27,8 @@
   },
   "jest": {
     "preset": "react-native"
+  },
+  "rnpm": {
+    "assets": ["./assets/fonts/"]
   }
 }
