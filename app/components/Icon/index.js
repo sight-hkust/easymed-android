@@ -947,20 +947,30 @@ const labels = {
   'youtube':'\uf167',  
 }
 
-const Icon = ({name, type}) => (
-  <Text style={styles[type]}>
-    {labels[name]}
-  </Text>
-)
+const Icon = ({name, type, color, size, isNav}) => {
+  const style = {...styles[type], color: color, fontSize: size}
+  if(isNav) {
+    style['marginLeft'] = 24;
+    style['marginTop' ]= 32;
+  }
+  
+  return (
+    <Text style={style}>
+      {labels[name]}
+    </Text>
+  )
+}
 
-const styles = StyleSheet.create({
+const styles = {
   solid: {
-    fontFamily: 'Font Awesome 5 Pro Solid'
+    fontFamily: 'FontAwesome5ProSolid'
   },
   regular: {
-    fontFamily: 'Font Awesome 5 Pro Regular'
+    fontFamily: 'FontAwesome5ProRegular'
   },
   light: {
-    fontFamily: 'Font Awesome 5 Pro Light'
+    fontFamily: 'FontAwesome5ProLight'
   }
-})
+}
+
+export default Icon
