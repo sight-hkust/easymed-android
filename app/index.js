@@ -23,7 +23,7 @@ const { persistor, store } = configureStore();
 const Application = () => (
   <Provider store={store}>
     <PersistGate persistor={persistor} loading={<View/>} onBeforeLift={onBeforeLift}>
-      <Storyboard />
+      <Storyboard/>
     </PersistGate>
   </Provider>
 );
