@@ -74,6 +74,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     margin: 8,
+    backgroundColor: '#f5f6fb',
   },
 
   card:{
