@@ -10,13 +10,15 @@ import {
 } from 'react-native';
 import { Redirect } from 'react-router-native';
 import Icon from '../../components/Icon'
+import TextField from '../../components/TextField'
+import Step from '../../components/Step'
 
 const VitalForm = () => {
   return (
     <View style={styles.container}>
 
     <StatusBar
-      backgroundColor='blue'
+      backgroundColor='#ef546a'
       barStyle='light-content'
     />
 
@@ -25,13 +27,15 @@ const VitalForm = () => {
       <Text style={styles.headerText}>Vital</Text>
     </View>
 
+    <Step number={5}/>
+
     <View>
       <Text style={styles.text}>Please enter your Blood Pressure level ?</Text>
     </View>
 
     <View style={styles.answer}>
         <Image style={styles.image} source={require('../../../assets/images/bloodPressure.png')}/>
-        <TextInput style={styles.textinput} value="90" keyboardType="numeric"></TextInput>
+        <TextField defaultValue="92" Unit="mmHg"/>
     </View>
       
   </View>
@@ -44,13 +48,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'flex-start',
-    backgroundColor: '#fff'
+    backgroundColor: '#f5f6fb'
   },
   
   header: {
     flexDirection: 'row',
     height: 94,
-    backgroundColor: '#1b9def',
+    backgroundColor: '#ef546a', //1b9def
     justifyContent: 'space-between',
     marginBottom: 12,
     alignItems: 'center'
@@ -86,6 +90,7 @@ const styles = StyleSheet.create({
     marginTop: 24,
     flexDirection: 'row',
     justifyContent: 'flex-start',
+    marginRight: 24,
   },
 
   textinput: {
@@ -93,13 +98,13 @@ const styles = StyleSheet.create({
     height: 50, 
     fontSize: 32,
     fontFamily: 'Quicksand-Medium',
-    textAlign: 'left',
     color: '#3c4859',
     borderRadius: 5,
-    shadowColor: '#ABB1C3',
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.5,
-    shadowRadius: 8,
-    paddingLeft: 8,
+    shadowColor: '#3a4252',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.15,
+    shadowRadius: 15,
+    paddingLeft: 24,
+    
   },
 });

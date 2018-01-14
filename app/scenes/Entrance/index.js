@@ -58,16 +58,13 @@ const Entry = ({layout, title, image, to}) => (
 
 const Header = () => (
   <View style={styles.header}>
-    <Text style={styles.headerTitle}>MEDEASY</Text>
+    <Text style={styles.headerTitle}>Procedures</Text>
   </View>
 )
 
 const Navigations = () => {
   return (
     <View style={styles.container}>
-      <StatusBar
-        barStyle='light-content'
-      />
       <Header/>
       <ScrollView>
         {destinations.map(({to, layout, title, image}, i) => (
@@ -100,7 +97,6 @@ const styles = StyleSheet.create({
   header: {
     width: '100%',
     height: 136,
-    backgroundColor: '#6890f7',
     marginBottom: 20,
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -108,9 +104,9 @@ const styles = StyleSheet.create({
   },
 
   headerTitle: {
-    fontSize: 42,
-    fontFamily: 'Quicksand-Bold',
-    color: '#fff',
+    fontSize: 38,
+    fontFamily: 'Nunito-Bold',
+    color: '#3c4859',
     marginLeft: 16,
     marginTop: 56
   },
