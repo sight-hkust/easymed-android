@@ -6,7 +6,6 @@ import android.content.res.Resources;
 import android.util.Log;
 import android.widget.Toast;
 
-
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactMethod;
 import com.iritech.iddk.android.*;
@@ -88,7 +87,6 @@ public class IritechModule extends ReactContextBaseJavaModule {
     }
 
 
-    // HOW TO IMPORT OTHER CONSTANTSSS!!
     @Override
     public Map<String, Object> getConstants() {
         final Map<String, Object> constants = new HashMap<>();
@@ -104,6 +102,14 @@ public class IritechModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public void scanIris() {
+
+    }
+
+
+
+    @ReactMethod
+
     public boolean isDeviceConnected() {
         mDeviceHandle = new HIRICAMM();
 
@@ -127,7 +133,6 @@ public class IritechModule extends ReactContextBaseJavaModule {
         }
     }
 
-    @ReactMethod
     public static IritechModule getPatientIdentifier(Context context, Activity activity) {
         iddkApi = Iddk2000Apis.getInstance(context);
         mContext = context;
@@ -141,16 +146,9 @@ public class IritechModule extends ReactContextBaseJavaModule {
         }
     }
 
-    @ReactMethod
     public String identifyIris () {
         System.out.println(mDeviceHandle.getHandle());
         mRes = iddkApi.openDevice(connectedDevices.get(0), mDeviceHandle);
-
-        scanningDialog = new MaterialDialog.Builder(mContext)
-                .theme(Resources.Theme.LIGHT)
-                .title("Detecting, hold scanner up to iris")
-                .progress(true, 0)
-                .build();
 
         if (mRes.getValue() == IddkResult.IDDK_OK || mRes.getValue() == IddkResult.IDDK_DEVICE_ALREADY_OPEN) {
             mRes = iddkApi.initCamera(mDeviceHandle, new IddkInteger(), new IddkInteger());
@@ -227,7 +225,6 @@ public class IritechModule extends ReactContextBaseJavaModule {
         }
     }
 
-    @ReactMethod
     public boolean enrollPerson(String enrolleeId) {
 
         ArrayList<String> ids = new ArrayList<String>();
@@ -257,7 +254,7 @@ public class IritechModule extends ReactContextBaseJavaModule {
         }
     }
 
-    @ReactMethod
+    //saveIristoIrisScanner, not phone
     public boolean saveIrisToPhone() {
         ArrayList<String> idList = new ArrayList<>();
         IddkInteger numUsedSlots =  new IddkInteger();
@@ -287,7 +284,6 @@ public class IritechModule extends ReactContextBaseJavaModule {
         }
     }
 
-    @ReactMethod
     private boolean loadIrisFromPhone() {
 
         ArrayList<IddkDataBuffer> templates = new ArrayList<>();
@@ -339,21 +335,11 @@ public class IritechModule extends ReactContextBaseJavaModule {
                         Log.d(TAG, "Template received");
                         mResCap = iddkApi.getTemplateInfo(mDeviceHandle, mDataBuffer, mTemplateInfo);
 
-                        //TODO: Add error checking
 
                     } else {
                         Log.e(TAG, "Unable to get template");
 
 
-                        mActivity.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                if(scanningDialog.isShowing()){
-                                    scanningDialog.dismiss();
-                                }
-                                Toast.makeText(mContext, "Scanning failed, please try again", Toast.LENGTH_LONG).show();
-                            }
-                        });
                         doneScanning = true;
                         success = false;
                         return;
@@ -405,97 +391,10 @@ public class IritechModule extends ReactContextBaseJavaModule {
 
                         Log.d(TAG, "EnrolleeID: " + resultId);
 
-                        final String runId = resultId;
-                        final Intent in = new Intent(mContext, SearchActivity.class);
-                        in.putExtra("SearchName", runId);
-
-
-                        mActivity.runOnUiThread(new Runnable() {
-
-
-                            @Override
-                            public void run() {
-                                if(scanningDialog.isShowing()){
-                                    scanningDialog.dismiss();
-                                }
-
-                                new MaterialDialog.Builder(mContext)
-                                        .theme(Theme.LIGHT)
-                                        .title("The name of the user is:")
-                                        .content(runId)
-                                        .positiveText("Get Patient Data")
-                                        .onPositive(new MaterialDialog.SingleButtonCallback() {
-                                            @Override
-                                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                                mContext.startActivity(in);
-                                            }
-                                        })
-                                        .negativeText("Dismiss")
-                                        .onNegative(new MaterialDialog.SingleButtonCallback() {
-                                            @Override
-                                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                                dialog.dismiss();
-                                            }
-                                        })
-                                        .show();
-                            }
-                        });
-
                         enrolleeId = resultId;
 
                     } else if (mResCap.getValue() == IddkResult.IDDK_OK) {
                         Log.d(TAG, "Id not enrolled");
-
-                        mActivity.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                if(scanningDialog.isShowing()){
-                                    scanningDialog.dismiss();
-                                }
-                                new MaterialDialog.Builder(mContext)
-                                        .theme(Theme.LIGHT)
-                                        .title("Unregistered patient")
-                                        .content("Enter given name to register new patient")
-                                        .inputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_LONG_MESSAGE)
-                                        .input("Name", "", new MaterialDialog.InputCallback() {
-                                            @Override
-                                            public void onInput(MaterialDialog dialog, CharSequence input) {
-                                                String id = UUID.randomUUID().toString();
-                                                mResCap = iddkApi.enrollCapture(mDeviceHandle, input.toString());
-
-                                                if (mResCap.getValue() == IddkResult.IDDK_OK) {
-                                                    Log.d(TAG, "ID enrolled successfully");
-
-
-                                                    mResCap = iddkApi.commitGallery(mDeviceHandle);
-
-                                                    if(mResCap.getValue() == IddkResult.IDDK_OK){
-                                                        Log.d(TAG, "Gallery successfully committed");
-                                                    }
-                                                    else{
-                                                        Log.e(TAG + " gallery commit", mResCap.toString());
-                                                    }
-
-                                                    final Intent newPatientIntent = new Intent(mContext, PatientVisitEditActivity.class);
-                                                    newPatientIntent.putExtra("newPatientName", input.toString());
-                                                    mContext.startActivity(newPatientIntent);
-
-
-                                                } else {
-                                                    Log.e(TAG + "ID enrollment", mResCap.toString());
-                                                }
-                                            }
-                                        })
-                                        .negativeText("Dismiss")
-                                        .onNegative(new MaterialDialog.SingleButtonCallback() {
-                                            @Override
-                                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                                dialog.dismiss();
-                                            }
-                                        })
-                                        .show();
-                            }
-                        });
                     }
 
                 } else if (iddkCaptureStatus.getValue() == IddkCaptureStatus.IDDK_CAPTURING) {
@@ -504,29 +403,12 @@ public class IritechModule extends ReactContextBaseJavaModule {
 
                 } else if (iddkCaptureStatus.getValue() == IddkCaptureStatus.IDDK_ABORT) {
                     /** capture has been aborted **/
-                    mActivity.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            if(scanningDialog.isShowing()){
-                                scanningDialog.dismiss();
-                            }
-                            Toast.makeText(mContext, "Scanning unsuccessful, try again", Toast.LENGTH_LONG).show();
-                        }
-                    });
                 }
             }
 
             if (arrayList != null) {
                 /** show image on its GUI control **/
                 Log.e(TAG, "Images detected");
-                mActivity.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if(scanningDialog.isCancelled() || !scanningDialog.isShowing()){
-                            scanningDialog.show();
-                        }
-                    }
-                });
             }
         }
 
