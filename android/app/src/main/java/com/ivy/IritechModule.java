@@ -48,9 +48,7 @@ public class IritechModule extends ReactContextBaseJavaModule {
     private IddkCaptureStatus mCaptureStatus;
     private IddkResult mRes;
     private CaptureProc mCaptureProc;
-    private static Context mContext;
-    private static Activity mActivity;
-    private MaterialDialog scanningDialog;
+    private static ReactApplicationContext mContext;
 
     private IddkTemplateInfo mTemplateInfo;
 
@@ -78,6 +76,8 @@ public class IritechModule extends ReactContextBaseJavaModule {
                 iddkApi.setSdkConfig(iddkConfig);
             }
         }
+
+        iddkApi = Iddk2000Apis.getInstance(reactContext);
     }
 
 
@@ -91,14 +91,7 @@ public class IritechModule extends ReactContextBaseJavaModule {
     public Map<String, Object> getConstants() {
         final Map<String, Object> constants = new HashMap<>();
         constants.put(TAG, IritechModule.class.getSimpleName());
-        constants.put(DURATION_SHORT_KEY, Toast.LENGTH_SHORT);
-        constants.put(DURATION_LONG_KEY, Toast.LENGTH_LONG);
         return constants;
-    }
-
-    @ReactMethod
-    public void show(String message, int duration) {
-        Toast.makeText(getReactApplicationContext(), message, duration).show();
     }
 
     @ReactMethod
@@ -106,9 +99,19 @@ public class IritechModule extends ReactContextBaseJavaModule {
 
     }
 
+    @ReactMethod
+    public boolean scanningDone() {
 
+    }
 
     @ReactMethod
+    public String patientID (){
+
+    }
+
+    //error messages
+
+
 
     public boolean isDeviceConnected() {
         mDeviceHandle = new HIRICAMM();
@@ -124,26 +127,8 @@ public class IritechModule extends ReactContextBaseJavaModule {
             }
 
             return true;
-        } else if (result.getValue() == IddkResult.IDDK_DEVICE_NOT_FOUND) {
-            Log.e(TAG, "No device found");
-            return false;
-        } else {
-            Log.e(TAG, "Unsupported Command");
-            return false;
         }
-    }
-
-    public static IritechModule getPatientIdentifier(Context context, Activity activity) {
-        iddkApi = Iddk2000Apis.getInstance(context);
-        mContext = context;
-        mActivity = activity;
-
-        if (patientIdentifier == null) {
-            patientIdentifier = new IritechModule();
-            return patientIdentifier;
-        } else {
-            return patientIdentifier;
-        }
+        return false;
     }
 
     public String identifyIris () {
@@ -190,14 +175,6 @@ public class IritechModule extends ReactContextBaseJavaModule {
                 Log.e(TAG, "Unable to initialize camera");
 
                 //mRes = iddkApi.recovery(mDeviceHandle, new IddkRecoveryCode(IddkRecoveryCode.IDDK_SOFT_RESET));
-
-                mActivity.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(mContext, "Please remove and reconnect the iris scanner", Toast.LENGTH_LONG).show();
-                    }
-                });
-
                 return "none_found";
             } else if (mRes.getValue() == IddkResult.IDDK_DEV_OUTOFMEMORY) {
                 Log.e(TAG, "Unable to init, device out of memory");
