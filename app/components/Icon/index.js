@@ -947,12 +947,8 @@ const labels = {
   'youtube':'\uf167',  
 }
 
-const Icon = ({name, type, color, size, isNav}) => {
-  const style = {...styles[type], color: color, fontSize: size}
-  if(isNav) {
-    style['marginLeft'] = 24;
-    style['marginTop' ]= 32;
-  }
+const Icon = ({name, type='regular', color, size}) => {
+  const style = {...styles[type], ...styles['default'], color: color, fontSize: size, width: 4+size, height: 4+size, }
   
   return (
     <Text style={style}>
@@ -963,13 +959,18 @@ const Icon = ({name, type, color, size, isNav}) => {
 
 const styles = {
   solid: {
-    fontFamily: 'FontAwesome5ProSolid'
+    fontWeight: '900'
   },
   regular: {
-    fontFamily: 'FontAwesome5ProRegular'
+    fontWeight: '400'
   },
   light: {
-    fontFamily: 'FontAwesome5ProLight'
+    fontWeight: '300'
+  },
+  default: {
+    fontFamily: 'Font Awesome 5 Pro',
+    textAlign: 'center',
+    backgroundColor: '#fff0'
   }
 }
 

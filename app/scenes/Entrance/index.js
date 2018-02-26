@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import {
   StyleSheet,
   Text,
@@ -75,17 +75,19 @@ const Navigations = () => {
   )
 };
 
-const Entrance = ({user}) => {
-  return <Navigations/>
-  // if(user){
-  //   return <Navigations/>
-  // }
-  // else {
-  //   return <Redirect to="/login"/>
-  // }
-};
+export default class Entrance extends Component {
+  constructor(props) {
+    super(props)
+  }
 
-export default Entrance;
+  componentWillMount() {
+    StatusBar.setBarStyle('dark-content');
+  }
+
+  render() {
+    return <Navigations />
+  }
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -96,7 +98,7 @@ const styles = StyleSheet.create({
 
   header: {
     width: '100%',
-    height: 136,
+    height: 112,
     marginBottom: 20,
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -104,10 +106,10 @@ const styles = StyleSheet.create({
   },
 
   headerTitle: {
-    fontSize: 38,
-    fontFamily: 'Nunito-Bold',
+    fontSize: 32,
+    fontFamily: 'Quicksand-Medium',
     color: '#3c4859',
-    marginLeft: 16,
+    marginLeft: 24,
     marginTop: 56
   },
 
@@ -147,6 +149,6 @@ const styles = StyleSheet.create({
     flex: 3,
     alignItems: 'baseline',
     justifyContent: 'space-between',
-    borderRadius: 6,
+    borderRadius: 10,
   },
 });

@@ -27,7 +27,7 @@ const VitalForm = () => {
       <Text style={styles.headerText}>Vital</Text>
     </View>
 
-    <Step number={5}/>
+    {/* <Step number={5}/> */}
 
     <View>
       <Text style={styles.text}>Please enter your Blood Pressure level ?</Text>
