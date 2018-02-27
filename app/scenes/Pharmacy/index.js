@@ -24,14 +24,15 @@ const demoPatient2 = {
 const Header = () => (
   <View style={styles.header}>
     <IconButton color="#3c4859" name='arrow-left' to={'/'} back/>
-    <Text style={styles.headerText}>Consultation</Text>
+    <Text style={styles.headerText}>Pharmacy</Text>
   </View>
 )
 
 const Toolbar = () => (
   <View style={styles.toolbar}>
-    <IconButton name="sort" color="#3c4859" />
-    <IconButton name="search" color="#3c4859" size={22}/>
+    <IconButton name="medkit" color="#3c4859" />
+    <IconButton name="clipboard-list" color="#3c4859" size={22}/>
+    <IconButton name="bell" color="#3c4859" />
   </View>
 )
 
@@ -54,7 +55,7 @@ const Patient = ({patient: {age, gender, name, tag}}) => (
         </View>
       </View>
     </View>
-    <IconButton name="stethoscope" color="#3c4859" size={24}/>
+    <IconButton name="box-check" color="#3c4859" size={24}/>
   </View>
 )
 
@@ -71,17 +72,17 @@ const EmptyStub = () => (
 const ServiceQueue = () => {
   return (
     <ScrollView>
-      <EmptyStub />
-      {/* <Patient patient={demoPatient1}/>
+      {/* <EmptyStub /> */}
+      <Patient patient={demoPatient1}/>
       <Patient patient={demoPatient2}/>
       <Patient patient={demoPatient1}/>
       <Patient patient={demoPatient2}/>
-      <Patient patient={demoPatient2}/> */}
+      <Patient patient={demoPatient2}/>
     </ScrollView>
   )
 }
 
-class Consultation extends Component {
+class Pharmacy extends Component {
   constructor(props) {
     super(props)
   }
@@ -97,7 +98,7 @@ class Consultation extends Component {
   }
 }
 
-export default Consultation;
+export default Pharmacy;
 
 const styles = StyleSheet.create({
   container: {

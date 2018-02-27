@@ -120,10 +120,10 @@ const styles = StyleSheet.create({
     marginLeft: 16,
     marginRight: 16,
     marginBottom: 16,
-    shadowColor: 'black',
-    shadowOffset: { width: 0, height: 1 },
-    shadowRadius: 3,
-    shadowOpacity: 0.2,
+    shadowColor: '#e4e4e4',
+    shadowOpacity: 0.5,
+    shadowOffset: { width: 1, height: 3 },
+    shadowRadius: 5,
     elevation: 1
   },
   
@@ -149,6 +149,6 @@ const styles = StyleSheet.create({
     flex: 3,
     alignItems: 'baseline',
     justifyContent: 'space-between',
-    borderRadius: 10,
+    borderRadius: 8,
   },
 });

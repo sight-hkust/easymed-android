@@ -3,6 +3,27 @@ import { View, Image, ScrollView, StyleSheet, Text, TouchableOpacity } from 'rea
 import { IconButton } from '../../components/Button'
 import Icon from '../../components/Icon'
 
+const Header = () => (
+  <View style={styles.header}>
+    <IconButton color="#3c4859" name='arrow-left' to={'/'} back/>
+    <Text style={styles.headerText}>Triage</Text>
+  </View>
+)
+
+const CreatePatientProfile = () => (
+  <View style={styles.create}>
+    <Image style={{width: 132, height: 132}} source={require('../../../assets/images/triage/create_profiles.png')} />
+    <Text style={{fontFamily: 'Quicksand-Medium', fontSize: 18, color: '#3c4859'}}>CREATE PATIENT PROFILE</Text>
+  </View>
+)
+
+const LoadPatientProfile = () => (
+  <View style={styles.load}>
+    <Image style={{width: 100, height: 100}} source={require('../../../assets/images/triage/archives.png')} />
+    <Text style={{fontFamily: 'Quicksand-Medium', fontSize: 18, color: '#3c4859', marginTop: 12}}>CHOOSE EXISTING PATIENT</Text>
+  </View>
+)
+
 class Triage extends Component {
   constructor(props) {
     super(props)
@@ -11,6 +32,9 @@ class Triage extends Component {
   render() {
     return (
       <View style={styles.container}>
+        <Header />
+        <CreatePatientProfile />
+        <LoadPatientProfile />
       </View>
     )
   }
@@ -21,9 +45,54 @@ export default Triage;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'flex-start',
     backgroundColor: '#f5f6fb',
     paddingHorizontal: 8,
-    paddingTop: '12%'
+    paddingTop: '12%',
+    justifyContent: 'flex-start',
+  },
+  header: {
+    flexDirection: 'row',
+    height: 56,
+    justifyContent: 'space-between',
+    marginBottom: 48,
+    alignItems: 'center'
+  },
+
+  headerText: {
+    fontSize: 36,
+    fontFamily: 'Nunito-Bold',
+    textAlign: 'right',
+    backgroundColor: '#fff0',
+    color: '#3c4859',
+    marginRight: 20,
+    marginTop: 32,
+  },
+  create: {
+    alignSelf: 'center',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 6,
+    width: '85%',
+    height: '30%',
+    shadowColor: '#e4e4e4',
+    shadowOpacity: 0.5,
+    shadowOffset: { width: 0, height: 3 },
+    shadowRadius: 5,
+    backgroundColor: '#fff',
+    marginBottom: 8
+  },
+  load: {
+    alignSelf: 'center',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 6,
+    width: '85%',
+    height: '30%',
+    shadowColor: '#e4e4e4',
+    shadowOpacity: 0.5,
+    shadowOffset: { width: 1, height: 3 },
+    shadowRadius: 5,
+    backgroundColor: '#fff',
+    marginTop: 8
   }
 })

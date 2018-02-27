@@ -58,6 +58,9 @@
 		74E6BA59709F4853A24918A5 /* Quicksand-LightItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = E1186258B60C4C4F8C84D293 /* Quicksand-LightItalic.otf */; };
 		B25B7AA76A714DF29B69C332 /* Quicksand-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F46AF26C91854CB8864A80B4 /* Quicksand-Medium.ttf */; };
 		B50D6F2E1A3D46A589E869A6 /* Quicksand-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = C99A72D612AB4F71A4540198 /* Quicksand-Regular.otf */; };
+		8EB4160041874474A3522809 /* fa-light-300.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 48267B698645434790F75EBD /* fa-light-300.ttf */; };
+		880EAFD154C147B79F509E61 /* fa-regular-400.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D5A0FA20F9D34956B6DC0DCE /* fa-regular-400.ttf */; };
+		A4BAC61BB6194283B615506F /* fa-solid-900.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C7902E30181247B5B77569FB /* fa-solid-900.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -309,6 +312,9 @@
 		E1186258B60C4C4F8C84D293 /* Quicksand-LightItalic.otf */ = {isa = PBXFileReference; name = "Quicksand-LightItalic.otf"; path = "../assets/fonts/Quicksand-LightItalic.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		F46AF26C91854CB8864A80B4 /* Quicksand-Medium.ttf */ = {isa = PBXFileReference; name = "Quicksand-Medium.ttf"; path = "../assets/fonts/Quicksand-Medium.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		C99A72D612AB4F71A4540198 /* Quicksand-Regular.otf */ = {isa = PBXFileReference; name = "Quicksand-Regular.otf"; path = "../assets/fonts/Quicksand-Regular.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		48267B698645434790F75EBD /* fa-light-300.ttf */ = {isa = PBXFileReference; name = "fa-light-300.ttf"; path = "../assets/fonts/fa-light-300.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		D5A0FA20F9D34956B6DC0DCE /* fa-regular-400.ttf */ = {isa = PBXFileReference; name = "fa-regular-400.ttf"; path = "../assets/fonts/fa-regular-400.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		C7902E30181247B5B77569FB /* fa-solid-900.ttf */ = {isa = PBXFileReference; name = "fa-solid-900.ttf"; path = "../assets/fonts/fa-solid-900.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -578,6 +584,9 @@
 				E1186258B60C4C4F8C84D293 /* Quicksand-LightItalic.otf */,
 				F46AF26C91854CB8864A80B4 /* Quicksand-Medium.ttf */,
 				C99A72D612AB4F71A4540198 /* Quicksand-Regular.otf */,
+				48267B698645434790F75EBD /* fa-light-300.ttf */,
+				D5A0FA20F9D34956B6DC0DCE /* fa-regular-400.ttf */,
+				C7902E30181247B5B77569FB /* fa-solid-900.ttf */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -972,6 +981,9 @@
 				74E6BA59709F4853A24918A5 /* Quicksand-LightItalic.otf in Resources */,
 				B25B7AA76A714DF29B69C332 /* Quicksand-Medium.ttf in Resources */,
 				B50D6F2E1A3D46A589E869A6 /* Quicksand-Regular.otf in Resources */,
+				8EB4160041874474A3522809 /* fa-light-300.ttf in Resources */,
+				880EAFD154C147B79F509E61 /* fa-regular-400.ttf in Resources */,
+				A4BAC61BB6194283B615506F /* fa-solid-900.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
