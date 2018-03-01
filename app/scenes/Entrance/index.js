@@ -10,6 +10,8 @@ import {
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { Redirect, Link } from 'react-router-native';
+import Icon from '../../components/Icon'
+import { IconButton } from '../../components/Button'
 
 const destinations = [
   {
@@ -56,16 +58,28 @@ const Entry = ({layout, title, image, to}) => (
   </Link>
 )
 
+const Toolbar = () => (
+  <View style={styles.toolbar}>
+    <IconButton name="cog" color="#3c4859" />
+    <IconButton name="user-md" color="#3c4859" />
+    <IconButton name="bell" color="#3c4859" />
+  </View>
+)
+
 const Header = () => (
   <View style={styles.header}>
-    <Text style={styles.headerTitle}>Procedures</Text>
+    <View style={styles.headerTitle}>
+      <Icon name="hospital" color="#3c4859" size={32}/>
+      <Text style={styles.headerTitleText}>Home</Text>
+    </View>
   </View>
 )
 
 const Navigations = () => {
   return (
     <View style={styles.container}>
-      <Header/>
+      <Toolbar />
+      <Header />
       <ScrollView>
         {destinations.map(({to, layout, title, image}, i) => (
           <Entry key={i} to={to} layout={layout} title={title} image={image} />
@@ -93,24 +107,41 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: '#f5f6fb'
+    backgroundColor: '#f5f6fb',
+    paddingTop: '10%'
+  },
+
+  toolbar: {
+    height: 40,
+    width: '45%',
+    alignSelf: 'flex-end',
+    paddingTop: 4,
+    flexDirection: 'row-reverse',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    // backgroundColor: 'yellow'
   },
 
   header: {
-    width: '100%',
-    height: 112,
+    height: 44,
     marginBottom: 20,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center'
+    alignItems: 'center',
+    // backgroundColor: 'yellow'
   },
 
   headerTitle: {
+    marginLeft: 24,
+    flexDirection: 'row',
+    alignItems: 'baseline'
+  },
+
+  headerTitleText: {
     fontSize: 32,
     fontFamily: 'Quicksand-Medium',
     color: '#3c4859',
-    marginLeft: 24,
-    marginTop: 56
+    marginLeft: 4
   },
 
   card:{

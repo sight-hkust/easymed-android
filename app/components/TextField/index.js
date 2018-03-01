@@ -6,11 +6,11 @@ import {
   TextInput,
 } from 'react-native';
 
-const TextField = ({defaultValue,Unit}) => {
+const TextField = ({defaultValue, unit, width, keyboardType, placeholder}) => {
   return (
-    <View style={styles.container}>
-      <TextInput style={styles.textinput} value={defaultValue} keyboardType="numeric"></TextInput>
-      <Text style={styles.text}>{Unit}</Text>
+    <View style={{...StyleSheet.flatten(styles.container), width}}>
+      <TextInput style={styles.input} value={defaultValue} placeholder={placeholder} keyboardType={keyboardType}></TextInput>
+      { unit && <Text style={styles.unit}>{unit}</Text>}
     </View>
   )
 };
@@ -19,32 +19,32 @@ export default TextField;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
+    height: 56,
+    backgroundColor: '#fff',
     borderRadius: 5,
     shadowColor: '#3a4252',
     shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.25,
-    shadowRadius: 15,
+    shadowOpacity: 0.12,
+    shadowRadius: 10,
   },
   
-  text: {
+  unit: {
     flex: 8,
     fontSize: 24,
     fontFamily: 'Quicksand-Medium',
     textAlign: 'right',
     color: '#3c4859',
-    marginRight: 24,
   },
 
-  textinput: {
+  input: {
     flex: 12,
-    height: 50, 
-    fontSize: 32,
+    height: 44, 
+    fontSize: 22,
     fontFamily: 'Quicksand-Medium',
     color: '#3c4859',
-    paddingLeft: 24,
+    paddingHorizontal: 24,
   },
 });

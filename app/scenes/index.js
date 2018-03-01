@@ -7,11 +7,12 @@ import Consultation from './Consultation'
 import Login from './Login'
 import Registration from './Registration'
 import Pharmacy from './Pharmacy';
+import Profile from './Triage/Profile'
 
 const Storyboard = () => (
   <NativeRouter>
     <Switch>
-      <Route exact path="/" component={Entrance} />
+      <Route exact path="/" component={Profile} />
       <Route path="/login" component={Login}/>
       <Route path="/register" component={Registration} />
       <Route path="/triage" component={Triage} />

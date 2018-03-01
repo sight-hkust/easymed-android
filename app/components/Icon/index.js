@@ -1051,8 +1051,8 @@ const labels = {
   'youtube-square':'\uf431',
 }
 
-const Icon = ({name, type='solid', color, size}) => {
-  const style = {...styles[type], ...styles['default'], color: color, fontSize: size, width: 4+size, height: 4+size, }
+const Icon = ({name, type='solid', color, size, offset}) => {
+  const style = {...styles[type], ...styles['default'], color: color, fontSize: size, width: 4+size, height: 4+size }
   return (
     <Text style={style}>
       {labels[name]}

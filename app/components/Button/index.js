@@ -9,7 +9,7 @@ const KeyboardDismissButton = () => (
   </TouchableOpacity>
 )
 
-const Button = ({title, icon, onPress, round=false, opaque=true, titleColor, bgColor, color, to}) => {
+const Button = ({title, icon, onPress, round=false, opaque=true, titleColor, bgColor, color, to, width}) => {
   const style = opaque?{
     borderRadius: round?20:5,
     backgroundColor: bgColor?bgColor:'#fff',
@@ -30,8 +30,8 @@ const Button = ({title, icon, onPress, round=false, opaque=true, titleColor, bgC
     )
   }
   return (
-    <TouchableOpacity style={{...styles.default, ...style}}>
-      <Text style={{fontFamily: 'Quicksand-Medium', marginRight: icon?4:0, color: titleColor?titleColor:'#000'}}>{title.toUpperCase()}</Text>
+    <TouchableOpacity style={{...styles.default, ...style, width}}>
+      <Text style={{fontFamily: 'Quicksand-Medium', marginRight: icon?8:0, color: titleColor?titleColor:'#000'}}>{title.toUpperCase()}</Text>
       { icon && <Icon name={icon} color={titleColor?titleColor:'#000'}/> }
     </TouchableOpacity>
   )

@@ -12,15 +12,15 @@ const Header = () => (
 
 const CreatePatientProfile = () => (
   <View style={styles.create}>
-    <Image style={{width: 132, height: 132}} source={require('../../../assets/images/triage/create_profiles.png')} />
-    <Text style={{fontFamily: 'Quicksand-Medium', fontSize: 18, color: '#3c4859'}}>CREATE PATIENT PROFILE</Text>
+    <Image style={styles.primaryButtonImage} source={require('../../../assets/images/triage/create_profiles.png')} />
+    <Text style={styles.primaryButtonText}>CREATE PATIENT PROFILE</Text>
   </View>
 )
 
 const LoadPatientProfile = () => (
   <View style={styles.load}>
-    <Image style={{width: 100, height: 100}} source={require('../../../assets/images/triage/archives.png')} />
-    <Text style={{fontFamily: 'Quicksand-Medium', fontSize: 18, color: '#3c4859', marginTop: 12}}>CHOOSE EXISTING PATIENT</Text>
+    <Image style={styles.secondaryButtonImage} source={require('../../../assets/images/triage/archives.png')} />
+    <Text style={styles.secondaryButtonText}>CHOOSE EXISTING PATIENT</Text>
   </View>
 )
 
@@ -80,6 +80,25 @@ const styles = StyleSheet.create({
     shadowRadius: 5,
     backgroundColor: '#fff',
     marginBottom: 8
+  },
+  primaryButtonImage: {
+    width: 132,
+    height: 132
+  },
+  primaryButtonText: {
+    fontFamily: 'Quicksand-Medium',
+    fontSize: 18,
+    color: '#3c4859'
+  },
+  secondaryButtonImage: {
+    width: 100,
+    height: 100
+  },
+  secondaryButtonText: {
+    fontFamily: 'Quicksand-Medium',
+    fontSize: 18,
+    color: '#3c4859',
+    marginTop: 12
   },
   load: {
     alignSelf: 'center',
