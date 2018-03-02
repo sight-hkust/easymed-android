@@ -4,6 +4,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import { IconButton, Button } from '../../../components/Button'
 import Icon from '../../../components/Icon'
 import TextField from '../../../components/TextField'
+import Step from '../../../components/Step'
 
 const gradientLayout = {
   colors: ['#19AEFA','#1D9DFF'],
@@ -14,7 +15,7 @@ const gradientLayout = {
 
 const Header = () => (
   <View style={styles.header}>
-    <IconButton color="#fff" name='arrow-left' to={'/'} back/>
+    <IconButton color="#fff" name='arrow-left' to={'/triage'} back/>
     <Text style={styles.headerText}>Profile</Text>
   </View>
 )
@@ -140,9 +141,10 @@ export default class Profile extends Component {
       <View style={styles.container}>
         <LinearGradient style={styles.upper} {...gradientLayout} >
           <Header />
-          <Instruction step="married"/>
+          <Step allSteps={10} step={5} />
+          <Instruction step="name"/>
         </LinearGradient>
-        <Response step="married"/>
+        <Response step="name"/>
         <View style={styles.footer}>
           <Button title="next" icon="chevron-right" round width="50%"/>
         </View>
@@ -178,8 +180,9 @@ const styles = StyleSheet.create({
     marginTop: 32,
   },
   textWrapper: {
-    marginTop: 24,
-    paddingHorizontal: 18
+    marginTop: 20,
+    paddingHorizontal: 18,
+    backgroundColor: 'transparent'
   },
   instruction: {
     fontSize: 26,

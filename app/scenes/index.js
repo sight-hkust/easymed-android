@@ -12,12 +12,13 @@ import Profile from './Triage/Profile'
 const Storyboard = () => (
   <NativeRouter>
     <Switch>
-      <Route exact path="/" component={Profile} />
+      <Route exact path="/" component={Entrance} />
       <Route path="/login" component={Login}/>
       <Route path="/register" component={Registration} />
       <Route path="/triage" component={Triage} />
       <Route path="/consultation" component={Consultation} />
       <Route path="/pharmacy" component={Pharmacy} />
+      <Route path="/profile" component={Profile} />
     </Switch>
   </NativeRouter>
 )
