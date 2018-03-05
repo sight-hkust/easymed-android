@@ -9,6 +9,7 @@
   "dependencies": {
     "react": "^16.2.0",
     "react-native": "^0.53.3",
+    "react-native-ble-plx": "^0.8.0",
     "react-native-linear-gradient": "^2.4.0",
     "react-native-sensitive-info": "^5.1.0",
     "react-redux": "^5.0.7",

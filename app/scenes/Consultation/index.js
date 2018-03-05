@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Image, ScrollView, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { View, Image, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { IconButton } from '../../components/Button'
 import Icon from '../../components/Icon'
 
@@ -23,7 +23,7 @@ const demoPatient2 = {
 
 const Header = () => (
   <View style={styles.header}>
-    <IconButton color="#3c4859" name='arrow-left' to={'/'} back/>
+    <IconButton color="#3c4859" name='arrow-left' type="solid" to={'/'} back/>
     <Text style={styles.headerText}>Consultation</Text>
   </View>
 )
@@ -84,6 +84,10 @@ const ServiceQueue = () => {
 class Consultation extends Component {
   constructor(props) {
     super(props)
+  }
+
+  componentWillMount() {
+    StatusBar.setBarStyle('dark-content')
   }
 
   render() {

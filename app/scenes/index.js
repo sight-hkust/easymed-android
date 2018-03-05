@@ -12,7 +12,7 @@ import Profile from './Triage/Profile'
 const Storyboard = () => (
   <NativeRouter>
     <Switch>
-      <Route exact path="/" component={Profile} />
+      <Route exact path="/" component={Entrance} />
       <Route path="/login" component={Login}/>
       <Route path="/register" component={Registration} />
       <Route path="/triage" component={Triage} />

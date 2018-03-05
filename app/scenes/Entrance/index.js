@@ -69,7 +69,7 @@ const Toolbar = () => (
 const Header = () => (
   <View style={styles.header}>
     <View style={styles.headerTitle}>
-      <Icon name="hospital" color="#3c4859" size={32}/>
+      <Icon name="hospital" color="#3c4859" size={32} type="solid"/>
       <Text style={styles.headerTitleText}>Home</Text>
     </View>
   </View>
