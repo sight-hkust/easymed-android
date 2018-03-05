@@ -1052,7 +1052,7 @@ const labels = {
 }
 
 const Icon = ({name, type='solid', color, size, offset}) => {
-  const style = {...styles[type],...styles['default'], color: color, fontSize: size, width: 4+size, height: 4+size }
+  const style = {...styles[type],...styles['default'], color: color, fontSize: size, width: 8+size, height: 8+size }
   return (
     <Text style={style}>
       {labels[name]}
@@ -1074,6 +1074,7 @@ const styles = {
     fontFamily: 'Font Awesome 5 Pro',
     fontStyle: 'normal',
     textAlign: 'center',
+    paddingTop: 4,
     backgroundColor: '#fff0'
   }
 }

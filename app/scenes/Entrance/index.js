@@ -60,7 +60,7 @@ const Entry = ({layout, title, image, to}) => (
 
 const Toolbar = () => (
   <View style={styles.toolbar}>
-    <IconButton name="cog" color="#3c4859" />
+    <IconButton name="cog" color="#3c4859" to="/settings" />
     <IconButton name="user-md" color="#3c4859" />
     <IconButton name="bell" color="#3c4859" />
   </View>
@@ -69,7 +69,7 @@ const Toolbar = () => (
 const Header = () => (
   <View style={styles.header}>
     <View style={styles.headerTitle}>
-      <Icon name="hospital" color="#3c4859" size={32} type="solid"/>
+      <Icon name="hospital" color="#3c4859" size={28} type="solid"/>
       <Text style={styles.headerTitleText}>Home</Text>
     </View>
   </View>
@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
   },
 
   headerTitleText: {
-    fontSize: 32,
+    fontSize: 30,
     fontFamily: 'Quicksand-Medium',
     color: '#3c4859',
     marginLeft: 4

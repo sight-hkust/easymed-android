@@ -40,7 +40,7 @@ const Button = ({title, icon, onPress, round=false, opaque=true, titleColor, bgC
 const IconButton = ({back=false, name, color="white", type, size=24, onPress, to}) => {
   if(to) {
     return (
-      <Link to={to} style={{...styles.iconButton, marginLeft: back?18:0, marginTop: back?32:0}} component={TouchableOpacity} activeOpacity={0.25}>
+      <Link to={to} style={{...styles.iconButton}} component={TouchableOpacity} activeOpacity={0.25}>
         <Icon name={name} color={color} size={size} type={type}/>
       </Link>
     )
