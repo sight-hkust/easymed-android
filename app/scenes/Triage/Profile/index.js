@@ -1,9 +1,12 @@
 import React, { Component } from 'react'
-import { View, Image, StatusBar, StyleSheet, Text, TouchableOpacity } from 'react-native'
+import { View, Image, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, Dimensions } from 'react-native'
 import LinearGradient from 'react-native-linear-gradient';
 import { IconButton, Button } from '../../../components/Button'
 import Icon from '../../../components/Icon'
 import TextField from '../../../components/TextField'
+import Step from '../../../components/Step'
+
+const screenWidth = Dimensions.get('window').width
 
 const gradientLayout = {
   colors: ['#19AEFA','#1D9DFF'],
@@ -14,10 +17,29 @@ const gradientLayout = {
 
 const Header = () => (
   <View style={styles.header}>
-    <IconButton color="#fff" name='arrow-left' to={'/'} back/>
+    <IconButton color="#fff" name='arrow-left' to={'/triage'} back/>
     <Text style={styles.headerText}>Profile</Text>
   </View>
 )
+
+const stepList = [
+  {
+    step: 'name',
+    stepNum: 1,
+  },
+  {
+    step: 'gender',
+    stepNum: 2,
+  },
+  {
+    step: 'dob',
+    stepNum: 3,
+  },
+  {
+    step: 'married',
+    stepNum: 4,
+  },
+];
 
 const Instruction = ({step}) => {
   switch(step) {
@@ -34,7 +56,7 @@ const Instruction = ({step}) => {
       return (
         <View style={styles.textWrapper}>
           <Text style={styles.instruction}>Identify the patient's</Text>
-          <Text style={styles.instruction}>gender using the indicator</Text>
+          <Text style={styles.instruction}>sex using the indicator</Text>
           <Text style={styles.instruction}>below</Text>
         </View>
       )
@@ -126,6 +148,36 @@ const Response = ({step}) => {
   }
 }
 
+const BackgroundInfo = () => (
+  <View style={styles.container}>
+    <LinearGradient style={styles.upper} {...gradientLayout} >
+      <Header/>
+      <Step allSteps={10} step={0} backgroundColor='#fff' highlightColor='pink' />
+    </LinearGradient>
+  </View>
+)
+
+const ScrollItem = ({step, stepNum}) => (
+  <View style={{width: screenWidth}}>
+    <Step allSteps={10} step={stepNum} highlightColor='pink'/>
+    <Instruction step={step}/>
+    <Response step={step}/>
+    <View style={styles.footer}>
+      <Button title="next" icon="chevron-right" round width="50%"/>
+    </View>
+  </View>
+)
+
+const ScrollList = () => {
+  return (
+    <ScrollView horizontal pagingEnabled style={styles.scrollViewContainer}>
+      {stepList.map(({step, stepNum}, i) => (
+        <ScrollItem key={i} step={step} stepNum={stepNum} />
+      ))}
+    </ScrollView>
+  )
+};
+
 export default class Profile extends Component {
   constructor(props) {
     super(props)
@@ -137,25 +189,32 @@ export default class Profile extends Component {
 
   render() {
     return (
-      <View style={styles.container}>
-        <LinearGradient style={styles.upper} {...gradientLayout} >
-          <Header />
-          <Instruction step="married"/>
-        </LinearGradient>
-        <Response step="married"/>
-        <View style={styles.footer}>
-          <Button title="next" icon="chevron-right" round width="50%"/>
-        </View>
+      <View style={styles.bigcontainer}>
+        <BackgroundInfo />
+        <ScrollList />      
       </View>
+
     )
   }
 }
 
 const styles = StyleSheet.create({
+  bigcontainer: {
+    flex: 1,
+    justifyContent: 'flex-start',
+    backgroundColor: '#f5f6fb',
+  },
   container: {
     flex: 1,
     justifyContent: 'flex-start',
     backgroundColor: '#f5f6fb',
+    zIndex: 0,
+  },
+  scrollViewContainer: {
+    flex: 1,
+    position: 'absolute',
+    height: '100%',
+    paddingTop:'30%'
   },
   upper: {
     height: '45%',
@@ -178,8 +237,10 @@ const styles = StyleSheet.create({
     marginTop: 32,
   },
   textWrapper: {
-    marginTop: 24,
-    paddingHorizontal: 18
+    marginTop: 20,
+    paddingHorizontal: 18,
+    backgroundColor: 'transparent',
+    paddingBottom: '12%'
   },
   instruction: {
     fontSize: 26,
@@ -191,7 +252,8 @@ const styles = StyleSheet.create({
     marginTop: 16,
     height: '25%',
     justifyContent: 'space-around',
-    alignItems: 'center'
+    alignItems: 'center',
+    paddingBottom: '8%'
   },
   gender: {
     width: 112,

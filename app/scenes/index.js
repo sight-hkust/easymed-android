@@ -18,6 +18,7 @@ const Storyboard = () => (
       <Route path="/triage" component={Triage} />
       <Route path="/consultation" component={Consultation} />
       <Route path="/pharmacy" component={Pharmacy} />
+      <Route path="/profile" component={Profile} />
     </Switch>
   </NativeRouter>
 )
