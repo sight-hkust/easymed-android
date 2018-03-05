@@ -25,20 +25,34 @@ const Header = () => (
 const stepList = [
   {
     step: 'name',
-    stepNum: 1,
   },
   {
     step: 'gender',
-    stepNum: 2,
   },
   {
     step: 'dob',
-    stepNum: 3,
   },
   {
     step: 'married',
-    stepNum: 4,
   },
+  {
+    step: 'nationalityOccupation',
+  },
+  {
+    step: 'address',
+  },
+  {
+    step: 'telephone',
+  },
+  {
+    step: 'vaccination',
+  },
+  {
+    step: 'deworming',
+  },
+  {
+    step: 'allergy',
+  }
 ];
 
 const Instruction = ({step}) => {
@@ -66,7 +80,7 @@ const Instruction = ({step}) => {
         <View style={styles.textWrapper}>
           <Text style={styles.instruction}>Enter the date of</Text>
           <Text style={styles.instruction}>birth for the patient</Text>
-          <Text style={styles.instruction}>AGE: </Text>
+          <Text style={styles.instruction}>AGE</Text>
         </View>
       )
     }
@@ -76,6 +90,60 @@ const Instruction = ({step}) => {
           <Text style={styles.instruction}>Choose the indicator</Text>
           <Text style={styles.instruction}>to represents patient's</Text>
           <Text style={styles.instruction}>Marital Status</Text>
+        </View>
+      )
+    }
+    case 'nationalityOccupation': {
+      return (
+        <View style={styles.textWrapper}>
+          <Text style={styles.instruction}>Enter the nationality</Text>
+          <Text style={styles.instruction}>and occupation of</Text>
+          <Text style={styles.instruction}>the patient</Text>
+        </View>
+      )
+    }
+    case 'address': {
+      return (
+        <View style={styles.textWrapper}>
+          <Text style={styles.instruction}>Enter the address</Text>
+          <Text style={styles.instruction}>of the patient</Text>
+          <Text style={styles.instruction}>Village and Province </Text>
+        </View>
+      )
+    }
+    case 'telephone': {
+      return (
+        <View style={styles.textWrapper}>
+          <Text style={styles.instruction}>Enter the</Text>
+          <Text style={styles.instruction}>telephone number</Text>
+          <Text style={styles.instruction}>of the patient</Text>
+        </View>
+      )
+    }
+    case 'vaccination': {
+      return (
+        <View style={styles.textWrapper}>
+          <Text style={styles.instruction}>Enter the</Text>
+          <Text style={styles.instruction}>vaccination history</Text>
+          <Text style={styles.instruction}>of the patient</Text>
+        </View>
+      )
+    }
+    case 'deworming': {
+      return (
+        <View style={styles.textWrapper}>
+          <Text style={styles.instruction}>Enter the</Text>
+          <Text style={styles.instruction}>deworming history</Text>
+          <Text style={styles.instruction}>of the patient</Text>
+        </View>
+      )
+    }
+    case 'allergy': {
+      return (
+        <View style={styles.textWrapper}>
+          <Text style={styles.instruction}>Enter the</Text>
+          <Text style={styles.instruction}>allergy information</Text>
+          <Text style={styles.instruction}>of the patient</Text>
         </View>
       )
     }
@@ -131,7 +199,7 @@ const Response = ({step}) => {
     }
     case 'dob': {
       return (
-        <View style={{...StyleSheet.flatten(styles.response), height: '32%'}}>
+        <View style={{...StyleSheet.flatten(styles.response), height: '36%'}}>
           <TextField placeholder="Year" width="80%"/>
           <TextField placeholder="Month" width="80%"/>
           <TextField placeholder="Day" width="80%"/>
@@ -145,34 +213,89 @@ const Response = ({step}) => {
         </View>
       )
     }
+    case 'nationalityOccupation': {
+      return (
+        <View style={styles.response}>
+          <TextField placeholder="Nationality" width="80%"/>
+          <TextField placeholder="Occupation" width="80%"/>
+        </View>
+      )
+    }
+    case 'address': {
+      return (
+        <View style={{...StyleSheet.flatten(styles.response), height: '36%'}}>
+          <TextField placeholder="Village name" width="80%"/>
+          <TextField placeholder="Province name" width="80%"/>
+          <TextField placeholder="Postcode" width="80%"/>
+        </View>
+      )
+    }
+    case 'telephone': {
+      return(
+        <View style={styles.response}>
+          <TextField placeholder="Telephone Number" width="80%"/>
+        </View>
+      )
+    }
+    case 'vaccination': {
+      return(
+        <View style={styles.response}>
+          <TextField placeholder="Vaccination" width="80%"/>
+        </View>
+      )
+    }
+    case 'deworming': {
+      return(
+        <View style={styles.response}>
+          <TextField placeholder="Deworming" width="80%"/>
+        </View>
+      )
+    }
+    case 'allergy': {
+      return(
+        <View style={styles.response}>
+          <TextField placeholder="Allergy" width="80%"/>
+          <SubmitButton />
+        </View>
+      )
+    }
   }
 }
 
-const BackgroundInfo = () => (
-  <View style={styles.container}>
-    <LinearGradient style={styles.upper} {...gradientLayout} >
-      <Header/>
-      <Step allSteps={10} step={0} backgroundColor='#fff' highlightColor='pink' />
-    </LinearGradient>
+const SubmitButton = () => (
+  <View style={{width:'100%', position:'absolute', bottom:'-24%' , zIndex:10}}>
+    <Button title="Submit" icon="chevron-right" round width="50%"/>
   </View>
 )
 
-const ScrollItem = ({step, stepNum}) => (
+const BackgroundInfo = ({xOffset}) => (
+    <View style={styles.headerContainer}>
+      <LinearGradient style={styles.upper} {...gradientLayout} >
+        <Header/>
+        <Step allSteps={9} step={xOffset/screenWidth} backgroundColor='#fff' highlightColor='pink' />
+      </LinearGradient>
+    </View>
+)
+
+const ScrollItem = ({step}) => (
   <View style={{width: screenWidth}}>
-    <Step allSteps={10} step={stepNum} highlightColor='pink'/>
     <Instruction step={step}/>
     <Response step={step}/>
-    <View style={styles.footer}>
-      <Button title="next" icon="chevron-right" round width="50%"/>
-    </View>
   </View>
 )
 
-const ScrollList = () => {
+const ScrollList = ({handleScroll, scrollViewDidChange}) => {
   return (
-    <ScrollView horizontal pagingEnabled style={styles.scrollViewContainer}>
+    <ScrollView 
+      horizontal = {true} 
+      pagingEnabled ={true}
+      onScroll = {handleScroll}
+      scrollEventThrottle = {1}
+      style={styles.scrollViewContainer}
+      onContentSizeChange={scrollViewDidChange}
+      >
       {stepList.map(({step, stepNum}, i) => (
-        <ScrollItem key={i} step={step} stepNum={stepNum} />
+        <ScrollItem key={i} step={step}/>
       ))}
     </ScrollView>
   )
@@ -180,8 +303,22 @@ const ScrollList = () => {
 
 export default class Profile extends Component {
   constructor(props) {
-    super(props)
+    super(props);
+    this.handleScroll = this.handleScroll.bind(this);
+    this.scrollViewSizeDidChange = this.scrollViewSizeDidChange.bind(this);
+    this.state = {
+      xOffset:0,
+      scrollViewWidth: 0
+    }
   }
+
+  scrollViewSizeDidChange(width) {
+    this.setState({ scrollViewWidth: width })
+  }
+
+   handleScroll({nativeEvent: { contentOffset: { x }}}){
+     this.setState({ xOffset: x})
+   }
 
   componentWillMount() {
     StatusBar.setBarStyle('light-content')
@@ -189,22 +326,21 @@ export default class Profile extends Component {
 
   render() {
     return (
-      <View style={styles.bigcontainer}>
-        <BackgroundInfo />
-        <ScrollList />      
+      <View style={styles.parentContainer}>
+        <BackgroundInfo xOffset={this.state.xOffset}/>
+        <ScrollList handleScroll={this.handleScroll} scrollViewDidChange={this.scrollViewSizeDidChange}/>      
       </View>
-
     )
   }
 }
 
 const styles = StyleSheet.create({
-  bigcontainer: {
+  parentContainer: {
     flex: 1,
     justifyContent: 'flex-start',
     backgroundColor: '#f5f6fb',
   },
-  container: {
+  headerContainer: {
     flex: 1,
     justifyContent: 'flex-start',
     backgroundColor: '#f5f6fb',
@@ -213,8 +349,9 @@ const styles = StyleSheet.create({
   scrollViewContainer: {
     flex: 1,
     position: 'absolute',
+    top: '20%',
     height: '100%',
-    paddingTop:'30%'
+    paddingTop: 16,
   },
   upper: {
     height: '45%',
@@ -250,7 +387,7 @@ const styles = StyleSheet.create({
   },
   response: {
     marginTop: 16,
-    height: '25%',
+    height: '28%',
     justifyContent: 'space-around',
     alignItems: 'center',
     paddingBottom: '8%'
