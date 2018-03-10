@@ -1,16 +1,11 @@
 import React, { Component } from 'react';
 import { View, Image, ScrollView, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
+import { Link } from 'react-router-native';
+
 import { IconButton } from '../../components/Button'
 import Icon from '../../components/Icon'
-import LinearGradient from 'react-native-linear-gradient';
-import { Redirect, Link } from 'react-router-native';
-
-const Header = () => (
-  <View style={styles.header}>
-    <IconButton color="#3c4859" name='arrow-left' to={'/'} back/>
-    <Text style={styles.headerText}>Triage</Text>
-  </View>
-)
+import Header from '../../components/Header'
 
 const createGradient = {
   colors: ['#ffe6ad','#fba05e'],
@@ -52,7 +47,7 @@ class Triage extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Header />
+        <Header title="Triage" />
         <CreatePatientProfile />
         <LoadPatientProfile />
       </View>
@@ -66,27 +61,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f5f6fb',
-    paddingHorizontal: 8,
-    paddingTop: '12%',
+    paddingTop: '6%',
     justifyContent: 'flex-start',
-  },
-
-  header: {
-    flexDirection: 'row',
-    height: 56,
-    justifyContent: 'space-between',
-    marginBottom: 48,
-    alignItems: 'center'
-  },
-
-  headerText: {
-    fontSize: 36,
-    fontFamily: 'Nunito-Bold',
-    textAlign: 'right',
-    backgroundColor: '#fff0',
-    color: '#3c4859',
-    marginRight: 20,
-    marginTop: 32,
   },
 
   card: {

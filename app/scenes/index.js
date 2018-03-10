@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 import { NativeRouter, Route, Switch } from 'react-router-native'
 
 import Entrance from './Entrance'
@@ -6,9 +6,10 @@ import Triage from './Triage'
 import Consultation from './Consultation'
 import Login from './Login'
 import Registration from './Registration'
-import Pharmacy from './Pharmacy';
+import Pharmacy from './Pharmacy'
 import Profile from './Triage/Profile'
 import Vitals from './Triage/Vitals'
+import Settings from './Settings'
 
 const Storyboard = () => (
   <NativeRouter>
@@ -21,6 +22,7 @@ const Storyboard = () => (
       <Route path="/pharmacy" component={Pharmacy} />
       <Route path="/profile" component={Profile} />
       <Route path="/vitals" component={Vitals} />
+      <Route path="/settings" component={Settings} />
     </Switch>
   </NativeRouter>
 )
