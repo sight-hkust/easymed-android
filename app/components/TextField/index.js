@@ -37,6 +37,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Quicksand-Medium',
     textAlign: 'right',
     color: '#3c4859',
+    paddingRight: 16
   },
 
   input: {

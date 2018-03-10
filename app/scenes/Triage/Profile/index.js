@@ -1,10 +1,11 @@
 import React, { Component } from 'react'
-import { View, Image, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, Dimensions } from 'react-native'
+import { View, Image, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, Dimensions, Switch } from 'react-native'
 import LinearGradient from 'react-native-linear-gradient';
 import { IconButton, Button } from '../../../components/Button'
 import Icon from '../../../components/Icon'
 import TextField from '../../../components/TextField'
 import Step from '../../../components/Step'
+import Segment from '../../../components/Segment'
 
 const screenWidth = Dimensions.get('window').width
 
@@ -39,19 +40,7 @@ const stepList = [
     step: 'nationalityOccupation',
   },
   {
-    step: 'address',
-  },
-  {
-    step: 'telephone',
-  },
-  {
-    step: 'vaccination',
-  },
-  {
-    step: 'deworming',
-  },
-  {
-    step: 'allergy',
+    step: 'contact',
   }
 ];
 
@@ -111,38 +100,11 @@ const Instruction = ({step}) => {
         </View>
       )
     }
-    case 'telephone': {
+    case 'contact': {
       return (
         <View style={styles.textWrapper}>
           <Text style={styles.instruction}>Enter the</Text>
-          <Text style={styles.instruction}>telephone number</Text>
-          <Text style={styles.instruction}>of the patient</Text>
-        </View>
-      )
-    }
-    case 'vaccination': {
-      return (
-        <View style={styles.textWrapper}>
-          <Text style={styles.instruction}>Enter the</Text>
-          <Text style={styles.instruction}>vaccination history</Text>
-          <Text style={styles.instruction}>of the patient</Text>
-        </View>
-      )
-    }
-    case 'deworming': {
-      return (
-        <View style={styles.textWrapper}>
-          <Text style={styles.instruction}>Enter the</Text>
-          <Text style={styles.instruction}>deworming history</Text>
-          <Text style={styles.instruction}>of the patient</Text>
-        </View>
-      )
-    }
-    case 'allergy': {
-      return (
-        <View style={styles.textWrapper}>
-          <Text style={styles.instruction}>Enter the</Text>
-          <Text style={styles.instruction}>allergy information</Text>
+          <Text style={styles.instruction}>Contact number</Text>
           <Text style={styles.instruction}>of the patient</Text>
         </View>
       )
@@ -199,11 +161,7 @@ const Response = ({step}) => {
     }
     case 'dob': {
       return (
-        <View style={{...StyleSheet.flatten(styles.response), height: '36%'}}>
-          <TextField placeholder="Year" width="80%"/>
-          <TextField placeholder="Month" width="80%"/>
-          <TextField placeholder="Day" width="80%"/>
-        </View>
+        <Segment/>
       )
     }
     case 'married': {
@@ -230,31 +188,10 @@ const Response = ({step}) => {
         </View>
       )
     }
-    case 'telephone': {
+    case 'contact': {
       return(
         <View style={styles.response}>
-          <TextField placeholder="Telephone Number" width="80%"/>
-        </View>
-      )
-    }
-    case 'vaccination': {
-      return(
-        <View style={styles.response}>
-          <TextField placeholder="Vaccination" width="80%"/>
-        </View>
-      )
-    }
-    case 'deworming': {
-      return(
-        <View style={styles.response}>
-          <TextField placeholder="Deworming" width="80%"/>
-        </View>
-      )
-    }
-    case 'allergy': {
-      return(
-        <View style={styles.response}>
-          <TextField placeholder="Allergy" width="80%"/>
+          <TextField placeholder="Contact Number" width="80%" keyboardType="numeric"/>
           <SubmitButton />
         </View>
       )
@@ -272,7 +209,7 @@ const BackgroundInfo = ({xOffset}) => (
     <View style={styles.headerContainer}>
       <LinearGradient style={styles.upper} {...gradientLayout} >
         <Header/>
-        <Step allSteps={9} step={xOffset/screenWidth} backgroundColor='#fff' highlightColor='pink' />
+        <Step allSteps={5} step={xOffset/screenWidth} backgroundColor='#fff' highlightColor='pink' />
       </LinearGradient>
     </View>
 )
@@ -305,15 +242,9 @@ export default class Profile extends Component {
   constructor(props) {
     super(props);
     this.handleScroll = this.handleScroll.bind(this);
-    this.scrollViewSizeDidChange = this.scrollViewSizeDidChange.bind(this);
     this.state = {
       xOffset:0,
-      scrollViewWidth: 0
     }
-  }
-
-  scrollViewSizeDidChange(width) {
-    this.setState({ scrollViewWidth: width })
   }
 
    handleScroll({nativeEvent: { contentOffset: { x }}}){
@@ -328,7 +259,7 @@ export default class Profile extends Component {
     return (
       <View style={styles.parentContainer}>
         <BackgroundInfo xOffset={this.state.xOffset}/>
-        <ScrollList handleScroll={this.handleScroll} scrollViewDidChange={this.scrollViewSizeDidChange}/>      
+        <ScrollList handleScroll={this.handleScroll}/> 
       </View>
     )
   }

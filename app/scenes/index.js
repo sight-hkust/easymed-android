@@ -8,6 +8,7 @@ import Login from './Login'
 import Registration from './Registration'
 import Pharmacy from './Pharmacy';
 import Profile from './Triage/Profile'
+import Vitals from './Triage/Vitals'
 
 const Storyboard = () => (
   <NativeRouter>
@@ -19,6 +20,7 @@ const Storyboard = () => (
       <Route path="/consultation" component={Consultation} />
       <Route path="/pharmacy" component={Pharmacy} />
       <Route path="/profile" component={Profile} />
+      <Route path="/vitals" component={Vitals} />
     </Switch>
   </NativeRouter>
 )
