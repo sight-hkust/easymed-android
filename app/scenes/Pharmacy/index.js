@@ -51,7 +51,7 @@ const ServiceQueue = () => {
   return (
     <ScrollView>
       {/* <EmptyStub /> */}
-      <Patient patient={demoPatient1} to="/" />
+      <Patient patient={demoPatient1} to="/checkout" />
       <Patient patient={demoPatient2} to="/" />
       <Patient patient={demoPatient1} to="/" />
       <Patient patient={demoPatient2} to="/" />

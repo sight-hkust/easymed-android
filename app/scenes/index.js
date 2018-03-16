@@ -9,6 +9,7 @@ import Registration from './Registration'
 import Pharmacy from './Pharmacy'
 import Profile from './Triage/Profile'
 import Vitals from './Triage/Vitals'
+import PrescriptionCheckout from './PrescriptionCheckout'
 import Settings from './Settings'
 
 const Storyboard = () => (
@@ -23,6 +24,7 @@ const Storyboard = () => (
       <Route path="/profile" component={Profile} />
       <Route path="/vitals" component={Vitals} />
       <Route path="/settings" component={Settings} />
+      <Route path="/checkout" component={PrescriptionCheckout} />
     </Switch>
   </NativeRouter>
 )

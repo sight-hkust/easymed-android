@@ -6,7 +6,7 @@ import Header from '../../components/Header'
 import { PatientListItem as Patient } from '../../components/Patient'
 
 
-const prescribeDrugs = [
+const prescribedDrugs = [
   {
     drug: 'Fever Pack',
     date: '15 days',
@@ -50,8 +50,10 @@ const prescribedDrugEntry = ({layout, drug, date, time, confirm}) => (
     <LinearGradient {...layout} style={styles.linearGradient}>
       //drug icon here
       <Text style={styles.drug}>{drug}</Text>
-
-    </LinearGradient>
+      <Text style={styles.subinfo}>{date}</Text>
+      <Text style={styles.subinfo}>{time}</Text>
+      //confirm icon
+    </LinearGradient>l
   </View>
 )
 
@@ -80,6 +82,9 @@ class PrescriptionCheckout extends Component {
         <Header title="Pharmacy" />
         <Toolbar />
         <ScrollView>
+          {prescribedDrugs.map(({drug, date, time, layout}, i) => (
+            <prescribedDrugEntry key={i} layout={layout} drug={drug} date={date} time={time} confirm={confirm}/>
+          ))}
         </ScrollView>
         
       </View>
@@ -148,4 +153,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     borderRadius: 8,
   },
+  drug: {
+
+  },
+  subinfo: {
+
+  }
 })
