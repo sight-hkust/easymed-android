@@ -102,6 +102,7 @@ public class IritechModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public boolean scanningDone() {
         return true;
+
     }
 
     @ReactMethod
