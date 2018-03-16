@@ -1,10 +1,19 @@
-import React, { Component } from 'react';
-import { View, Image, ScrollView, StyleSheet, Text, TouchableOpacity } from 'react-native';
-import { IconButton } from '../../components/Button'
-import Icon from '../../components/Icon'
 import Header from '../../components/Header'
 import { PatientListItem as Patient } from '../../components/Patient'
-
+import React, { Component } from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  ScrollView,
+  StatusBar,
+  TouchableOpacity
+} from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
+import { Redirect, Link } from 'react-router-native';
+import Icon from '../../components/Icon'
+import { IconButton } from '../../components/Button'
 
 const prescribedDrugs = [
   {
@@ -13,7 +22,7 @@ const prescribedDrugs = [
     time: '3 times',
     confirm: false,
     layout: {
-      colors: ['#FFE53B','#FF2525'],
+      colors: ['#ECEDDD','#7BC9C5'],
       start: {x: 1.0, y: 0.5},
       end: {x: 0.0, y: 1.0},
       locations: [0, 1.0]
@@ -25,7 +34,19 @@ const prescribedDrugs = [
     time: '2 times',
     confirm: false,
     layout: {
-      colors: ['#21D4FD','#B721FF'],
+      colors: ['#ECEDDD','#7BC9C5'],
+      start: {x: 1.0, y: 0.5},
+      end: {x: 0.0, y: 1.0},
+      locations: [0, 1.0]
+    }
+  },
+  {
+    drug: 'Cilest',
+    date: '4 days',
+    time: '2 times',
+    confirm: false,
+    layout: {
+      colors: ['#ECEDDD','#7BC9C5'],
       start: {x: 1.0, y: 0.5},
       end: {x: 0.0, y: 1.0},
       locations: [0, 1.0]
@@ -37,7 +58,7 @@ const prescribedDrugs = [
     time: '3 times',
     confirm: false,
     layout: {
-      colors: ['#D9AFD9','#97D9E1'],
+      colors: ['#ECEDDD','#7BC9C5'],
       start: {x: 1.0, y: 0.5},
       end: {x: 0.0, y: 1.0},
       locations: [0, 1.0]
@@ -45,21 +66,15 @@ const prescribedDrugs = [
   }
 ]
 
-const prescribedDrugEntry = ({layout, drug, date, time, confirm}) => (
+const PrescribedDrugEntry = ({layout, drug, days, times, dosage, instructions, type, confirm}) => (
   <View style={styles.card}>
     <LinearGradient {...layout} style={styles.linearGradient}>
-      //drug icon here
       <Text style={styles.drug}>{drug}</Text>
       <Text style={styles.subinfo}>{date}</Text>
       <Text style={styles.subinfo}>{time}</Text>
-      //confirm icon
-    </LinearGradient>l
+    </LinearGradient>
   </View>
 )
-
-// const nameFormatter = (name) => {
-//   return name.split(' ').map((part, i) => { if(i == 0) { return part } else if (i == 1) { return part.substring(0,1) } else return ''}).join(' ').toUpperCase()
-// }
 
 
 const Toolbar = () => (
@@ -82,8 +97,8 @@ class PrescriptionCheckout extends Component {
         <Header title="Pharmacy" />
         <Toolbar />
         <ScrollView>
-          {prescribedDrugs.map(({drug, date, time, layout}, i) => (
-            <prescribedDrugEntry key={i} layout={layout} drug={drug} date={date} time={time} confirm={confirm}/>
+          {prescribedDrugs.map(({layout, drug, days, times, dosage, instructions, type, confirm}, i) => (
+            <PrescribedDrugEntry key={i} layout={layout} drug={drug} days={days} times={times} confirm={confirm} doasage={dosage} instructions={instructions}/>
           ))}
         </ScrollView>
         
@@ -133,11 +148,11 @@ const styles = StyleSheet.create({
   },
 
   card:{
-    height: 160,
+    height: 100,
     backgroundColor: 'transparent',
     justifyContent: 'center',
-    marginLeft: 16,
-    marginRight: 16,
+    marginLeft: 24,
+    marginRight: 24,
     marginBottom: 16,
     shadowColor: '#e4e4e4',
     shadowOpacity: 0.5,
