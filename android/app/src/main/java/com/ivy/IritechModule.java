@@ -101,12 +101,13 @@ public class IritechModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public boolean scanningDone() {
+        return true;
 
     }
 
     @ReactMethod
     public String patientID (){
-
+        return "";
     }
 
     //error messages
