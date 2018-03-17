@@ -55,7 +55,7 @@ class Consultation extends Component {
   }
 
   componentWillMount() {
-    StatusBar.setBarStyle('dark-content')
+    StatusBar.setBarStyle('dark-content', true)
   }
 
   render() {

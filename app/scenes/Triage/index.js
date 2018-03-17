@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Image, ScrollView, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { View, Image, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { Link } from 'react-router-native';
 
@@ -42,6 +42,10 @@ const LoadPatientProfile = () => (
 class Triage extends Component {
   constructor(props) {
     super(props)
+  }
+
+  componentWillMount() {
+    StatusBar.setBarStyle('dark-content', true)
   }
 
   render() {

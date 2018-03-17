@@ -321,7 +321,7 @@ export default class Profile extends Component {
    }
 
   componentWillMount() {
-    StatusBar.setBarStyle('light-content')
+    StatusBar.setBarStyle('light-content', true)
   }
 
   render() {

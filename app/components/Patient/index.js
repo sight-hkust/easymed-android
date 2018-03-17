@@ -31,6 +31,17 @@ const PatientListItem = ({patient: {age, gender, name, tag}, to}) => (
   </Link>
 )
 
+const PatientProfile = ({patient: {age, gender, name}}) => {
+  const style = {
+
+  }
+  return (
+    <View>
+      
+    </View>
+  )
+}
+
 const styles = StyleSheet.create({
   patient: {
     flexDirection: 'row',
