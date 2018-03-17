@@ -9,7 +9,7 @@ import {
 const TextField = ({defaultValue, unit, width, keyboardType, placeholder}) => {
   return (
     <View style={{...StyleSheet.flatten(styles.container), width}}>
-      <TextInput style={styles.input} value={defaultValue} placeholder={placeholder} keyboardType={keyboardType}></TextInput>
+      <TextInput style={styles.input} value={defaultValue} placeholder={placeholder} keyboardType={keyboardType} underlineColorAndroid='rgba(0,0,0,0)'></TextInput>
       { unit && <Text style={styles.unit}>{unit}</Text>}
     </View>
   )
@@ -37,6 +37,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Quicksand-Medium',
     textAlign: 'right',
     color: '#3c4859',
+    paddingRight: 16
   },
 
   input: {
