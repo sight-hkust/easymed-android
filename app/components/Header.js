@@ -2,7 +2,7 @@ import React from 'react'
 import { View, StyleSheet, Text } from 'react-native'
 import { IconButton } from './Button'
 
-const Header = ({title='Title', light=false}) => {
+const Header = ({title='Title', light=false, to='/'}) => {
   const styles = StyleSheet.create({
     header: {
       flexDirection: 'row',
@@ -23,7 +23,7 @@ const Header = ({title='Title', light=false}) => {
 
   return (
     <View style={styles.header}>
-      <IconButton color={light?'#fff':'#3c4859'} name='angle-left' size={32} to={'/'}/>
+      <IconButton color={light?'#fff':'#3c4859'} name='angle-left' size={32} to={to}/>
       <Text style={styles.headerTitle}>{title}</Text>
     </View>
   )
