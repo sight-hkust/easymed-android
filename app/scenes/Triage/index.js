@@ -22,7 +22,7 @@ const loadGradient = {
 };
 
 const CreatePatientProfile = () => (
-  <Link style={styles.card} to='/profile' component={TouchableOpacity} activeOpacity={0.25}>
+  <Link style={styles.card} to='/triage/profile' component={TouchableOpacity} activeOpacity={0.25}>
     <LinearGradient {...createGradient} style={styles.create}>
       <Image style={styles.primaryButtonImage} source={require('../../../assets/images/triage/create_profiles.png')} />
       <Text style={styles.primaryButtonText}>CREATE PATIENT PROFILE</Text>
@@ -31,7 +31,7 @@ const CreatePatientProfile = () => (
 )
 
 const LoadPatientProfile = () => (
-  <Link style={styles.card} to='/vitals' component={TouchableOpacity} activeOpacity={0.25}>
+  <Link style={styles.card} to='/triage/pregnancy' component={TouchableOpacity} activeOpacity={0.25}>
     <LinearGradient {...loadGradient} style={styles.load}>
       <Image style={styles.secondaryButtonImage} source={require('../../../assets/images/triage/archives.png')} />
       <Text style={styles.secondaryButtonText}>CHOOSE EXISTING PATIENT</Text>

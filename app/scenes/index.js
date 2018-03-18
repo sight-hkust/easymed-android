@@ -9,22 +9,24 @@ import Registration from './Registration'
 import Pharmacy from './Pharmacy'
 import Profile from './Triage/Profile'
 import Vitals from './Triage/Vitals'
+import Pregnancy from './Triage/Pregnancy'
 import PrescriptionCheckout from './PrescriptionCheckout'
 import Settings from './Settings'
 
 const Storyboard = () => (
   <NativeRouter>
     <Switch>
-      <Route exact path="/" component={Entrance} />
+      <Route exact path="/" component={Registration} />
       <Route path="/login" component={Login}/>
       <Route path="/register" component={Registration} />
-      <Route path="/triage" component={Triage} />
-      <Route path="/consultation" component={Consultation} />
-      <Route path="/pharmacy" component={Pharmacy} />
-      <Route path="/profile" component={Profile} />
-      <Route path="/vitals" component={Vitals} />
+      <Route exact path="/triage" component={Triage} />
+      <Route path="/triage/vitals" component={Vitals} />
+      <Route path="/triage/profile" component={Profile} />
+      <Route path="/triage/pregnancy" component={Pregnancy} />
+      <Route exact path="/consultation" component={Consultation} />
+      <Route exact path="/pharmacy" component={Pharmacy} />
+      <Route path="/pharmacy/checkout" component={PrescriptionCheckout} />
       <Route path="/settings" component={Settings} />
-      <Route path="/checkout" component={PrescriptionCheckout} />
     </Switch>
   </NativeRouter>
 )

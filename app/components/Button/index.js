@@ -30,7 +30,7 @@ const Button = ({title, icon, onPress, round=false, opaque=true, titleColor, bgC
     )
   }
   return (
-    <TouchableOpacity style={{...styles.default, ...style, width}}>
+    <TouchableOpacity style={{...styles.default, ...style, width}} onPress={onPress}>
       <Text style={{fontFamily: 'Quicksand-Medium', marginRight: icon?8:0, color: titleColor?titleColor:'#000'}}>{title.toUpperCase()}</Text>
       { icon && <Icon name={icon} color={titleColor?titleColor:'#000'}/> }
     </TouchableOpacity>

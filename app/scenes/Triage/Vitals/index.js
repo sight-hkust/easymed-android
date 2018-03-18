@@ -84,15 +84,6 @@ const stepList = [
   {
     step: 'otherSH',
   },
-  {
-    step: 'pregnant',
-  },
-  {
-    step: 'breastFeeding',
-  },
-  {
-    step: 'contraceptive',
-  }
 ];
 
 const Instruction = ({step}) => {
@@ -277,33 +268,6 @@ const Instruction = ({step}) => {
         </View>      
       )
     }
-    case 'pregnant': {
-      return(
-        <View style={styles.textWrapper}>
-          <Text style={styles.instruction}>Identify if the patient</Text>
-          <Text style={styles.instruction}>is pregnant using</Text>
-          <Text style={styles.instruction}>the indicator below</Text>
-        </View>      
-      )
-    }
-    case 'breastFeeding': {
-      return(
-        <View style={styles.textWrapper}>
-          <Text style={styles.instruction}>Identify if the patient</Text>
-          <Text style={styles.instruction}>is breast feeding using</Text>
-          <Text style={styles.instruction}>the indicator below</Text>
-        </View>        
-      )
-    }
-    case 'contraceptive': {
-      return(
-        <View style={styles.textWrapper}>
-          <Text style={styles.instruction}>Identify if the patient</Text>
-          <Text style={styles.instruction}>is contraceptive using</Text>
-          <Text style={styles.instruction}>the indicator below</Text>
-        </View>        
-      )  
-    }
   } 
 }
 
@@ -480,24 +444,6 @@ const Response = ({step}) => {
         </View>    
       )
     }
-    case 'pregnant': {
-      return(
-        <YesNoSelect />
-      )
-    }
-    case 'breastFeeding': {
-      return(
-        <YesNoSelect />
-      )
-    }
-    case 'contraceptive': {
-      return(
-        <View style={{height: '100%'}}>
-          <YesNoSelect />
-          <SubmitButton />
-        </View>
-      )
-    }
   }
 }
 
@@ -505,7 +451,7 @@ const BackgroundInfo = ({xOffset}) => (
     <View style={styles.headerContainer}>
       <LinearGradient style={styles.upper} {...gradientLayout} >
         <Header/>
-        <Step allSteps={22} step={xOffset/screenWidth} backgroundColor='#fff' highlightColor='pink' />
+        <Step allSteps={19} step={xOffset/screenWidth} backgroundColor='#fff' highlightColor='pink' />
       </LinearGradient>
     </View>
 )

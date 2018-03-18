@@ -19,7 +19,7 @@ export const logOut = () => ({
   type: AUTH_LOGOUT_REQUEST
 })
 
-export const register = (credentials, registrationToken) => ({
+export const register = (username, password) => ({
   type: AUTH_REGISTER_REQUEST,
-  payload: {credentials, registrationToken}
+  payload: {username, password}
 })
