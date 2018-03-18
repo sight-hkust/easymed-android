@@ -16,7 +16,7 @@ import Settings from './Settings'
 const Storyboard = () => (
   <NativeRouter>
     <Switch>
-      <Route exact path="/" component={Registration} />
+      <Route exact path="/" component={Entrance} />
       <Route path="/login" component={Login}/>
       <Route path="/register" component={Registration} />
       <Route exact path="/triage" component={Triage} />

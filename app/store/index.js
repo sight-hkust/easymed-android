@@ -1,14 +1,12 @@
 import { createStore, applyMiddleware } from 'redux';
 import { persistStore } from 'redux-persist';
-import { combineEpics, createEpicMiddleware } from 'redux-observable';
-import { registerEpic } from '../epics/auth';
+import { createEpicMiddleware } from 'redux-observable'
 import reducer from '../reducers';
+import epics from '../epics'
+
+const epicMiddleware = createEpicMiddleware(epics);
 
 export default function configureStore() {
-  const rootEpic = combineEpics(
-    registerEpic
-  )
-  const epicMiddleware = createEpicMiddleware(rootEpic)
   const store = createStore(
     reducer,
     applyMiddleware(epicMiddleware)
