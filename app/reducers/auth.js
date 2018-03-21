@@ -28,7 +28,6 @@ const authReducer = (state = initialState, {type, payload}) => {
       return {...state, loading: true};
     }
     case AUTH_REGISTER_SUCCESS: {
-      console.log('goes here finally')
       return {...state, loading: false};
     }
     case AUTH_REGISTER_ERROR: {

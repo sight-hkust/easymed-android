@@ -12,4 +12,15 @@ async function register(username, password){
   }
 }
 
-export { register }
+async function createProfile(profile){
+  const patient = new Parse.Profile()
+  patient.set('name', profile.name)
+  try {
+    await patient.newProfile()
+    return patient.authenticated()
+  } catch (error) {
+    throw error
+  }
+}
+
+export { register, createProfile }
