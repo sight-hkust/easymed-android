@@ -3,6 +3,12 @@ package com.ivy;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.react.rnspinkit.RNSpinkitPackage;
+import br.com.classapp.RNSensitiveInfo.RNSensitiveInfoPackage;
+import com.BV.LinearGradient.LinearGradientPackage;
+import br.com.classapp.RNSensitiveInfo.RNSensitiveInfoPackage;
+import com.BV.LinearGradient.LinearGradientPackage;
+import com.polidea.reactnativeble.BlePackage;
 import br.com.classapp.RNSensitiveInfo.RNSensitiveInfoPackage;
 import com.BV.LinearGradient.LinearGradientPackage;
 import com.facebook.react.ReactNativeHost;
@@ -25,6 +31,12 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RNSpinkitPackage(),
+            new RNSensitiveInfoPackage(),
+            new LinearGradientPackage(),
+            new RNSensitiveInfoPackage(),
+            new LinearGradientPackage(),
+            new BlePackage(),
             new RNSensitiveInfoPackage(),
             new LinearGradientPackage()
       );

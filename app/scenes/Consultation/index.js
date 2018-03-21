@@ -1,92 +1,11 @@
 import React, { Component } from 'react';
-import { View, Image, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity } from 'react-native';
-import { IconButton } from '../../components/Button'
-import Icon from '../../components/Icon'
-import Header from '../../components/Header'
-import { PatientListItem as Patient } from '../../components/Patient'
+import { Route, Switch } from 'react-router-native';
+import Entrypoint from './Entrypoint';
 
-const demoPatient1 = {
-  gender: 'F',
-  name: 'Preah Reachanachâk Kampuchea',
-  age: '34',
-  tag: 18
-}
-
-const demoPatient2 = {
-  gender: 'M',
-  name: 'Sanskrit Kambujadeśa',
-  age: '26',
-  tag: 24
-}
-
-const Toolbar = () => (
-  <View style={styles.toolbar}>
-    <IconButton name="sort" color="#3c4859" />
-    <IconButton name="search" color="#3c4859" size={22}/>
-  </View>
+const Consultation = ({match}) => (
+  <Switch>
+    <Route exact path={`${match.url}`} component={Entrypoint} />
+  </Switch>
 )
 
-const EmptyStub = () => (
-  <View style={{justifyContent: 'space-around', alignItems: 'center', width: '80%', alignSelf: 'center'}}>
-    <Image style={{width: 160, height: 160}} source={require('../../../assets/images/empty/consultation.png')}/>
-    <View>
-      <Text style={{fontFamily: 'Quicksand-Bold',fontSize: 20, textAlign: 'center', marginBottom: 12}}>{'no patients found'.toUpperCase()}</Text>
-      <Text style={{fontFamily: 'Nunito-Medium', textAlign: 'center', color:'#848c9f'}}>There are currently no patient waiting in line, add a patient to this queue to get started.</Text>
-    </View>
-  </View>
-)
-
-const ServiceQueue = () => {
-  return (
-    <ScrollView>
-      {/* <EmptyStub /> */}
-      <Patient patient={demoPatient1} to='/' />
-      <Patient patient={demoPatient2} to='/' />
-      <Patient patient={demoPatient1} to='/' />
-      <Patient patient={demoPatient2} to='/' />
-      <Patient patient={demoPatient2} to='/' />
-    </ScrollView>
-  )
-}
-
-class Consultation extends Component {
-  constructor(props) {
-    super(props)
-  }
-
-  componentWillMount() {
-    StatusBar.setBarStyle('dark-content', true)
-  }
-
-  render() {
-    return (
-      <View style={styles.container}>
-        <Header title="Consultation" />
-        <Toolbar />
-        <ServiceQueue/>
-      </View>
-    )
-  }
-}
-
-export default Consultation;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'flex-start',
-    backgroundColor: '#f5f6fb',
-    paddingTop: '6%'
-  },
-  toolbar: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    width: '40%',
-    height: 56,
-    alignItems: 'center',
-    alignSelf: 'flex-end'
-  },
-  queue: {
-    alignItems: 'center'
-  },
-})
+export default Consultation

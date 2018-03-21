@@ -1,5 +1,5 @@
-import Header from '../../components/Header'
-import { PatientListItem as Patient } from '../../components/Patient'
+import Header from '../../../components/Header'
+import { PatientListItem as Patient } from '../../../components/Patient'
 import React, { Component } from 'react';
 import {
   StyleSheet,
@@ -12,8 +12,8 @@ import {
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { Redirect, Link } from 'react-router-native';
-import Icon from '../../components/Icon'
-import { IconButton } from '../../components/Button'
+import Icon from '../../../components/Icon'
+import { IconButton } from '../../../components/Button'
 
 const prescribedDrugs = [
   {
@@ -88,49 +88,49 @@ const DrugTypeIcon = ({type}) => {
     case 'tab': {
       return(
         <View style={{...DrugTypeContainerStyle, backgroundColor: '#B1DC76'}}>
-          <Image source={require('../../../assets/images/pharmacy/tab.png')} style={{height:32, width:32}} />
+          <Image source={require('../../../../assets/images/pharmacy/tab.png')} style={{height:32, width:32}} />
         </View>
       )
     }
     case 'injection': {
       return(
         <View style={{...DrugTypeContainerStyle, backgroundColor: '#FFA192'}}>
-          <Image source={require('../../../assets/images/pharmacy/injection.png')} style={{height:32, width:32}} />
+          <Image source={require('../../../../assets/images/pharmacy/injection.png')} style={{height:32, width:32}} />
         </View>
       )
     }
     case 'syrup': {
       return(
         <View style={{...DrugTypeContainerStyle, backgroundColor: '#FF85A7'}}>
-          <Image source={require('../../../assets/images/pharmacy/syrup.png')} style={{height:32, width:32}} />
+          <Image source={require('../../../../assets/images/pharmacy/syrup.png')} style={{height:32, width:32}} />
         </View>
       )
     }
     case 'powder': {
       return(
         <View style={{...DrugTypeContainerStyle, backgroundColor: '#FFDA01'}}>
-          <Image source={require('../../../assets/images/pharmacy/powder.png')} style={{height:32, width:32}} />
+          <Image source={require('../../../../assets/images/pharmacy/powder.png')} style={{height:32, width:32}} />
         </View>
       )
     }
     case 'ointment': {
       return(
         <View style={{...DrugTypeContainerStyle, backgroundColor: '#9396FA'}}>
-          <Image source={require('../../../assets/images/pharmacy/ointment.png')} style={{height:32, width:32}} />
+          <Image source={require('../../../../assets/images/pharmacy/ointment.png')} style={{height:32, width:32}} />
         </View>
       )
     }
     case 'oralSolution': {
       return(
         <View style={{...DrugTypeContainerStyle, backgroundColor: '#4E76E4'}}>
-          <Image source={require('../../../assets/images/pharmacy/oralSolution.png')} style={{height:32, width:32}} />
+          <Image source={require('../../../../assets/images/pharmacy/oralSolution.png')} style={{height:32, width:32}} />
         </View>
       )
     }
     case 'others': {
       return(
         <View style={{...DrugTypeContainerStyle, backgroundColor: '#7CD3C8'}}>
-          <Image source={require('../../../assets/images/pharmacy/others.png')} style={{height:32, width:32}} />
+          <Image source={require('../../../../assets/images/pharmacy/others.png')} style={{height:32, width:32}} />
         </View>
       )
     }
@@ -152,7 +152,7 @@ const PrescribedDrugEntry = ({type, item, dosage, days, times, instructions, con
     </View>
     
     <View>
-      <Image source={confirm?require('../../../assets/images/pharmacy/checked.png'):require('../../../assets/images/pharmacy/notchecked.png')} style={{height:28, width:28}} />
+      <Image source={confirm?require('../../../../assets/images/pharmacy/checked.png'):require('../../../../assets/images/pharmacy/notchecked.png')} style={{height:28, width:28}} />
     </View>
   </TouchableOpacity>
 )
@@ -167,7 +167,7 @@ const Toolbar = () => (
 )
 
 
-class PrescriptionCheckout extends Component {
+export class Checkout extends Component {
   constructor(props) {
     super(props)
   }
@@ -187,8 +187,6 @@ class PrescriptionCheckout extends Component {
     )
   }
 }
-
-export default PrescriptionCheckout;
 
 const styles = StyleSheet.create({
   container: {

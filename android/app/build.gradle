@@ -137,6 +137,12 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-spinkit')
+    compile project(':react-native-sensitive-info')
+    compile project(':react-native-linear-gradient')
+    compile project(':react-native-sensitive-info')
+    compile project(':react-native-linear-gradient')
+    compile project(':react-native-ble-plx')
     compile project(':react-native-sensitive-info')
     compile project(':react-native-linear-gradient')
     compile fileTree(dir: "libs", include: ["*.jar"])

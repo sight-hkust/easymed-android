@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { View, StatusBar, StyleSheet, Text, TextInput } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
+import Spinner from 'react-native-spinkit'
 import { bindActionCreators } from 'redux';
 import { register } from '../../actions/auth';
 import { connect } from 'react-redux'; 
@@ -34,7 +35,6 @@ class Registration extends Component {
 
   signUp() {
     const { username, password } = this.state
-    console.log(username)
     this.register(username, password)
   }
 
@@ -50,6 +50,7 @@ class Registration extends Component {
             <Textfield icon='lock-alt' obfuscate={true} placeholder='Confirm Password'/>
           </View>
           <Button title="Register" icon="user-plus" titleColor="#662cd2" round onPress={this.signUp.bind(this)}/>
+          <Spinner style={{alignSelf: 'center'}} isVisible={this.props.loading} size={44} type='Bounce' color='white'/>
         </View>
       </LinearGradient>
     )
@@ -60,7 +61,11 @@ const mapDispatchToProps = (dispatch) => ({
   actions: bindActionCreators({register}, dispatch)
 })
 
-export default connect(null, mapDispatchToProps)(Registration)
+const mapStateToProps = (state) => ({
+  loading: state.auth.loading
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(Registration)
 
 const styles = StyleSheet.create({
   container: {
