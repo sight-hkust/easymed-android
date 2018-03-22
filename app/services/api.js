@@ -12,15 +12,37 @@ async function register(username, password){
   }
 }
 
-async function createProfile(profile){
-  const patient = new Parse.Profile()
-  patient.set('name', profile.name)
+async function authenticate(username, password){
   try {
-    await patient.newProfile()
+    const user = await Parse.User.logIn(username, password)
+    return user.authenticated()
+  } catch (error) {
+    throw error
+  }
+}
+
+async function deauthenticate(){
+  try {
+    await Parse.User.logOut()
+    return true
+  } catch (error) {
+    throw error   
+  }
+}
+
+async function createPatient(profile){
+  const Patient = Parse.Object.extend("Patient");
+  const Profile = Parse.Object.extend("Profile");
+  const patient = new Patient()
+  const profile = new Profile()
+  Object.keys(profile).forEach(attribute => profile.set(attribute, profile[attribute]))
+  patient.set('profile', profile)
+  try {
+    await Promise.all([profile.save(), patient.save()])
     return patient.authenticated()
   } catch (error) {
     throw error
   }
 }
 
-export { register, createProfile }
+export { register, authenticate }
