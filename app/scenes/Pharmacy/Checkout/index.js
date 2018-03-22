@@ -167,7 +167,7 @@ const Toolbar = () => (
 )
 
 
-export class Checkout extends Component {
+export default class Checkout extends Component {
   constructor(props) {
     super(props)
   }

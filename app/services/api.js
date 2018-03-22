@@ -26,23 +26,63 @@ async function deauthenticate(){
     await Parse.User.logOut()
     return true
   } catch (error) {
-    throw error   
+    throw error
   }
 }
 
 async function createPatient(profile){
-  const Patient = Parse.Object.extend("Patient");
-  const Profile = Parse.Object.extend("Profile");
-  const patient = new Patient()
-  const profile = new Profile()
-  Object.keys(profile).forEach(attribute => profile.set(attribute, profile[attribute]))
-  patient.set('profile', profile)
+  const Patient = Parse.Object.extend('Patient')
+  const Profile = Parse.Object.extend('Profile')
+  const _patient = new Patient()
+  const _profile = new Profile()
+  Object.keys(_profile).forEach(attribute => _profile.set(attribute, profile[attribute]))
+  patient.addUnique('profile', _profile)
   try {
-    await Promise.all([profile.save(), patient.save()])
-    return patient.authenticated()
+    await Promise.all([_profile.save(), _patient.save()])
+    return _patient.id
   } catch (error) {
     throw error
   }
 }
 
-export { register, authenticate }
+async function find(patientId) {
+  try {
+    const patient = Parse.Query.get(patientId)
+    return patient
+  } catch (error) {
+    throw error
+  }
+}
+
+async function insertMedicalHistory(history, patientId) {
+  try {
+    const History = Parse.Object.extend('History')
+    const record = new History()
+    Object.keys(history).forEach(attribute => record.set(attribute, history[attribute]))
+    const patient = await find(patientId)
+    patient.set('history', history)
+    await Promise.all([history.save(), patient.save()])
+  } catch (error) {
+    throw error
+  }
+}
+
+async function insertVitalsRecord(vitals) {
+  try {
+    const Vitals = Parse.Object.extend('Vitals')
+    const record = new Vitals()
+    Object.keys(vitals).forEach(attribute => record.set(attribute, vitals[attribute]))
+    await record.save()
+    return record.id
+  } catch (error) {
+    throw error
+  }
+}
+
+export {
+  register,
+  authenticate,
+  deauthenticate,
+  insertVitalsRecord,
+  insertMedicalHistory,
+}

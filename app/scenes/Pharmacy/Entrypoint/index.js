@@ -4,6 +4,7 @@ import { IconButton } from '../../../components/Button'
 import Icon from '../../../components/Icon'
 import Header from '../../../components/Header'
 import { PatientListItem as Patient } from '../../../components/Patient'
+import { Link } from 'react-router-native'
 
 const nameFormatter = (name) => {
   return name.split(' ').map((part, i) => { if(i == 0) { return part } else if (i == 1) { return part.substring(0,1) } else return ''}).join(' ').toUpperCase()
@@ -13,7 +14,8 @@ const demoPatient1 = {
   gender: 'F',
   name: 'Preah Reachanachâk Kampuchea',
   age: '34',
-  tag: 18
+  tag: 18,
+  id: 'something'
 }
 
 const demoPatient2 = {
@@ -52,10 +54,10 @@ const ServiceQueue = () => {
     <ScrollView>
       {/* <EmptyStub /> */}
       <Patient patient={demoPatient1} to="/pharmacy/checkout" />
-      <Patient patient={demoPatient2} to="/" />
-      <Patient patient={demoPatient1} to="/" />
-      <Patient patient={demoPatient2} to="/" />
-      <Patient patient={demoPatient2} to="/" />
+      <Patient patient={demoPatient2} to={`/pharmacy/checkout`} />
+      <Patient patient={demoPatient1} to={`/pharmacy/checkout`} />
+      <Patient patient={demoPatient2} to={`/pharmacy/checkout`} />
+      <Patient patient={demoPatient2} to={`/pharmacy/checkout`} />
     </ScrollView>
   )
 }

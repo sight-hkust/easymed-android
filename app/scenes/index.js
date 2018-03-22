@@ -13,12 +13,12 @@ import Record from './Record'
 const Storyboard = () => (
   <NativeRouter>
     <Switch>
-      <Route exact path="/" component={Record} />
+      <Route exact path="/" component={Entrance} />
       <Route path="/login" component={Login}/>
       <Route path="/register" component={Registration} />
       <Route path="/triage" component={Triage} />
-      <Route exact path="/consultation" component={Consultation} />
-      <Route exact path="/pharmacy" component={Pharmacy} />
+      <Route path="/consultation" component={Consultation} />
+      <Route path="/pharmacy" component={Pharmacy} />
       <Route path="/settings" component={Settings} />
     </Switch>
   </NativeRouter>

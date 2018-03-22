@@ -10,7 +10,7 @@ import {
 const initialState = {
     profile: {},
     loading: false,
-    error: false
+    error: null
 };
 
 const profileReducer = (state = initialState, {type, payload}) => {
@@ -22,7 +22,7 @@ const profileReducer = (state = initialState, {type, payload}) => {
             return {...state, loading: false};
         }
         case CREATE_PROFILE_ERROR: {
-            return {...state, error: payload.error_msg};
+            return {...state, error: payload.error};
         }
         default: return state;
     }
