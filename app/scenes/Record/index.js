@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, Text, StatusBar, StyleSheet } from 'react-native'
+import { View, Text, StatusBar, StyleSheet, ScrollView } from 'react-native'
 import Icon from '../../components/Icon'
 
 const Gender = ({sex}) => {
@@ -17,9 +17,13 @@ const Gender = ({sex}) => {
 
 const PatientName = ({name, alternate}) => (
   <View style={styles.name}>
-    <Text style={styles.nameText}>{name}</Text>
-    <Text style={styles.nameText}>{`(${alternate})`}</Text>
+    <Text style={styles.nameText}>{name.toUpperCase()}</Text>
+    <Text style={styles.nameText}>{`(${alternate.toUpperCase()})`}</Text>
   </View>
+)
+
+const Vitals = ({vitals}) => (
+  <View style={styles.vitals}></View>
 )
 
 export default class Record extends Component {
@@ -34,8 +38,11 @@ export default class Record extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Gender sex="male"/>
-        <PatientName name="Peter Quill" alternate="Starlord"/>
+        <ScrollView>
+          <Gender sex="male"/>
+          <PatientName name="Peter Quill" alternate="Starlord"/>
+          <Vitals vitals={{}}/>
+        </ScrollView>
       </View>
     )
   }
@@ -64,6 +71,7 @@ const styles = StyleSheet.create({
     width: 96,
     borderRadius: 48,
     alignItems: 'center',
+    alignSelf: 'center',
     justifyContent: 'center',
     marginVertical: 12,
     elevation: 2,
@@ -73,5 +81,17 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     borderWidth: 6,
     borderStyle: 'solid',
+  },
+  vitals: {
+    height: 200,
+    width: 320,
+    borderRadius: 8,
+    backgroundColor: '#fff',
+    marginVertical: 8,
+    shadowColor: '#e4e4e4',
+    shadowOpacity: 0.7,
+    shadowOffset: { width: 1, height: 3 },
+    shadowRadius: 8,
+    flexWrap: 'wrap'
   }
 })
