@@ -8,7 +8,7 @@ import {
   AUTH_REGISTER_REQUEST,
   AUTH_REGISTER_SUCCESS,
   AUTH_REGISTER_ERROR
-} from '../actions/constants';
+} from './constants';
 
 export const logIn = (username, password) => ({
   type: AUTH_LOGIN_REQUEST,

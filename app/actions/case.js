@@ -5,7 +5,7 @@ import {
   CREATE_CASE_FOLDER_REQUEST,
   CREATE_CASE_FOLDER_SUCCESS,
   CREATE_CASE_FOLDER_ERROR
-} from '../actions/constants'
+} from './constants'
 
 const initialState = {
   loading: false,

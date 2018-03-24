@@ -5,7 +5,7 @@ import {
     SEARCH_PROFILE_REQUEST,
     SEARCH_PROFILE_SUCCESS,
     SEARCH_PROFILE_ERROR
-  } from '../actions/constants';
+  } from './constants';
   
   
   export const createProfile = (profile) => ({

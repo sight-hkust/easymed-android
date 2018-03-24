@@ -6,7 +6,7 @@ async function register(username, password){
   user.set('password', password)
   try {
     await user.signUp()
-    return user.authenticated()
+    return Parse.User.authenticated()
   } catch (error) {
     throw error
   }
@@ -15,7 +15,7 @@ async function register(username, password){
 async function authenticate(username, password){
   try {
     const user = await Parse.User.logIn(username, password)
-    return user.authenticated()
+    return Parse.User.authenticated()
   } catch (error) {
     throw error
   }
@@ -24,7 +24,7 @@ async function authenticate(username, password){
 async function deauthenticate(){
   try {
     await Parse.User.logOut()
-    return true
+    return Parse.User.authenticated()
   } catch (error) {
     throw error
   }
@@ -45,10 +45,11 @@ async function createPatient(profile){
   }
 }
 
-async function find(patientId) {
+async function findPatient(patientId) {
   try {
-    const patient = Parse.Query.get(patientId)
-    return patient
+    const Patient = Parse.Object.extend('Patient')
+    const _patient = Parse.Query(Patient).get(patientId)
+    return _patient
   } catch (error) {
     throw error
   }
@@ -59,7 +60,7 @@ async function insertMedicalHistory(history, patientId) {
     const History = Parse.Object.extend('History')
     const record = new History()
     Object.keys(history).forEach(attribute => record.set(attribute, history[attribute]))
-    const patient = await find(patientId)
+    const patient = await findPatient(patientId)
     patient.set('history', history)
     await Promise.all([history.save(), patient.save()])
   } catch (error) {
@@ -67,13 +68,27 @@ async function insertMedicalHistory(history, patientId) {
   }
 }
 
-async function insertVitalsRecord(vitals) {
+async function insertVitalsRecord(data) {
   try {
     const Vitals = Parse.Object.extend('Vitals')
     const record = new Vitals()
-    Object.keys(vitals).forEach(attribute => record.set(attribute, vitals[attribute]))
+    Object.keys(data).forEach(attribute => record.set(attribute, data[attribute]))
     await record.save()
     return record.id
+  } catch (error) {
+    throw error
+  }
+}
+
+async function addMedicalCase(records, patientId) {
+  try {
+    const patient = await findPatient(patientId)
+    const relation = patient.relation('cases')
+    const Case = Parse.Object.extend('Case')
+    const _case = new Case()
+    Object.keys(records).forEach(attribute => _case.set(attribute, records[attribute]))
+    relation.add(_case)
+    await Promise.all([_case.save(), patient.save()])
   } catch (error) {
     throw error
   }
