@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Image, Keyboard, View, Text, TextInput, StyleSheet, StatusBar } from 'react-native';
+import { Image, Keyboard, View, Text, TextInput, StyleSheet, StatusBar, Platform } from 'react-native';
 import Spinner from 'react-native-spinkit'
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -28,7 +28,7 @@ const gradientLayout = {
 const Textfield = ({icon, obfuscate, placeholder, onChangeText}) => (
   <View style={styles.field}>
     <Icon name={icon} type='solid' color="#b4c2e8" size={20}/>
-    <TextInput style={styles.input} autoCapitalize='none' autoCorrect={false} placeholder={placeholder} secureTextEntry={obfuscate} placeholderTextColor="#B4C2E8" onChangeText={onChangeText}></TextInput>
+    <TextInput  style={[styles.input, {height: Platform.OS == 'android' ? 40 : 20}]} underlineColorAndroid='transparent' autoCapitalize='none' autoCorrect={false} placeholder={placeholder} secureTextEntry={obfuscate} placeholderTextColor="#B4C2E8" onChangeText={onChangeText}></TextInput>
   </View>
 )
 
@@ -36,8 +36,6 @@ class Login extends Component {
   constructor(props){
     super(props)
     this.state = {
-      authenticated: props.authenticated,
-      loading: props.loading,
       username: '',
       password: '',
       isKeyboardPresent: false
@@ -53,7 +51,6 @@ class Login extends Component {
 
   authenticate() {
     const { username, password } = this.state
-    console.log(`debug: ${username}`)
     this.logIn(username, password)
   }
 
@@ -66,7 +63,7 @@ class Login extends Component {
   }
 
   render() {
-    if(this.state.authenticated) {
+    if(this.props.authenticated) {
       return <Redirect to="/" />
     }
     else {
@@ -82,7 +79,7 @@ class Login extends Component {
             <Button title="login" icon="chevron-circle-right" opaque bgColor="#9196f0" round onPress={this.authenticate.bind(this)}/>
             <Button title="create account" icon="user-plus" bgColor="#5beed1" titleColor="white" to={'/register'} round/>
           </View>
-          <Spinner style={styles.loading} isVisible={this.state.loading} size={44} type='Bounce' color='white'/>
+          <Spinner style={styles.loading} isVisible={this.props.loading} size={44} type='Bounce' color='white'/>
         </LinearGradient>
       )
     }
