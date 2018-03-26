@@ -23,8 +23,9 @@ async function authenticate(username, password){
 
 async function deauthenticate(){
   try {
+    console.log('hi')
     await Parse.User.logOut()
-    return Parse.User.current() === null
+    return !(Parse.User.current() === null)
   } catch (error) {
     throw error
   }

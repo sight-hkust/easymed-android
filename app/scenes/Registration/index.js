@@ -30,8 +30,7 @@ class Registration extends Component {
     this.state = {
       username: '',
       password: '',
-      loading: props.loading,
-      authenticated: props.authenticated
+      loading: props.loading
     }
     this.register = props.actions.register.bind(this)
   }
@@ -46,7 +45,7 @@ class Registration extends Component {
   }
 
   render() {
-    if(this.state.authenticated){
+    if(this.props.authenticated){
       return <Redirect to="/" />
     }
     else {

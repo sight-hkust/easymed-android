@@ -36,8 +36,6 @@ class Login extends Component {
   constructor(props){
     super(props)
     this.state = {
-      authenticated: props.authenticated,
-      loading: props.loading,
       username: '',
       password: '',
       isKeyboardPresent: false
@@ -53,7 +51,6 @@ class Login extends Component {
 
   authenticate() {
     const { username, password } = this.state
-    console.log(`debug: ${username}`)
     this.logIn(username, password)
   }
 
@@ -66,7 +63,7 @@ class Login extends Component {
   }
 
   render() {
-    if(this.state.authenticated) {
+    if(this.props.authenticated) {
       return <Redirect to="/" />
     }
     else {
@@ -82,7 +79,7 @@ class Login extends Component {
             <Button title="login" icon="chevron-circle-right" opaque bgColor="#9196f0" round onPress={this.authenticate.bind(this)}/>
             <Button title="create account" icon="user-plus" bgColor="#5beed1" titleColor="white" to={'/register'} round/>
           </View>
-          <Spinner style={styles.loading} isVisible={this.state.loading} size={44} type='Bounce' color='white'/>
+          <Spinner style={styles.loading} isVisible={this.props.loading} size={44} type='Bounce' color='white'/>
         </LinearGradient>
       )
     }
