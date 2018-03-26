@@ -4,16 +4,7 @@ import android.app.Application;
 
 import com.facebook.react.ReactApplication;
 import com.horcrux.svg.SvgPackage;
-import com.horcrux.svg.SvgPackage;
 import com.react.rnspinkit.RNSpinkitPackage;
-import br.com.classapp.RNSensitiveInfo.RNSensitiveInfoPackage;
-import com.BV.LinearGradient.LinearGradientPackage;
-import com.react.rnspinkit.RNSpinkitPackage;
-import br.com.classapp.RNSensitiveInfo.RNSensitiveInfoPackage;
-import com.BV.LinearGradient.LinearGradientPackage;
-import br.com.classapp.RNSensitiveInfo.RNSensitiveInfoPackage;
-import com.BV.LinearGradient.LinearGradientPackage;
-import com.polidea.reactnativeble.BlePackage;
 import br.com.classapp.RNSensitiveInfo.RNSensitiveInfoPackage;
 import com.BV.LinearGradient.LinearGradientPackage;
 import com.facebook.react.ReactNativeHost;
@@ -37,16 +28,7 @@ public class MainApplication extends Application implements ReactApplication {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
             new SvgPackage(),
-            new SvgPackage(),
             new RNSpinkitPackage(),
-            new RNSensitiveInfoPackage(),
-            new LinearGradientPackage(),
-            new RNSpinkitPackage(),
-            new RNSensitiveInfoPackage(),
-            new LinearGradientPackage(),
-            new RNSensitiveInfoPackage(),
-            new LinearGradientPackage(),
-            new BlePackage(),
             new RNSensitiveInfoPackage(),
             new LinearGradientPackage()
       );
