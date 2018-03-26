@@ -1,21 +1,27 @@
-import { persistCombineReducers } from 'redux-persist';
+import { persistReducer } from 'redux-persist';
 import createSensitiveStorage from 'redux-persist-sensitive-storage';
 import authReducer from './auth';
+import { combineReducers } from 'redux';
 
 const storage = createSensitiveStorage({
   keychainService: 'guardedVault',
   sharedPreferencesName: "guardedVault"
 });
 
+const authPersistConfig = {
+  key: 'auth',
+  storage: storage,
+  blacklist: ['loading']
+}
+
 const config = {
-  key: "root",
+  key: 'root',
   storage,
+  blacklist: ['auth']
 };
 
-const reducers = {
-  auth: authReducer
-};
+const rootReducer = combineReducers({
+  auth: persistReducer(authPersistConfig, authReducer)
+});
 
-const reducer = persistCombineReducers(config, reducers);
-
-export default reducer;
+export default persistReducer(config, rootReducer);

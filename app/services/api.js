@@ -6,7 +6,7 @@ async function register(username, password){
   user.set('password', password)
   try {
     await user.signUp()
-    return Parse.User.authenticated()
+    return user.authenticated()
   } catch (error) {
     throw error
   }
@@ -15,7 +15,7 @@ async function register(username, password){
 async function authenticate(username, password){
   try {
     const user = await Parse.User.logIn(username, password)
-    return Parse.User.authenticated()
+    return user.authenticated()
   } catch (error) {
     throw error
   }
@@ -24,7 +24,7 @@ async function authenticate(username, password){
 async function deauthenticate(){
   try {
     await Parse.User.logOut()
-    return Parse.User.authenticated()
+    return Parse.User.current() === null
   } catch (error) {
     throw error
   }

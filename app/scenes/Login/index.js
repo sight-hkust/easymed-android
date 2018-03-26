@@ -1,5 +1,10 @@
 import React, { Component } from 'react';
+<<<<<<< HEAD
 import { Image, Keyboard, View, Text, TextInput, StyleSheet, StatusBar, Platform } from 'react-native';
+=======
+import { Image, Keyboard, View, Text, TextInput, StyleSheet, StatusBar } from 'react-native';
+import Spinner from 'react-native-spinkit'
+>>>>>>> 6129d56c7c601d839598fb45e10bde04cbc02958
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Redirect } from 'react-router-native';
@@ -36,6 +41,7 @@ class Login extends Component {
     super(props)
     this.state = {
       authenticated: props.authenticated,
+      loading: props.loading,
       username: '',
       password: '',
       isKeyboardPresent: false
@@ -51,6 +57,7 @@ class Login extends Component {
 
   authenticate() {
     const { username, password } = this.state
+    console.log(`debug: ${username}`)
     this.logIn(username, password)
   }
 
@@ -72,13 +79,14 @@ class Login extends Component {
           { this.state.isKeyboardPresent && <KeyboardDismissButton />}
           <Header />
           <View style={styles.crendentials}>
-            <Textfield icon='user' placeholder='Username'/>
-            <Textfield icon='key' obfuscate={true} placeholder='Password'/>
+            <Textfield icon='user' placeholder='Username' onChangeText={(username)=>this.setState({username})}/>
+            <Textfield icon='key' obfuscate={true} placeholder='Password' onChangeText={(password)=>this.setState({password})}/>
           </View>
           <View style={styles.footer}>
             <Button title="login" icon="chevron-circle-right" opaque bgColor="#9196f0" round onPress={this.authenticate.bind(this)}/>
             <Button title="create account" icon="user-plus" bgColor="#5beed1" titleColor="white" to={'/register'} round/>
           </View>
+          <Spinner style={styles.loading} isVisible={this.state.loading} size={44} type='Bounce' color='white'/>
         </LinearGradient>
       )
     }
