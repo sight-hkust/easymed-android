@@ -1,10 +1,6 @@
 import React, { Component } from 'react';
-<<<<<<< HEAD
 import { Image, Keyboard, View, Text, TextInput, StyleSheet, StatusBar, Platform } from 'react-native';
-=======
-import { Image, Keyboard, View, Text, TextInput, StyleSheet, StatusBar } from 'react-native';
 import Spinner from 'react-native-spinkit'
->>>>>>> 6129d56c7c601d839598fb45e10bde04cbc02958
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Redirect } from 'react-router-native';

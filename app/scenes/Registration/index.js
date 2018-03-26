@@ -1,10 +1,6 @@
 import React, { Component } from 'react';
-<<<<<<< HEAD
 import { View, StatusBar, StyleSheet, Text, TextInput, Platform } from 'react-native';
-=======
-import { View, StatusBar, StyleSheet, Text, TextInput } from 'react-native';
 import { Redirect } from 'react-router-native';
->>>>>>> 6129d56c7c601d839598fb45e10bde04cbc02958
 import LinearGradient from 'react-native-linear-gradient';
 import Spinner from 'react-native-spinkit'
 import { bindActionCreators } from 'redux';
