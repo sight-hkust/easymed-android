@@ -1,8 +1,20 @@
 import React, { Component } from 'react'
-import { View, Image, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, Dimensions, Switch } from 'react-native'
+import { 
+  View,
+  Image,
+  KeyboardAvoidingView,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  Dimensions,
+  Switch 
+} from 'react-native'
 import LinearGradient from 'react-native-linear-gradient';
 import { IconButton, Button } from '../../../components/Button'
-import Icon from '../../../components/Icon'
+import Icon from 'react-native-fontawesome-pro';
+import Header from '../../../components/Header';
 import TextField from '../../../components/TextField'
 import Step from '../../../components/Step'
 import Segment from '../../../components/Segment'
@@ -15,13 +27,6 @@ const gradientLayout = {
   end: {x: 1.0, y: 1.0},
   locations: [0, 0.75]
 }
-
-const Header = () => (
-  <View style={styles.header}>
-    <IconButton color="#fff" name='arrow-left' to={'/triage'} back/>
-    <Text style={styles.headerText}>Profile</Text>
-  </View>
-)
 
 const stepList = [
   {
@@ -38,6 +43,9 @@ const stepList = [
   },
   {
     step: 'nationalityOccupation',
+  },
+  {
+    step: 'address'
   },
   {
     step: 'contact',
@@ -142,13 +150,21 @@ const MaritalStatusSelect = () => (
   </View>
 )
 
-const Response = ({step}) => {
+const Response = ({step, mutate}) => {
   switch(step) {
     case 'name': {
       return (
         <View style={styles.response}>
-          <TextField placeholder="Name" width="80%"/>
-          <TextField placeholder="Khmer Name" width="80%"/>
+          <TextField placeholder="Name" width="80%" onChangeText={(regular) => 
+            mutate(
+              ({profile}) => ({ profile: { ...profile, name: { ...profile.name, regular } }})
+            )
+          }/>
+          <TextField placeholder="Khmer Name" width="80%" onChangeText={(khmer) =>
+            mutate(
+              ({profile}) => ({ profile: { ...profile, name: {...profile.name, khmer} }})
+            )
+          }/>
         </View>
       )
     }
@@ -208,20 +224,20 @@ const SubmitButton = () => (
 const BackgroundInfo = ({xOffset}) => (
     <View style={styles.headerContainer}>
       <LinearGradient style={styles.upper} {...gradientLayout} >
-        <Header/>
-        <Step allSteps={5} step={xOffset/screenWidth} backgroundColor='#fff' highlightColor='pink' />
+        <Header title="Profile" light to="/triage"/>
+        <Step allSteps={6} step={xOffset/screenWidth} backgroundColor='#fff' highlightColor='pink' />
       </LinearGradient>
     </View>
 )
 
-const ScrollItem = ({step}) => (
+const ScrollItem = ({step, mutate}) => (
   <View style={{width: screenWidth}}>
     <Instruction step={step}/>
-    <Response step={step}/>
+    <Response step={step} mutate={mutate}/>
   </View>
 )
 
-const ScrollList = ({handleScroll, scrollViewDidChange}) => {
+const ScrollList = ({handleScroll, scrollViewDidChange, mutate}) => {
   return (
     <ScrollView 
       horizontal = {true} 
@@ -232,7 +248,7 @@ const ScrollList = ({handleScroll, scrollViewDidChange}) => {
       onContentSizeChange={scrollViewDidChange}
       >
       {stepList.map(({step, stepNum}, i) => (
-        <ScrollItem key={i} step={step}/>
+        <ScrollItem key={i} step={step} mutate={mutate}/>
       ))}
     </ScrollView>
   )
@@ -244,6 +260,19 @@ export default class Profile extends Component {
     this.handleScroll = this.handleScroll.bind(this);
     this.state = {
       xOffset:0,
+      profile: {
+        name: {
+          regular: '',
+          khmer: ''
+        },
+        sex: '',
+        dob: null,
+        status: '',
+        occuppation: '',
+        nationality: '',
+        address: '',
+        contact: ''
+      }
     }
   }
 
@@ -257,10 +286,10 @@ export default class Profile extends Component {
 
   render() {
     return (
-      <View style={styles.parentContainer}>
+      <KeyboardAvoidingView style={styles.parentContainer}>
         <BackgroundInfo xOffset={this.state.xOffset}/>
-        <ScrollList handleScroll={this.handleScroll}/> 
-      </View>
+        <ScrollList handleScroll={this.handleScroll} mutate={this.setState.bind(this)}/> 
+      </KeyboardAvoidingView>
     )
   }
 }

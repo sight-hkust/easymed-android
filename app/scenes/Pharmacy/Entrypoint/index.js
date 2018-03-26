@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View, Image, ScrollView, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { IconButton } from '../../../components/Button'
-import Icon from '../../../components/Icon'
+import Icon from 'react-native-fontawesome-pro';
 import Header from '../../../components/Header'
 import { PatientListItem as Patient } from '../../../components/Patient'
 import { Link } from 'react-router-native'

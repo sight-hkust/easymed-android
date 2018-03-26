@@ -1,8 +1,19 @@
 import React, { Component } from 'react'
-import { View, Image, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, Dimensions, Switch } from 'react-native'
+import { 
+  View,
+  KeyboardAvoidingView,
+  Image,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  Dimensions,
+  Switch
+} from 'react-native'
 import LinearGradient from 'react-native-linear-gradient';
 import { IconButton, Button } from '../../../components/Button'
-import Icon from '../../../components/Icon'
+import Icon from 'react-native-fontawesome-pro';
 import TextField from '../../../components/TextField'
 import Step from '../../../components/Step'
 import BooleanSelect from '../../../components/BooleanSelect';
@@ -499,10 +510,10 @@ export default class Vitals extends Component {
 
   render() {
     return (
-      <View style={styles.parentContainer}>
+      <KeyboardAvoidingView style={styles.parentContainer}>
         <BackgroundInfo xOffset={this.state.xOffset}/>
         <ScrollList handleScroll={this.handleScroll}/> 
-      </View>
+      </KeyboardAvoidingView>
     )
   }
 }

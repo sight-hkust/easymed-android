@@ -4,7 +4,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import { Link } from 'react-router-native';
 
 import { IconButton } from '../../../components/Button'
-import Icon from '../../../components/Icon'
+import Icon from 'react-native-fontawesome-pro';
 import Header from '../../../components/Header'
 
 const createGradient = {

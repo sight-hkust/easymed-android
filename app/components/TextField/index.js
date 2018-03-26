@@ -1,15 +1,25 @@
 import React from 'react';
 import {
+  Platform,
   StyleSheet,
   Text,
   View,
   TextInput,
 } from 'react-native';
 
-const TextField = ({defaultValue, unit, width, keyboardType, placeholder}) => {
+const TextField = ({defaultValue, unit, width, keyboardType, placeholder, onChangeText}) => {
   return (
     <View style={{...StyleSheet.flatten(styles.container), width}}>
-      <TextInput underlineColorAndroid='transparent' style={[styles.input, {height: Platform.OS == 'android' ? 40 : 20}]} value={defaultValue} placeholder={placeholder} keyboardType={keyboardType} underlineColorAndroid='transparent'></TextInput>
+      <TextInput
+        underlineColorAndroid='transparent'
+        style={[styles.input, {height: Platform.OS == 'android' ? 40 : 20}]}
+        value={defaultValue}
+        placeholder={placeholder}
+        keyboardType={keyboardType}
+        underlineColorAndroid='transparent'
+        onChangeText={onChangeText}
+      >
+      </TextInput>
       { unit && <Text style={styles.unit}>{unit}</Text>}
     </View>
   )

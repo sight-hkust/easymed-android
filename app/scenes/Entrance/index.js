@@ -11,7 +11,7 @@ import {
 import { connect } from 'react-redux';
 import LinearGradient from 'react-native-linear-gradient';
 import { Redirect, Link } from 'react-router-native';
-import Icon from '../../components/Icon'
+import Icon from 'react-native-fontawesome-pro';
 import { IconButton } from '../../components/Button'
 
 const destinations = [

@@ -30,7 +30,6 @@ class Registration extends Component {
     this.state = {
       username: '',
       password: '',
-      loading: props.loading
     }
     this.register = props.actions.register.bind(this)
   }
@@ -59,7 +58,7 @@ class Registration extends Component {
               <Textfield icon='lock-alt' obfuscate={true} placeholder='Confirm Password'/>
             </View>
             <Button title="Register" icon="user-plus" titleColor="#9196f0" round onPress={this.signUp.bind(this)}/>
-            <Spinner style={styles.loading} isVisible={this.state.loading} size={44} type='Bounce' color='white'/>
+            <Spinner style={styles.loading} isVisible={this.props.loading} size={44} type='Bounce' color='white'/>
           </View>
         </LinearGradient>
       )

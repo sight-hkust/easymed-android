@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Image, View, Text, StatusBar, StyleSheet, ScrollView } from 'react-native'
-import Icon from '../../components/Icon'
+import Icon from 'react-native-fontawesome-pro';
 
 const Gender = ({sex}) => {
   const style = {
