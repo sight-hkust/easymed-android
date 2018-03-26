@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { View, StatusBar, StyleSheet, Text, TextInput } from 'react-native';
+import { Redirect } from 'react-router-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Spinner from 'react-native-spinkit'
 import { bindActionCreators } from 'redux';
@@ -28,9 +29,15 @@ class Registration extends Component {
     super(props)
     this.state = {
       username: '',
-      password: ''
+      password: '',
+      loading: props.loading,
+      authenticated: props.authenticated
     }
     this.register = props.actions.register.bind(this)
+  }
+
+  componentWillMount() {
+    StatusBar.setBarStyle('dark-content', true);
   }
 
   signUp() {
@@ -39,21 +46,25 @@ class Registration extends Component {
   }
 
   render() {
-    return (
-      <LinearGradient {...gradientLayout} style={styles.container}>
-        <StatusBar barStyle='light-content'/>
-        <Header title="Registration"/>
-        <View style={styles.form}>
-          <View>
-            <Textfield icon='user' placeholder='Username' onChangeText={(username)=>this.setState({username})}/>
-            <Textfield icon='lock' obfuscate={true} placeholder='Password' onChangeText={(password)=>this.setState({password})}/>
-            <Textfield icon='lock-alt' obfuscate={true} placeholder='Confirm Password'/>
+    if(this.state.authenticated){
+      return <Redirect to="/" />
+    }
+    else {
+      return (
+        <LinearGradient {...gradientLayout} style={styles.container}>
+          <Header title="Registration"/>
+          <View style={styles.form}>
+            <View>
+              <Textfield icon='user' placeholder='Username' onChangeText={(username)=>this.setState({username})}/>
+              <Textfield icon='lock' obfuscate={true} placeholder='Password' onChangeText={(password)=>this.setState({password})}/>
+              <Textfield icon='lock-alt' obfuscate={true} placeholder='Confirm Password'/>
+            </View>
+            <Button title="Register" icon="user-plus" titleColor="#9196f0" round onPress={this.signUp.bind(this)}/>
+            <Spinner style={styles.loading} isVisible={this.state.loading} size={44} type='Bounce' color='white'/>
           </View>
-          <Button title="Register" icon="user-plus" titleColor="#9196f0" round onPress={this.signUp.bind(this)}/>
-          <Spinner style={styles.loading} isVisible={this.props.loading} size={44} type='Bounce' color='white'/>
-        </View>
-      </LinearGradient>
-    )
+        </LinearGradient>
+      )
+    }
   }
 }
 
@@ -62,7 +73,8 @@ const mapDispatchToProps = (dispatch) => ({
 })
 
 const mapStateToProps = (state) => ({
-  loading: state.auth.loading
+  loading: state.auth.loading,
+  authenticated: state.auth.authenticated
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Registration)
