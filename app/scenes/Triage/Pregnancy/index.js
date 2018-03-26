@@ -209,7 +209,7 @@ const ScrollList = ({handleScroll, scrollViewDidChange}) => {
   )
 };
 
-export default class Pharmacy extends Component {
+export default class Pregnancy extends Component {
   constructor(props) {
     super(props);
     this.handleScroll = this.handleScroll.bind(this);

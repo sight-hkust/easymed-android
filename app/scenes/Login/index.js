@@ -4,20 +4,21 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Redirect } from 'react-router-native';
 import LinearGradient from 'react-native-linear-gradient';
-import Icon from '../../components/Icon';
+import Icon from 'react-native-fontawesome-pro';
+import { logIn } from '../../actions/auth';
 import { Button, KeyboardDismissButton } from '../../components/Button';
 
 // import { logIn } from '../../actions/auth'
 
 const Header = () => (
   <View style={styles.header}>
+    <Image style={styles.headerImage} source={require('../../../assets/images/logo.png')}/>
     <Text style={styles.headerTitle}>M E D E A S Y</Text>
-      {/* <Image style={styles.headerImage} source={require('../../../assets/images/logo.png')}/> */}
   </View>
 )
 
 const gradientLayout = {
-  colors: ['#696feb','#662cd2'],
+  colors: ['#fdfbfb','#ebedee'],
   start: {x: 0.1, y: 0.1},
   end: {x: 1.0, y: 1.0},
   locations: [0.3, 1]
@@ -25,36 +26,32 @@ const gradientLayout = {
 
 const Textfield = ({icon, obfuscate, placeholder, onChangeText}) => (
   <View style={styles.field}>
-    <Icon name={icon} type='solid' color='white' size={22}/>
-    <TextInput autoCapitalize='none' autoCorrect={false} placeholder={placeholder} secureTextEntry={obfuscate} style={styles.input} onChangeText={onChangeText}></TextInput>
+    <Icon name={icon} type='solid' color="#b4c2e8" size={20}/>
+    <TextInput style={styles.input} autoCapitalize='none' autoCorrect={false} placeholder={placeholder} secureTextEntry={obfuscate} placeholderTextColor="#B4C2E8" onChangeText={onChangeText}></TextInput>
   </View>
 )
 
-const CrendentialsEntry = () => (
-  <View style={styles.crendentials}>
-    <Textfield icon='user' placeholder='Username'/>
-    <Textfield icon='key' obfuscate={true} placeholder='Password'/>
-  </View>
-)
-
-const Submission = () => (
-  <View style={styles.footer}>
-    <Button title="login" icon="sign-in" titleColor="#662cd2"/>
-    <Button title="create account" icon="user-plus" bgColor="#5beed1" titleColor="white" to={'/register'} round/>
-  </View>
-)
-
-class LoginForm extends Component {
+class Login extends Component {
   constructor(props){
     super(props)
     this.state = {
+      authenticated: props.authenticated,
+      username: '',
+      password: '',
       isKeyboardPresent: false
     }
+    this.logIn = props.actions.logIn.bind(this)
   }
 
   componentWillMount() {
+    StatusBar.setBarStyle('dark-content', true)
     this.keyboardWillShowListener = Keyboard.addListener('keyboardWillShow', this._keyboardWillShow.bind(this))
     this.keyboardWillHideListener = Keyboard.addListener('keyboardWillHide', this._keyboardWillHide.bind(this))
+  }
+
+  authenticate() {
+    const { username, password } = this.state
+    this.logIn(username, password)
   }
 
   _keyboardWillShow () {
@@ -66,24 +63,39 @@ class LoginForm extends Component {
   }
 
   render() {
-    return (
-      <LinearGradient {...gradientLayout} style={styles.container}>
-        <StatusBar barStyle='light-content'/>
-        { this.state.isKeyboardPresent && <KeyboardDismissButton />}
-        <Header />
-        <CrendentialsEntry/>
-        <Submission />
-      </LinearGradient>
-    )
+    if(this.state.authenticated) {
+      return <Redirect to="/" />
+    }
+    else {
+      return (
+        <LinearGradient {...gradientLayout} style={styles.container}>
+          { this.state.isKeyboardPresent && <KeyboardDismissButton />}
+          <Header />
+          <View style={styles.crendentials}>
+            <Textfield icon='user' placeholder='Username'/>
+            <Textfield icon='key' obfuscate={true} placeholder='Password'/>
+          </View>
+          <View style={styles.footer}>
+            <Button title="login" icon="chevron-circle-right" opaque bgColor="#9196f0" round onPress={this.authenticate.bind(this)}/>
+            <Button title="create account" icon="user-plus" bgColor="#5beed1" titleColor="white" to={'/register'} round/>
+          </View>
+        </LinearGradient>
+      )
+    }
   }
 }
 
-const Login = () => {
-  // if(isAuthenticated){
-  //   return <Redirect to="/" />
-  // }
-  return <LoginForm />
-}
+
+const mapDispatchToProps = (dispatch) => ({
+  actions: bindActionCreators({logIn}, dispatch)
+})
+
+const mapStateToProps = (state) => ({
+  loading: state.auth.loading,
+  authenticated: state.auth.authenticated
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login)
 
 const styles = StyleSheet.create({
   container: {
@@ -96,11 +108,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   headerTitle: {
-    color: 'white',
+    color: '#9196F0',
     backgroundColor: 'transparent',
     alignSelf: 'center',
     alignItems: 'center',
-    fontSize: 36,
+    fontSize: 28,
     fontFamily: 'Nunito-Bold'
   },
   headerImage: {
@@ -116,19 +128,25 @@ const styles = StyleSheet.create({
     height: 44,
     width: 280,
     flexDirection: 'row',
-    backgroundColor: 'rgba(255, 255, 255, 0.5)',
+    backgroundColor: '#fff',
     borderRadius: 22,
+    shadowColor: '#e4e4e4',
+    shadowOpacity: 0.7,
+    shadowOffset: { width: 1, height: 3 },
+    shadowRadius: 8,
+    elevation: 2,
     alignItems: 'center',
     alignSelf: 'center',
+    justifyContent: 'space-between',
     paddingVertical: 12,
-    paddingHorizontal: 16,
+    paddingHorizontal: 20,
     marginVertical: 8
   },
   input: {
     fontSize: 16,
     fontFamily: 'Quicksand-Medium',
-    color: 'white',
-    paddingLeft: 8,
+    color: '#737C94',
+    paddingLeft: 6,
     width: 210
   },
   footer: {
@@ -137,9 +155,3 @@ const styles = StyleSheet.create({
     flexDirection: 'column'
   }
 })
-// const mapStateToProps = (state) => ({ isAuthenticated: Object.keys(state.auth.user).length });
-// const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators({logIn}, dispatch) }); 
-
-// export default connect(mapStateToProps, mapDispatchToProps)(Login);
-
-export default Login;

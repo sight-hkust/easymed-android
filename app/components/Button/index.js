@@ -1,7 +1,7 @@
 import React from 'react'
 import { Keyboard, View, StyleSheet, Text, TouchableOpacity } from 'react-native'
 import { Link } from 'react-router-native';
-import Icon from '../Icon'
+import Icon from 'react-native-fontawesome-pro';
 
 const KeyboardDismissButton = () => (
   <TouchableOpacity style={{...styles.dismissButton}} onPress={Keyboard.dismiss}>
@@ -24,15 +24,15 @@ const Button = ({title, icon, onPress, round=false, opaque=true, titleColor, bgC
   if(to){
     return (
       <Link to={to} component={TouchableOpacity} style={{...styles.default, ...style}} activeOpacity={0.25}>
-        <Text style={{fontFamily: 'Quicksand-Medium', marginRight: icon?4:0, color: titleColor?titleColor:'#000'}}>{title.toUpperCase()}</Text>
-        { icon && <Icon name={icon} color={titleColor?titleColor:'#000'}/> }
+        <Text style={{fontFamily: 'Quicksand-Medium', marginRight: icon?4:0, color: titleColor?titleColor:'#fff'}}>{title.toUpperCase()}</Text>
+        { icon && <Icon name={icon} type="solid" color={titleColor?titleColor:'#fff'}/> }
       </Link>
     )
   }
   return (
     <TouchableOpacity style={{...styles.default, ...style, width}} onPress={onPress}>
-      <Text style={{fontFamily: 'Quicksand-Medium', marginRight: icon?8:0, color: titleColor?titleColor:'#000'}}>{title.toUpperCase()}</Text>
-      { icon && <Icon name={icon} color={titleColor?titleColor:'#000'}/> }
+      <Text style={{fontFamily: 'Quicksand-Medium', fontSize: 16 , marginRight: icon?8:0, color: titleColor?titleColor:'#fff'}}>{title.toUpperCase()}</Text>
+      { icon && <Icon name={icon} type="solid" color={titleColor?titleColor:'#fff'} size={16}/> }
     </TouchableOpacity>
   )
 }
@@ -61,6 +61,7 @@ const styles = {
     justifyContent: 'center',
     paddingVertical: 8,
     paddingHorizontal: 24,
+    minWidth: 96,
     height: 40,
     elevation: 1,
     shadowColor: '#000',
@@ -82,10 +83,10 @@ const styles = {
     borderRadius: 5,
     backgroundColor: '#5e90fd',
     elevation: 1,
-    shadowColor: '#3a4252',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.15,
-    shadowRadius: 15,
+    shadowColor: '#e4e4e4',
+    shadowOpacity: 0.7,
+    shadowOffset: { width: 1, height: 3 },
+    shadowRadius: 8,
     alignSelf: 'flex-end'
   },
   iconButton: {

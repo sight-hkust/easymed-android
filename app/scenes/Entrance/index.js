@@ -8,6 +8,7 @@ import {
   StatusBar,
   TouchableOpacity
 } from 'react-native';
+import { connect } from 'react-redux';
 import LinearGradient from 'react-native-linear-gradient';
 import { Redirect, Link } from 'react-router-native';
 import Icon from '../../components/Icon'
@@ -89,9 +90,12 @@ const Navigations = () => {
   )
 };
 
-export default class Entrance extends Component {
+class Entrance extends Component {
   constructor(props) {
     super(props)
+    this.state = {
+      authenticated: props.authenticated
+    }
   }
 
   componentWillMount() {
@@ -99,9 +103,20 @@ export default class Entrance extends Component {
   }
 
   render() {
-    return <Navigations />
+    if(this.state.authenticated) {
+      return <Navigations />
+    }
+    else {
+      return <Redirect to="/login" />
+    }
   }
 }
+
+const mapStateToProps = (state) => ({
+  authenticated: state.auth.authenticated
+})
+
+export default connect(mapStateToProps)(Entrance)
 
 const styles = StyleSheet.create({
   container: {

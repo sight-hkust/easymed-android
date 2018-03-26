@@ -8,7 +8,7 @@ import {
 } from '../actions/constants';
 
 const initialState = {
-  user: {},
+  authenticated: false,
   loading: false,
   error: false
 };
@@ -19,10 +19,10 @@ const authReducer = (state = initialState, {type, payload}) => {
       return {...state, loading: true};
     }
     case AUTH_LOGIN_SUCCESS: {
-      return {...state, loading: false, user: payload.user};
+      return {...state, loading: false, authenticated: payload.authenticated};
     }
     case AUTH_LOGIN_ERROR: {
-      return {...state, error: payload.error_msg};
+      return {...state, error: payload.error};
     }
     case AUTH_REGISTER_REQUEST: {
       return {...state, loading: true};
@@ -31,7 +31,7 @@ const authReducer = (state = initialState, {type, payload}) => {
       return {...state, loading: false};
     }
     case AUTH_REGISTER_ERROR: {
-      return {...state, error: payload.error_msg};
+      return {...state, error: payload.error};
     }
     default: return state;
   }

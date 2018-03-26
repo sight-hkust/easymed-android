@@ -9,13 +9,15 @@ const Header = ({title='Title', light=false, to='/'}) => {
       height: '8%',
       justifyContent: 'space-between',
       marginVertical: 12,
-      alignItems: 'center',
-      paddingHorizontal: '7%'
+      alignItems: 'baseline',
+      paddingHorizontal: '4%'
     },
     headerTitle: {
       fontSize: 28,
       fontFamily: 'Nunito-Bold',
       textAlign: 'right',
+      marginRight: 8,
+      paddingBottom: 4,
       backgroundColor: '#fff0',
       color: light?'#fff':'#3c4859'
     },
