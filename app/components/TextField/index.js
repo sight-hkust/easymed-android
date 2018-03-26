@@ -5,6 +5,7 @@ import {
   Text,
   View,
   TextInput,
+  Platform
 } from 'react-native';
 
 const TextField = ({defaultValue, unit, width, keyboardType, placeholder, onChangeText}) => {

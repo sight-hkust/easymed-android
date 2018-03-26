@@ -14,7 +14,7 @@ import Menu from './Triage/Entrypoint/Menu'
 const Storyboard = () => (
   <NativeRouter>
     <Switch>
-      <Route exact path="/" component={Entrance} />
+      <Route exact path="/" component={Menu} />
       <Route path="/login" component={Login}/>
       <Route path="/register" component={Registration} />
       <Route path="/triage" component={Triage} />
