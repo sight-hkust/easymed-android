@@ -9,17 +9,16 @@ import {
 
 const initialState = {
     profile: {},
-    loading: false,
     error: null
 };
 
 const profileReducer = (state = initialState, {type, payload}) => {
     switch(type) {
         case CREATE_PROFILE_REQUEST: {
-            return {...state, loading: true};
+            return {...state };
         }
         case CREATE_PROFILE_SUCCESS: {
-            return {...state, loading: false};
+            return {...state };
         }
         case CREATE_PROFILE_ERROR: {
             return {...state, error: payload.error};

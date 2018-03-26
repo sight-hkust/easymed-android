@@ -1,6 +1,8 @@
 import { persistReducer } from 'redux-persist';
 import createSensitiveStorage from 'redux-persist-sensitive-storage';
 import authReducer from './auth';
+import profileReducer from './profile'
+import vitalsReducer from './vitals'
 import { combineReducers } from 'redux';
 
 const storage = createSensitiveStorage({
@@ -21,7 +23,9 @@ const config = {
 };
 
 const rootReducer = combineReducers({
-  auth: persistReducer(authPersistConfig, authReducer)
+  auth: persistReducer(authPersistConfig, authReducer),
+  profileReducer,
+  vitalsReducer
 });
 
 export default persistReducer(config, rootReducer);
