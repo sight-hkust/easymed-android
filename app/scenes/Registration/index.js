@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StatusBar, StyleSheet, Text, TextInput } from 'react-native';
+import { View, StatusBar, StyleSheet, Text, TextInput, Platform } from 'react-native';
 import { Redirect } from 'react-router-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Spinner from 'react-native-spinkit'
@@ -20,7 +20,7 @@ const gradientLayout = {
 const Textfield = ({icon, obfuscate, placeholder, onChangeText}) => (
   <View style={styles.field}>
     <Icon name={icon} type='solid' color='#b4c2e8' size={20}/>
-    <TextInput autoCapitalize='none' autoCorrect={false} placeholder={placeholder} placeholderTextColor="#B4C2E8" secureTextEntry={obfuscate} style={styles.input} onChangeText={onChangeText}></TextInput>
+    <TextInput style={[styles.input, {height: Platform.OS == 'android' ? 40 : 20}]} underlineColorAndroid='transparent' autoCapitalize='none' autoCorrect={false} placeholder={placeholder} placeholderTextColor="#B4C2E8" secureTextEntry={obfuscate} onChangeText={onChangeText}></TextInput>
   </View>
 )
 

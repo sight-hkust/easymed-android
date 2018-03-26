@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Image, Keyboard, View, Text, TextInput, StyleSheet, StatusBar } from 'react-native';
+import { Image, Keyboard, View, Text, TextInput, StyleSheet, StatusBar, Platform } from 'react-native';
 import Spinner from 'react-native-spinkit'
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -28,7 +28,7 @@ const gradientLayout = {
 const Textfield = ({icon, obfuscate, placeholder, onChangeText}) => (
   <View style={styles.field}>
     <Icon name={icon} type='solid' color="#b4c2e8" size={20}/>
-    <TextInput style={styles.input} autoCapitalize='none' autoCorrect={false} placeholder={placeholder} secureTextEntry={obfuscate} placeholderTextColor="#B4C2E8" onChangeText={onChangeText}></TextInput>
+    <TextInput  style={[styles.input, {height: Platform.OS == 'android' ? 40 : 20}]} underlineColorAndroid='transparent' autoCapitalize='none' autoCorrect={false} placeholder={placeholder} secureTextEntry={obfuscate} placeholderTextColor="#B4C2E8" onChangeText={onChangeText}></TextInput>
   </View>
 )
 
