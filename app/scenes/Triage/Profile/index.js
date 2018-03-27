@@ -19,7 +19,7 @@ import TextField from '../../../components/TextField'
 import Step from '../../../components/Step'
 import Segment from '../../../components/Segment'
 
-const screenWidth = Dimensions.get('window').width
+const { width, height } = Dimensions.get('window')
 
 const gradientLayout = {
   colors: ['#19AEFA','#1D9DFF'],
@@ -28,29 +28,7 @@ const gradientLayout = {
   locations: [0, 0.75]
 }
 
-const stepList = [
-  {
-    step: 'name',
-  },
-  {
-    step: 'gender',
-  },
-  {
-    step: 'dob',
-  },
-  {
-    step: 'married',
-  },
-  {
-    step: 'nationalityOccupation',
-  },
-  {
-    step: 'address'
-  },
-  {
-    step: 'contact',
-  }
-];
+const stepList = ['name','gender','dob','married','nationalityOccupation','address','contact','tag'];
 
 const Instruction = ({step}) => {
   switch(step) {
@@ -117,6 +95,15 @@ const Instruction = ({step}) => {
         </View>
       )
     }
+    case 'tag': {
+      return (
+        <View style={styles.textWrapper}>
+          <Text style={styles.instruction}>Enter a tag</Text>
+          <Text style={styles.instruction}>number for</Text>
+          <Text style={styles.instruction}>the patient</Text>
+        </View>
+      )
+    }
   }
 }
 
@@ -155,15 +142,21 @@ const Response = ({step, mutate}) => {
     case 'name': {
       return (
         <View style={styles.response}>
-          <TextField placeholder="Name" width="80%" onChangeText={(regular) => 
-            mutate(
-              ({profile}) => ({ profile: { ...profile, name: { ...profile.name, regular } }})
-            )
+          <TextField
+            placeholder="Name"
+            width="80%"
+            onChangeText={(regular) => 
+              mutate(
+                ({profile}) => ({ profile: { ...profile, name: { ...profile.name, regular } }})
+              )
           }/>
-          <TextField placeholder="Khmer Name" width="80%" onChangeText={(khmer) =>
-            mutate(
-              ({profile}) => ({ profile: { ...profile, name: {...profile.name, khmer} }})
-            )
+          <TextField
+            placeholder="Khmer Name"
+            width="80%"
+            onChangeText={(khmer) =>
+              mutate(
+                ({profile}) => ({ profile: { ...profile, name: {...profile.name, khmer} }})
+              )
           }/>
         </View>
       )
@@ -208,6 +201,20 @@ const Response = ({step, mutate}) => {
       return(
         <View style={styles.response}>
           <TextField placeholder="Contact Number" width="80%" keyboardType="numeric"/>
+        </View>
+      )
+    }
+    case 'tag': {
+      return(
+        <View style={styles.response}>
+          <TextField
+            placeholder="Tag Number"
+            width="80%"
+            keyboardType="numeric"
+            onChangeText={(tag) =>
+              mutate({tag})
+            }
+          />
           <SubmitButton />
         </View>
       )
@@ -217,7 +224,7 @@ const Response = ({step, mutate}) => {
 
 const SubmitButton = () => (
   <View style={{width:'100%', position:'absolute', bottom:'-24%' , zIndex:10}}>
-    <Button title="Submit" icon="chevron-right" round width="50%"/>
+    <Button title="Submit" titleColor="#3c4859" icon="chevron-right"  round width="50%"/>
   </View>
 )
 
@@ -225,13 +232,13 @@ const BackgroundInfo = ({xOffset}) => (
     <View style={styles.headerContainer}>
       <LinearGradient style={styles.upper} {...gradientLayout} >
         <Header title="Profile" light to="/triage"/>
-        <Step allSteps={6} step={xOffset/screenWidth} backgroundColor='#fff' highlightColor='pink' />
+        <Step allSteps={7} step={xOffset/width} backgroundColor='#fff' highlightColor='pink' />
       </LinearGradient>
     </View>
 )
 
 const ScrollItem = ({step, mutate}) => (
-  <View style={{width: screenWidth}}>
+  <View style={{width}}>
     <Instruction step={step}/>
     <Response step={step} mutate={mutate}/>
   </View>
@@ -247,7 +254,7 @@ const ScrollList = ({handleScroll, scrollViewDidChange, mutate}) => {
       style={styles.scrollViewContainer}
       onContentSizeChange={scrollViewDidChange}
       >
-      {stepList.map(({step, stepNum}, i) => (
+      {stepList.map((step, i) => (
         <ScrollItem key={i} step={step} mutate={mutate}/>
       ))}
     </ScrollView>
@@ -272,13 +279,18 @@ export default class Profile extends Component {
         nationality: '',
         address: '',
         contact: ''
-      }
+      },
+      tag: ''
     }
   }
 
-   handleScroll({nativeEvent: { contentOffset: { x }}}){
-     this.setState({ xOffset: x})
-   }
+  handleScroll({nativeEvent: { contentOffset: { x }}}){
+    this.setState({ xOffset: x})
+  }
+
+  // componentDidUpdate() {
+
+  // }
 
   componentWillMount() {
     StatusBar.setBarStyle('light-content', true)
@@ -309,13 +321,13 @@ const styles = StyleSheet.create({
   scrollViewContainer: {
     flex: 1,
     position: 'absolute',
-    top: '20%',
-    height: '100%',
+    top: height*.2,
+    height,
     paddingTop: 16,
   },
   upper: {
-    height: '45%',
-    paddingTop: '10%'
+    height: height*.45,
+    paddingTop: height*.06,
   },
   header: {
     flexDirection: 'row',
@@ -366,7 +378,7 @@ const styles = StyleSheet.create({
     paddingVertical: 16
   },
   genderText: {
-    fontSize: 26,
+    fontSize: 24,
     fontFamily: 'Nunito-Bold',
     color: '#3c4859'
   },

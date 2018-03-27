@@ -176,7 +176,6 @@ export default class Checkout extends Component {
     return (
       <View style={styles.container}>
         <Header title="Pharmacy" to='/pharmacy'/>
-        <Toolbar />
         <Text style={styles.patientName}>Patient: Preah R</Text>
         <ScrollView>
           {prescribedDrugs.map(({type, item, days, times, dosage, instructions, confirm}, i) => (

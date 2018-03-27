@@ -14,8 +14,9 @@ import {
 import LinearGradient from 'react-native-linear-gradient';
 import { IconButton, Button } from '../../../components/Button'
 import Icon from 'react-native-fontawesome-pro';
-import TextField from '../../../components/TextField'
-import Step from '../../../components/Step'
+import Header from '../../../components/Header';
+import TextField from '../../../components/TextField';
+import Step from '../../../components/Step';
 import BooleanSelect from '../../../components/BooleanSelect';
 
 const screenWidth = Dimensions.get('window').width
@@ -26,13 +27,6 @@ const gradientLayout = {
   end: {x: 1.0, y: 1.0},
   locations: [0, 0.75]
 }
-
-const Header = () => (
-  <View style={styles.header}>
-    <IconButton color="#fff" name='arrow-left' to={'/triage'} back/>
-    <Text style={styles.headerText}>Pregnancy</Text>
-  </View>
-)
 
 const stepList = ['lmp', 'gestation', 'breastFeeding', 'contraceptiveUse', 'liveBirth', 'miscarriage', 'abortion', 'stillBorn'];
 
@@ -190,7 +184,7 @@ const Response = ({step}) => {
 const BackgroundInfo = ({xOffset}) => (
     <View style={styles.headerContainer}>
       <LinearGradient style={styles.upper} {...gradientLayout} >
-        <Header/>
+        <Header title="Pregnancy" to="/triage/patients/:paitentId"/>
         <Step allSteps={stepList.length-1} step={xOffset/screenWidth} backgroundColor='#fff' highlightColor='pink' />
       </LinearGradient>
     </View>
@@ -239,7 +233,7 @@ export default class Pregnancy extends Component {
 
   render() {
     return (
-      <KeyboardAvoidingView style={styles.parentContainer}>
+      <KeyboardAvoidingView style={styles.parentContainer} behaviro="padding">
         <BackgroundInfo xOffset={this.state.xOffset}/>
         <ScrollList handleScroll={this.handleScroll}/> 
       </KeyboardAvoidingView>

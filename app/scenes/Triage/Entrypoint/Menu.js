@@ -1,23 +1,43 @@
 import React, { Component } from 'react';
 import { View, Text, ScrollView, StyleSheet } from 'react-native';
+import { Link } from 'react-router-native';
 import Header from '../../../components/Header';
 import Icon from 'react-native-fontawesome-pro';
-
-const Add = () => (
-  <View style={{height:32, width:32, borderRadius:16, backgroundColor:'#566DF0', justifyContent:'center', alignItems:'center'}}>
-    <Text style={{fontFamily: 'Nunito-Bold', color:'#fff', fontSize: 28, paddingBottom:4}}>+</Text>
-  </View>
-)
 
 const Menu = () => (
   <View style={styles.container}>
     <Header title="Add Records"/>
     <ScrollView>
-      <View style={styles.menuItem}><Text style={styles.text}>Vitals</Text><Add/></View>
-      <View style={styles.menuItem}><Text style={styles.text}>Previous Medical History</Text><Add/></View>
-      <View style={styles.menuItem}><Text style={styles.text}>Screening</Text><Add/></View>
-      <View style={styles.menuItem}><Text style={styles.text}>Drug History and Allergy</Text><Add/></View>
-      <View style={styles.menuItem}><Text style={styles.text}>Pregnancy</Text><Add/></View>
+      <Link style={styles.menuItem} to="/triage/patients/:patientId/vitals">
+        <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
+          <Icon name="heartbeat" size={18} type="solid" color="#566DF0"/>
+          <Text style={styles.text}>Vitals</Text>
+        </View>
+      </Link>
+      <Link style={styles.menuItem} to="/triage/patients/:patientId/history">
+        <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
+          <Icon name="procedures" size={18} type="solid" color="#566DF0"/>
+          <Text style={styles.text}>Previous Medical History</Text>
+        </View>
+      </Link>
+      <Link style={styles.menuItem} to="/triage/patients/:patientId/screening">
+        <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
+          <Icon name="diagnoses" size={18} type="solid" color="#566DF0"/>
+          <Text style={styles.text}>Screening</Text>
+        </View>
+      </Link>
+      <Link style={styles.menuItem} to="/triage/patients/:patientId/vaccination">
+        <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
+          <Icon name="allergies" size={18} type="solid" color="#566DF0"/>
+          <Text style={styles.text}>Drug History and Allergies</Text>
+        </View>
+      </Link>
+      <Link style={styles.menuItem} to="/triage/patients/:patientId/pregnancy">
+        <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
+          <Icon name="female" size={18} type="solid" color="#566DF0"/>
+          <Text style={styles.text}>Pregnancy</Text>
+        </View>
+      </Link>
     </ScrollView>
   </View>
 )
@@ -53,6 +73,7 @@ const styles = StyleSheet.create({
   text: {
     fontFamily: 'Nunito-Bold',
     color: '#3c4859',
-    fontSize: 20,
+    fontSize: 16,
+    marginLeft: 8
   }
 });

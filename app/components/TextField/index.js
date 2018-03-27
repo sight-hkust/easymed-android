@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  Platform,
   StyleSheet,
   Text,
   View,
@@ -54,9 +53,9 @@ const styles = StyleSheet.create({
   input: {
     flex: 12,
     height: 44, 
-    fontSize: 22,
+    fontSize: 20,
     fontFamily: 'Quicksand-Medium',
     color: '#3c4859',
-    paddingHorizontal: 24,
+    paddingHorizontal: 20,
   },
 });
