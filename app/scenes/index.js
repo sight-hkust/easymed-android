@@ -8,13 +8,12 @@ import Triage from './Triage'
 import Consultation from './Consultation'
 import Pharmacy from './Pharmacy'
 import Settings from './Settings'
-import Record from './Record'
-import Menu from './Triage/Entrypoint/Menu'
+import Record from './Consultation/Record'
 
 const Storyboard = () => (
   <NativeRouter>
     <Switch>
-      <Route exact path="/" component={Menu} />
+      <Route exact path="/" component={Entrance} />
       <Route path="/login" component={Login}/>
       <Route path="/register" component={Registration} />
       <Route path="/triage" component={Triage} />

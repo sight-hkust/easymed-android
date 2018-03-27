@@ -12,16 +12,25 @@ const DOBView = () => (
   </View>
 )
 
-const AgeView = () => (
+const AgeView = ({onChangeText}) => (
   <View style={{...StyleSheet.flatten(styles.response), height: '80%'}}>
-    <TextField placeholder="Age" width="92%" keyboardType="numeric"/>
+    <TextField
+      placeholder="Age"
+      width="92%"
+      keyboardType="numeric"
+      onChangeText={onChangeText}
+    />
   </View>
 )
 
 class Segment extends Component {
   constructor(props) {
     super(props)
-    this.state = { leftButtonPressed: true, rightButtonPressed: false }
+    this.state = { 
+      leftButtonPressed: true,
+      rightButtonPressed: false,
+      dob: null
+    }
   }
 
   leftOnPress = () => {
@@ -75,7 +84,10 @@ class Segment extends Component {
         </View>
 
         <View style={{width: screenWidth, height:'80%'}}>
-          <AgeView/>
+          <AgeView onChangeText={(age) => {
+            const yearOfBirth = new Date().getFullYear() - age
+            this.setState({dob: new Date(`${yearOfBirth}-01-01`)}).bind(this)
+          }}/>
         </View>
 
         </ScrollView>

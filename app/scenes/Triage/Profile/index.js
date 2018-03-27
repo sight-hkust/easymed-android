@@ -11,6 +11,9 @@ import {
   Dimensions,
   Switch 
 } from 'react-native'
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { createPatient } from '../../../actions/patient';
 import LinearGradient from 'react-native-linear-gradient';
 import { IconButton, Button } from '../../../components/Button'
 import Icon from 'react-native-fontawesome-pro';
@@ -18,6 +21,9 @@ import Header from '../../../components/Header';
 import TextField from '../../../components/TextField'
 import Step from '../../../components/Step'
 import Segment from '../../../components/Segment'
+import Sex from '../../../components/Sex';
+import MaritalStatus from '../../../components/MaritalStatus';
+import Birthday from '../../../components/Birthday';
 
 const { width, height } = Dimensions.get('window')
 
@@ -28,7 +34,7 @@ const gradientLayout = {
   locations: [0, 0.75]
 }
 
-const stepList = ['name','gender','dob','married','nationalityOccupation','address','contact','tag'];
+const stepList = ['name','gender','dob','married','nationalityOccupation','tag'];
 
 const Instruction = ({step}) => {
   switch(step) {
@@ -71,9 +77,9 @@ const Instruction = ({step}) => {
     case 'nationalityOccupation': {
       return (
         <View style={styles.textWrapper}>
-          <Text style={styles.instruction}>Enter the nationality</Text>
-          <Text style={styles.instruction}>and occupation of</Text>
-          <Text style={styles.instruction}>the patient</Text>
+          <Text style={styles.instruction}>Indicate the nationality</Text>
+          <Text style={styles.instruction}>of the patient</Text>
+          <Text style={styles.instruction}>below</Text>
         </View>
       )
     }
@@ -98,8 +104,8 @@ const Instruction = ({step}) => {
     case 'tag': {
       return (
         <View style={styles.textWrapper}>
-          <Text style={styles.instruction}>Enter a tag</Text>
-          <Text style={styles.instruction}>number for</Text>
+          <Text style={styles.instruction}>Enter a tag number</Text>
+          <Text style={styles.instruction}>for identifying</Text>
           <Text style={styles.instruction}>the patient</Text>
         </View>
       )
@@ -107,37 +113,7 @@ const Instruction = ({step}) => {
   }
 }
 
-const GenderSelect = () => (
-  <View style={{width: '70%', flexDirection: 'row', justifyContent: 'space-around'}}>
-    <TouchableOpacity style={styles.gender}>
-      <Icon name="venus" size={44} color="#ff5273"/>
-      <Text style={styles.genderText}>Female</Text>
-    </TouchableOpacity>
-    <TouchableOpacity style={styles.gender}>
-      <Icon name="mars" size={44} color="#4c79fc"/>
-      <Text style={styles.genderText}>Male</Text>
-    </TouchableOpacity>
-  </View>
-)
-
-const MaritalStatusSelect = () => (
-  <View style={{justifyContent: 'space-around', alignItems: 'center', height: '100%'}}>
-    <TouchableOpacity style={styles.maritalStatus}>
-      <Text style={styles.maritalStatusText}>MARRIED</Text>
-    </TouchableOpacity>
-    <TouchableOpacity style={styles.maritalStatus}>
-      <Text style={styles.maritalStatusText}>DIVORCED</Text>
-    </TouchableOpacity>
-    <TouchableOpacity style={styles.maritalStatus}>
-      <Text style={styles.maritalStatusText}>WIDOWED</Text>
-    </TouchableOpacity>
-    <TouchableOpacity style={styles.maritalStatus}>
-      <Text style={styles.maritalStatusText}>SINGLE</Text>
-    </TouchableOpacity>
-  </View>
-)
-
-const Response = ({step, mutate}) => {
+const Response = ({step, mutate, submit, profile}) => {
   switch(step) {
     case 'name': {
       return (
@@ -164,27 +140,47 @@ const Response = ({step, mutate}) => {
     case 'gender': {
       return (
         <View style={styles.response}>
-          <GenderSelect />
+          <Sex onSelect={(sex) => mutate(
+            ({profile}) => ({ profile: { ...profile, sex }})
+          )}/>
         </View>
       )
     }
     case 'dob': {
       return (
-        <Segment/>
+        <Birthday onSelect={(dob) =>
+          mutate( ({profile}) => ({ profile: { ...profile, dob }}) )
+        }/>
       )
     }
     case 'married': {
       return (
         <View style={{marginTop: 16, height: '40%'}}>
-          <MaritalStatusSelect />
+          <MaritalStatus onSelect={(status) => mutate(
+            ({profile}) => ({ profile: { ...profile, status }})
+          )} />
         </View>
       )
     }
     case 'nationalityOccupation': {
       return (
         <View style={styles.response}>
-          <TextField placeholder="Nationality" width="80%"/>
-          <TextField placeholder="Occupation" width="80%"/>
+          <TextField
+            placeholder="Nationality"
+            width="80%"
+            onChangeText={(nationality) =>
+              mutate(
+                ({profile}) => ({ profile: { ...profile, nationality }})
+              )
+          }/>
+          {/* <TextField
+            placeholder="Occupation"
+            width="80%"
+            onChangeText={(occupation) =>
+              mutate(
+                ({profile}) => ({ profile: { ...profile, occupation }})
+              )
+          }/> */}
         </View>
       )
     }
@@ -200,7 +196,11 @@ const Response = ({step, mutate}) => {
     case 'contact': {
       return(
         <View style={styles.response}>
-          <TextField placeholder="Contact Number" width="80%" keyboardType="numeric"/>
+          <TextField
+            placeholder="Contact Number"
+            width="80%"
+            keyboardType="numeric"
+          />
         </View>
       )
     }
@@ -211,20 +211,18 @@ const Response = ({step, mutate}) => {
             placeholder="Tag Number"
             width="80%"
             keyboardType="numeric"
-            onChangeText={(tag) =>
-              mutate({tag})
-            }
+            onChangeText={(tag) => mutate({tag})}
           />
-          <SubmitButton />
+          <SubmitButton onPress={submit(profile)}/>
         </View>
       )
     }
   }
 }
 
-const SubmitButton = () => (
+const SubmitButton = (onPress) => (
   <View style={{width:'100%', position:'absolute', bottom:'-24%' , zIndex:10}}>
-    <Button title="Submit" titleColor="#3c4859" icon="chevron-right"  round width="50%"/>
+    <Button title="Submit" onPress={onPress} bgColor="#1d9dff" titleColor="#fff" icon="chevron-right" round width="50%"/>
   </View>
 )
 
@@ -232,19 +230,19 @@ const BackgroundInfo = ({xOffset}) => (
     <View style={styles.headerContainer}>
       <LinearGradient style={styles.upper} {...gradientLayout} >
         <Header title="Profile" light to="/triage"/>
-        <Step allSteps={7} step={xOffset/width} backgroundColor='#fff' highlightColor='pink' />
+        <Step allSteps={stepList.length-1} step={xOffset/width} backgroundColor='#fff' highlightColor='pink' />
       </LinearGradient>
     </View>
 )
 
-const ScrollItem = ({step, mutate}) => (
+const ScrollItem = ({step, mutate, submit, profile}) => (
   <View style={{width}}>
     <Instruction step={step}/>
-    <Response step={step} mutate={mutate}/>
+    <Response step={step} mutate={mutate} submit={submit} profile={profile}/>
   </View>
 )
 
-const ScrollList = ({handleScroll, scrollViewDidChange, mutate}) => {
+const ScrollList = ({handleScroll, scrollViewDidChange, mutate, submit, profile}) => {
   return (
     <ScrollView 
       horizontal = {true} 
@@ -255,13 +253,13 @@ const ScrollList = ({handleScroll, scrollViewDidChange, mutate}) => {
       onContentSizeChange={scrollViewDidChange}
       >
       {stepList.map((step, i) => (
-        <ScrollItem key={i} step={step} mutate={mutate}/>
+        <ScrollItem key={i} step={step} mutate={mutate} submit={submit} profile={profile}/>
       ))}
     </ScrollView>
   )
 };
 
-export default class Profile extends Component {
+class Profile extends Component {
   constructor(props) {
     super(props);
     this.handleScroll = this.handleScroll.bind(this);
@@ -275,22 +273,16 @@ export default class Profile extends Component {
         sex: '',
         dob: null,
         status: '',
-        occuppation: '',
-        nationality: '',
-        address: '',
-        contact: ''
+        nationality: ''
       },
       tag: ''
     }
+    this.createPatient = props.createPatient.bind(this)
   }
 
   handleScroll({nativeEvent: { contentOffset: { x }}}){
     this.setState({ xOffset: x})
   }
-
-  // componentDidUpdate() {
-
-  // }
 
   componentWillMount() {
     StatusBar.setBarStyle('light-content', true)
@@ -300,11 +292,22 @@ export default class Profile extends Component {
     return (
       <KeyboardAvoidingView style={styles.parentContainer}>
         <BackgroundInfo xOffset={this.state.xOffset}/>
-        <ScrollList handleScroll={this.handleScroll} mutate={this.setState.bind(this)}/> 
+        <ScrollList handleScroll={this.handleScroll} mutate={this.setState.bind(this)} submit={this.createPatient} profile={this.state.profile}/> 
       </KeyboardAvoidingView>
     )
   }
 }
+
+const mapDispatchToProps = (dispatch) => ({
+  actions: bindActionCreators({createPatient}, dispatch)
+})
+
+const mapStateToProps = (state) => ({
+  loading: state.patient.loading,
+  success: state.patient.success
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(Profile)
 
 const styles = StyleSheet.create({
   parentContainer: {
@@ -329,22 +332,6 @@ const styles = StyleSheet.create({
     height: height*.45,
     paddingTop: height*.06,
   },
-  header: {
-    flexDirection: 'row',
-    height: 44,
-    justifyContent: 'space-between',
-    marginBottom: 32,
-    alignItems: 'center'
-  },
-  headerText: {
-    fontSize: 36,
-    fontFamily: 'Nunito-Bold',
-    textAlign: 'right',
-    backgroundColor: '#fff0',
-    color: '#fff',
-    marginRight: 20,
-    marginTop: 32,
-  },
   textWrapper: {
     marginTop: 20,
     paddingHorizontal: 18,
@@ -363,42 +350,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     alignItems: 'center',
     paddingBottom: '8%'
-  },
-  gender: {
-    width: 112,
-    height: 112,
-    borderRadius: 5,
-    backgroundColor: '#fff',
-    shadowColor: '#3a4252',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.12,
-    shadowRadius: 10,
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    paddingVertical: 16
-  },
-  genderText: {
-    fontSize: 24,
-    fontFamily: 'Nunito-Bold',
-    color: '#3c4859'
-  },
-  maritalStatus: {
-    height: 56,
-    width: '80%',
-    borderRadius: 5,
-    backgroundColor: '#fff',
-    shadowColor: '#3a4252',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.12,
-    shadowRadius: 10,
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  maritalStatusText: {
-    fontSize: 22,
-    fontFamily: 'Nunito-Bold',
-    color: '#3c4859',
-    marginLeft: 12
   },
   footer: {
     marginTop: 18

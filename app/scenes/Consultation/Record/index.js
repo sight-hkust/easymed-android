@@ -25,32 +25,32 @@ const PatientName = ({name, alternate}) => (
 
 const vitalsDemo = [
   { 
-    icon: require('../../../assets/images/vitals/pulse.png'),
+    icon: require('../../../../assets/images/vitals/pulse.png'),
     unit: 'bpm',
     value: '65'
   },
   {
-    icon: require('../../../assets/images/vitals/pressure.png'),
+    icon: require('../../../../assets/images/vitals/pressure.png'),
     unit: '',
     value: '67/120'
   },
   {
-    icon: require('../../../assets/images/vitals/spo2.png'),
+    icon: require('../../../../assets/images/vitals/spo2.png'),
     unit: '%',
     value: '98'
   },
   {
-    icon: require('../../../assets/images/vitals/temperature.png'),
+    icon: require('../../../../assets/images/vitals/temperature.png'),
     unit: '°C',
     value: '34'
   },
   {
-    icon: require('../../../assets/images/vitals/height.png'),
+    icon: require('../../../../assets/images/vitals/height.png'),
     unit: 'cm',
     value: '163'
   },
   {
-    icon: require('../../../assets/images/vitals/weight.png'),
+    icon: require('../../../../assets/images/vitals/weight.png'),
     unit: 'kg',
     value: '76'
   }

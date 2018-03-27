@@ -7,17 +7,18 @@ import {
   Platform
 } from 'react-native';
 
-const TextField = ({defaultValue, unit, width, keyboardType, placeholder, onChangeText}) => {
+const TextField = ({value, unit, width, keyboardType, placeholder, onChangeText, onSubmitEditing}) => {
   return (
     <View style={{...StyleSheet.flatten(styles.container), width}}>
       <TextInput
         underlineColorAndroid='transparent'
         style={[styles.input, {height: Platform.OS == 'android' ? 40 : 20}]}
-        value={defaultValue}
+        value={value}
         placeholder={placeholder}
         keyboardType={keyboardType}
         underlineColorAndroid='transparent'
         onChangeText={onChangeText}
+        onSubmitEditing={onSubmitEditing}
       >
       </TextInput>
       { unit && <Text style={styles.unit}>{unit}</Text>}
@@ -52,8 +53,8 @@ const styles = StyleSheet.create({
 
   input: {
     flex: 12,
-    height: 44, 
-    fontSize: 20,
+    height: 52, 
+    fontSize: 18,
     fontFamily: 'Quicksand-Medium',
     color: '#3c4859',
     paddingHorizontal: 20,
