@@ -123,8 +123,8 @@ const YesNoSelect = () => (
 )
 
 const SubmitButton = () => (
-  <View style={{width:'100%', position:'absolute', top:'36%', zIndex:10}}>
-    <Button title="Submit" icon="chevron-right" round width="50%"/>
+  <View style={{width:'100%', position:'absolute', top:'100%', zIndex:10}}>
+    <Button title="Submit" icon="chevron-right" titleColor="#3c4859" round width="50%"/>
   </View>
 )
 
@@ -175,6 +175,7 @@ const Response = ({step}) => {
       return (
         <View style={styles.response}>
           <TextField placeholder="Still Born" width="80%"/>
+          <SubmitButton />
         </View>
       )
     }
@@ -184,7 +185,7 @@ const Response = ({step}) => {
 const BackgroundInfo = ({xOffset}) => (
     <View style={styles.headerContainer}>
       <LinearGradient style={styles.upper} {...gradientLayout} >
-        <Header title="Pregnancy" to="/triage/patients/:paitentId"/>
+        <Header title="Pregnancy" light="true" to="/triage/patients/:paitentId"/>
         <Step allSteps={stepList.length-1} step={xOffset/screenWidth} backgroundColor='#fff' highlightColor='pink' />
       </LinearGradient>
     </View>

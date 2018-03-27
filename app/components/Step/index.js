@@ -31,11 +31,11 @@ const styles = {
     },
 
     container: {
-      marginTop: 8,
-      marginBottom: 16,
       flexDirection: 'row',
       justifyContent: 'center',
       alignItems: 'center',
+      paddingTop: 40,
+      paddingBottom: 16,
     }
 }
 

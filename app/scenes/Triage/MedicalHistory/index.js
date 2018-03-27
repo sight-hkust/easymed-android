@@ -17,6 +17,7 @@ import Icon from 'react-native-fontawesome-pro';
 import TextField from '../../../components/TextField'
 import Step from '../../../components/Step'
 import BooleanSelect from '../../../components/BooleanSelect';
+import Header from '../../../components/Header';
 
 const screenWidth = Dimensions.get('window').width
 
@@ -27,38 +28,7 @@ const gradientLayout = {
   locations: [0, 0.75]
 }
 
-const Header = () => (
-  <View style={styles.header}>
-    <IconButton color="#fff" name='arrow-left' to={'/triage'} back/>
-    <Text style={styles.headerText}>Vitals</Text>
-  </View>
-)
-
 const stepList = [
-  {
-    step: 'vaccination',
-  },
-  {
-    step: 'deworming',
-  },
-  {
-    step: 'allergy',
-  },
-  {
-    step: 'bloodPressure',
-  },
-  {
-    step: 'pulseRateRespirationRate',
-  },
-  {
-    step: 'weightHeight',
-  },
-  {
-    step: 'temperature',
-  },
-  {
-    step: 'SpO2bloodSugar',
-  },
   {
     step: 'HTN',
   },
@@ -83,94 +53,10 @@ const stepList = [
   {
     step: 'otherPMH',
   },
-  {
-    step: 'tobacco',
-  },
-  {
-    step: 'ETOH',
-  },
-  {
-    step: 'drugUse',
-  },
-  {
-    step: 'otherSH',
-  },
 ];
 
 const Instruction = ({step}) => {
   switch(step) {
-    case 'vaccination': {
-      return (
-        <View style={styles.textWrapper}>
-          <Text style={styles.instruction}>Select the vaccination</Text>
-          <Text style={styles.instruction}>that the patient</Text>
-          <Text style={styles.instruction}>had before</Text>
-        </View>
-      )
-    }
-    case 'deworming': {
-      return (
-        <View style={styles.textWrapper}>
-          <Text style={styles.instruction}>Identify the patient's</Text>
-          <Text style={styles.instruction}>deworming history using</Text>
-          <Text style={styles.instruction}>the indicator below</Text>
-        </View>
-      )
-    }
-    case 'allergy': {
-      return (
-        <View style={styles.textWrapper}>
-          <Text style={styles.instruction}>Choose and enter</Text>
-          <Text style={styles.instruction}>the allergy information</Text>
-          <Text style={styles.instruction}>of the patient</Text>
-        </View>
-      )
-    }
-    case 'bloodPressure': {
-      return (
-        <View style={styles.textWrapper}>
-          <Text style={styles.instruction}>Enter the upper and</Text>
-          <Text style={styles.instruction}>lower blood pressure</Text>
-          <Text style={styles.instruction}>of the patient</Text>
-        </View>
-      )
-    }
-    case 'pulseRateRespirationRate': {
-      return (
-        <View style={styles.textWrapper}>
-          <Text style={styles.instruction}>Enter the pulse rate</Text>
-          <Text style={styles.instruction}>and respiration rate</Text>
-          <Text style={styles.instruction}>of the patient</Text>
-        </View>
-      )
-    }
-    case 'weightHeight': {
-      return (
-        <View style={styles.textWrapper}>
-          <Text style={styles.instruction}>Enter the</Text>
-          <Text style={styles.instruction}>weight and height</Text>
-          <Text style={styles.instruction}>of the patient</Text>
-        </View>
-      )
-    }
-    case 'temperature': {
-      return (
-        <View style={styles.textWrapper}>
-          <Text style={styles.instruction}>Enter the body</Text>
-          <Text style={styles.instruction}>temperature</Text>
-          <Text style={styles.instruction}>of the patient</Text>
-        </View>
-      )
-    }
-    case 'SpO2bloodSugar': {
-      return (
-        <View style={styles.textWrapper}>
-          <Text style={styles.instruction}>Enter the SpO2</Text>
-          <Text style={styles.instruction}>and blood sugar</Text>
-          <Text style={styles.instruction}>of the patient</Text>
-        </View>
-      )
-    }
     case 'HTN': {
       return (
         <View style={styles.textWrapper}>
@@ -243,69 +129,8 @@ const Instruction = ({step}) => {
         </View>
       )
     }
-    case 'tobacco': {
-      return(
-        <View style={styles.textWrapper}>
-          <Text style={styles.instruction}>Identify if the patient</Text>
-          <Text style={styles.instruction}>uses tobacco using</Text>
-          <Text style={styles.instruction}>the indicator below</Text>
-        </View>      
-      )
-    }
-    case 'ETOH': {
-      return(
-        <View style={styles.textWrapper}>
-          <Text style={styles.instruction}>Identify if the patient shows</Text>
-          <Text style={styles.instruction}>effects of alcohol usage</Text>
-          <Text style={styles.instruction}>using the indicator below</Text>
-        </View>      
-      )
-    }
-    case 'drugUse': {
-      return(
-        <View style={styles.textWrapper}>
-          <Text style={styles.instruction}>Identify if the patient</Text>
-          <Text style={styles.instruction}>uses drug using</Text>
-          <Text style={styles.instruction}>the indicator below</Text>
-        </View>      
-      )
-    }
-    case 'otherSH': {
-      return(
-        <View style={styles.textWrapper}>
-          <Text style={styles.instruction}>Enter the other</Text>
-          <Text style={styles.instruction}>social history</Text>
-          <Text style={styles.instruction}>of the patient</Text>
-        </View>      
-      )
-    }
   } 
 }
-
-const DewormingSelect = () => (
-  <View style={{justifyContent: 'space-around', alignItems: 'center', height: '100%'}}>
-    <TouchableOpacity style={styles.selectStatus}>
-      <Text style={styles.selectStatusText}>UNKNOWN</Text>
-    </TouchableOpacity>
-    <TouchableOpacity style={styles.selectStatus}>
-      <Text style={styles.selectStatusText}>WITHIN 3 MONTHS</Text>
-    </TouchableOpacity>
-    <TouchableOpacity style={styles.selectStatus}>
-      <Text style={styles.selectStatusText}>WITHIN 6 MONTHS</Text>
-    </TouchableOpacity>
-    <TouchableOpacity style={styles.selectStatus}>
-      <Text style={styles.selectStatusText}>NO</Text>
-    </TouchableOpacity>
-  </View>
-)
-
-const AllergySelect = () => (
-  <View style={{justifyContent: 'space-around', alignItems: 'center', height: '100%'}}>
-    <BooleanSelect title='No' icon='times' bgColor='#EF8585' color='blue' width='80%' />
-    <BooleanSelect title='Yes' icon='check' bgColor='#7BD2A8' color='blue' width='80%' />
-    <TextField placeholder="Allergy Info" width="80%"/>
-  </View>
-)
 
 const YesNoUnknownSelect = () => (
   <View style={{...StyleSheet.flatten(styles.response), height: '40%'}}>
@@ -315,82 +140,14 @@ const YesNoUnknownSelect = () => (
   </View>
 )
 
-const YesNoSelect = () => (
-  <View style={{...StyleSheet.flatten(styles.response), height: '28%'}}>
-    <BooleanSelect title='Yes' icon='check' bgColor='#7BD2A8' color='blue' width='80%'/>
-    <BooleanSelect title='No' icon='times' bgColor='#EF8585' color='blue' width='80%' />
-  </View>
-)
-
 const SubmitButton = () => (
-  <View style={{width:'100%', position:'absolute', top:'36%', zIndex:10}}>
-    <Button title="Submit" icon="chevron-right" round width="50%"/>
+  <View style={{width:'100%', position:'absolute', top:'100%', zIndex:10}}>
+    <Button title="Submit" icon="chevron-right" titleColor="#3c4859" round width="50%"/>
   </View>
 )
 
 const Response = ({step}) => {
   switch(step) {
-    case 'vaccination': {
-      return (
-        <View style={styles.response}>
-          <TextField placeholder="vaccination1" width="80%"/>
-          <TextField placeholder="vaccination2" width="80%"/>
-        </View>
-      )
-    }
-    case 'deworming': {
-      return (
-        <View style={{marginTop: 16, height: '40%'}}>
-          <DewormingSelect />
-        </View>
-      )
-    }
-    case 'allergy': {
-      return (
-        <View style={{marginTop: 16, height: '32%'}}>
-          <AllergySelect />
-        </View>
-      )
-    }
-    case 'bloodPressure': {
-      return (
-        <View style={styles.response}>
-          <TextField placeholder="Upper BP" width="80%" keyboardType="numeric" unit="mmHg"/>
-          <TextField placeholder="Lower BP" width="80%" keyboardType="numeric" unit="mmHg"/>
-        </View>
-      )
-    }
-    case 'pulseRateRespirationRate': {
-      return (
-        <View style={styles.response}>
-          <TextField placeholder="Pulse" width="80%" keyboardType="numeric" unit="bpm"/>
-          <TextField placeholder="Respiration" width="80%" keyboardType="numeric" unit="bpm"/>
-        </View>
-      )
-    }
-    case 'weightHeight': {
-      return(
-        <View style={styles.response}>
-          <TextField placeholder="Weight" width="80%" keyboardType="numeric" unit="kg"/>
-          <TextField placeholder="Height" width="80%" keyboardType="numeric" unit="cm"/>
-        </View>
-      )
-    }
-    case 'temperature': {
-      return(
-        <View style={styles.response}>
-          <TextField placeholder="Temperature" width="80%" keyboardType="numeric" unit="℃"/>
-        </View>
-      )
-    }
-    case 'SpO2bloodSugar': {
-      return(
-        <View style={styles.response}>
-          <TextField placeholder="SpO2" width="80%" keyboardType="numeric" unit="%"/>
-          <TextField placeholder="Blood Sugar" width="80%" keyboardType="numeric" unit="mmol/L"/>
-        </View>
-      )
-    }
     case 'HTN': {
       return(
         <YesNoUnknownSelect />
@@ -430,29 +187,8 @@ const Response = ({step}) => {
       return(
         <View style={styles.response}>
           <TextField placeholder="PMH" width="80%"/>
+          <SubmitButton />
         </View>
-      )
-    }
-    case 'tobacco': {
-      return(
-        <YesNoSelect />
-      )
-    }
-    case 'ETOH': {
-      return(
-        <YesNoSelect />
-      )
-    }
-    case 'drugUse': {
-      return(
-        <YesNoSelect />
-      )
-    }
-    case 'otherSH': {
-      return(
-        <View style={styles.response}>
-          <TextField placeholder="SH" width="80%"/>
-        </View>    
       )
     }
   }
@@ -461,8 +197,8 @@ const Response = ({step}) => {
 const BackgroundInfo = ({xOffset}) => (
     <View style={styles.headerContainer}>
       <LinearGradient style={styles.upper} {...gradientLayout} >
-        <Header/>
-        <Step allSteps={19} step={xOffset/screenWidth} backgroundColor='#fff' highlightColor='pink' />
+        <Header title="Medical History" light="true" to="/triage/patients/:paitentId"/>
+        <Step allSteps={stepList.length-1} step={xOffset/screenWidth} backgroundColor='#fff' highlightColor='pink' />
       </LinearGradient>
     </View>
 )
@@ -541,22 +277,6 @@ const styles = StyleSheet.create({
     height: '45%',
     paddingTop: '10%'
   },
-  header: {
-    flexDirection: 'row',
-    height: 44,
-    justifyContent: 'space-between',
-    marginBottom: 32,
-    alignItems: 'center'
-  },
-  headerText: {
-    fontSize: 36,
-    fontFamily: 'Nunito-Bold',
-    textAlign: 'right',
-    backgroundColor: '#fff0',
-    color: '#fff',
-    marginRight: 20,
-    marginTop: 32,
-  },
   textWrapper: {
     marginTop: 20,
     paddingHorizontal: 18,
@@ -576,43 +296,4 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingBottom: '8%'
   },
-  gender: {
-    width: 112,
-    height: 112,
-    borderRadius: 5,
-    backgroundColor: '#fff',
-    shadowColor: '#3a4252',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.12,
-    shadowRadius: 10,
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    paddingVertical: 16
-  },
-  genderText: {
-    fontSize: 26,
-    fontFamily: 'Nunito-Bold',
-    color: '#3c4859'
-  },
-  selectStatus: {
-    height: 56,
-    width: '80%',
-    borderRadius: 5,
-    backgroundColor: '#fff',
-    shadowColor: '#3a4252',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.12,
-    shadowRadius: 10,
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  selectStatusText: {
-    fontSize: 22,
-    fontFamily: 'Nunito-Bold',
-    color: '#3c4859',
-    marginLeft: 12
-  },
-  footer: {
-    marginTop: 18
-  }
 })

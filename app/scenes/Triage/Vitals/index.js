@@ -17,6 +17,7 @@ import Icon from 'react-native-fontawesome-pro';
 import TextField from '../../../components/TextField'
 import Step from '../../../components/Step'
 import BooleanSelect from '../../../components/BooleanSelect';
+import Header from '../../../components/Header';
 
 const screenWidth = Dimensions.get('window').width
 
@@ -26,13 +27,6 @@ const gradientLayout = {
   end: {x: 1.0, y: 1.0},
   locations: [0, 0.75]
 }
-
-const Header = () => (
-  <View style={styles.header}>
-    <IconButton color="#fff" name='arrow-left' to={'/triage'} back/>
-    <Text style={styles.headerText}>Vitals</Text>
-  </View>
-)
 
 const stepList = [
   {
@@ -58,42 +52,6 @@ const stepList = [
   },
   {
     step: 'SpO2bloodSugar',
-  },
-  {
-    step: 'HTN',
-  },
-  {
-    step: 'DM',
-  },
-  {
-    step: 'TB',
-  },
-  {
-    step: 'asthma',
-  },
-  {
-    step: 'hepatitisABC',
-  },
-  {
-    step: 'malaria',
-  },
-  {
-    step: 'HIV',
-  },
-  {
-    step: 'otherPMH',
-  },
-  {
-    step: 'tobacco',
-  },
-  {
-    step: 'ETOH',
-  },
-  {
-    step: 'drugUse',
-  },
-  {
-    step: 'otherSH',
   },
 ];
 
@@ -171,114 +129,6 @@ const Instruction = ({step}) => {
         </View>
       )
     }
-    case 'HTN': {
-      return (
-        <View style={styles.textWrapper}>
-          <Text style={styles.instruction}>Identify if the patient</Text>
-          <Text style={styles.instruction}>has hypertension using</Text>
-          <Text style={styles.instruction}>the indicator below</Text>
-        </View>
-      )
-    }
-    case 'DM': {
-      return (
-        <View style={styles.textWrapper}>
-          <Text style={styles.instruction}>Identify if the patient</Text>
-          <Text style={styles.instruction}>has diabetes mellitus</Text>
-          <Text style={styles.instruction}>using the indicator below</Text>
-        </View>
-      )
-    }
-    case 'TB': {
-      return (
-        <View style={styles.textWrapper}>
-          <Text style={styles.instruction}>Identify if the patient</Text>
-          <Text style={styles.instruction}>has tuberculosis disease</Text>
-          <Text style={styles.instruction}>using the indicator below</Text>
-        </View>
-      )
-    }
-    case 'asthma': {
-      return (
-        <View style={styles.textWrapper}>
-          <Text style={styles.instruction}>Identify if the patient</Text>
-          <Text style={styles.instruction}>has asthma using</Text>
-          <Text style={styles.instruction}>the indicator below</Text>
-        </View>
-      )
-    }
-    case 'hepatitisABC': {
-      return (
-        <View style={styles.textWrapper}>
-          <Text style={styles.instruction}>Identify if the patient</Text>
-          <Text style={styles.instruction}>has hepatitis A/B/C using</Text>
-          <Text style={styles.instruction}>the indicator below</Text>
-        </View>
-      )
-    }
-    case 'malaria': {
-      return (
-        <View style={styles.textWrapper}>
-          <Text style={styles.instruction}>Identify if the patient</Text>
-          <Text style={styles.instruction}>has malaria using</Text>
-          <Text style={styles.instruction}>the indicator below</Text>
-        </View>
-      )
-    }
-    case 'HIV': {
-      return (
-        <View style={styles.textWrapper}>
-          <Text style={styles.instruction}>Identify if the patient</Text>
-          <Text style={styles.instruction}>has HIV using</Text>
-          <Text style={styles.instruction}>the indicator below</Text>
-        </View>
-      )
-    }
-    case 'otherPMH': {
-      return (
-        <View style={styles.textWrapper}>
-          <Text style={styles.instruction}>Enter the other</Text>
-          <Text style={styles.instruction}>past medical history</Text>
-          <Text style={styles.instruction}>of the patient</Text>
-        </View>
-      )
-    }
-    case 'tobacco': {
-      return(
-        <View style={styles.textWrapper}>
-          <Text style={styles.instruction}>Identify if the patient</Text>
-          <Text style={styles.instruction}>uses tobacco using</Text>
-          <Text style={styles.instruction}>the indicator below</Text>
-        </View>      
-      )
-    }
-    case 'ETOH': {
-      return(
-        <View style={styles.textWrapper}>
-          <Text style={styles.instruction}>Identify if the patient shows</Text>
-          <Text style={styles.instruction}>effects of alcohol usage</Text>
-          <Text style={styles.instruction}>using the indicator below</Text>
-        </View>      
-      )
-    }
-    case 'drugUse': {
-      return(
-        <View style={styles.textWrapper}>
-          <Text style={styles.instruction}>Identify if the patient</Text>
-          <Text style={styles.instruction}>uses drug using</Text>
-          <Text style={styles.instruction}>the indicator below</Text>
-        </View>      
-      )
-    }
-    case 'otherSH': {
-      return(
-        <View style={styles.textWrapper}>
-          <Text style={styles.instruction}>Enter the other</Text>
-          <Text style={styles.instruction}>social history</Text>
-          <Text style={styles.instruction}>of the patient</Text>
-        </View>      
-      )
-    }
   } 
 }
 
@@ -307,24 +157,9 @@ const AllergySelect = () => (
   </View>
 )
 
-const YesNoUnknownSelect = () => (
-  <View style={{...StyleSheet.flatten(styles.response), height: '40%'}}>
-    <BooleanSelect title='Yes' icon='check' bgColor='#7BD2A8' color='blue' width='80%'/>
-    <BooleanSelect title='No' icon='times' bgColor='#EF8585' color='blue' width='80%' />
-    <BooleanSelect title='Unknown' icon='question' bgColor='#F9E397' color='blue' width='80%' />
-  </View>
-)
-
-const YesNoSelect = () => (
-  <View style={{...StyleSheet.flatten(styles.response), height: '28%'}}>
-    <BooleanSelect title='Yes' icon='check' bgColor='#7BD2A8' color='blue' width='80%'/>
-    <BooleanSelect title='No' icon='times' bgColor='#EF8585' color='blue' width='80%' />
-  </View>
-)
-
 const SubmitButton = () => (
-  <View style={{width:'100%', position:'absolute', top:'36%', zIndex:10}}>
-    <Button title="Submit" icon="chevron-right" round width="50%"/>
+  <View style={{width:'100%', position:'absolute', top:'120%', zIndex:10}}>
+    <Button title="Submit" icon="chevron-right" titleColor="#3c4859" round width="50%"/>
   </View>
 )
 
@@ -388,71 +223,8 @@ const Response = ({step}) => {
         <View style={styles.response}>
           <TextField placeholder="SpO2" width="80%" keyboardType="numeric" unit="%"/>
           <TextField placeholder="Blood Sugar" width="80%" keyboardType="numeric" unit="mmol/L"/>
+          <SubmitButton />
         </View>
-      )
-    }
-    case 'HTN': {
-      return(
-        <YesNoUnknownSelect />
-      )
-    }
-    case 'DM': {
-      return(
-        <YesNoUnknownSelect />
-      )
-    }
-    case 'TB': {
-      return(
-        <YesNoUnknownSelect />
-      )
-    }
-    case 'asthma': {
-      return(
-        <YesNoUnknownSelect />
-      )
-    }
-    case 'hepatitisABC': {
-      return(
-        <YesNoUnknownSelect />
-      )
-    }
-    case 'malaria': {
-      return(
-        <YesNoUnknownSelect />
-      )
-    }
-    case 'HIV': {
-      return(
-        <YesNoUnknownSelect />
-      )
-    }
-    case 'otherPMH': {
-      return(
-        <View style={styles.response}>
-          <TextField placeholder="PMH" width="80%"/>
-        </View>
-      )
-    }
-    case 'tobacco': {
-      return(
-        <YesNoSelect />
-      )
-    }
-    case 'ETOH': {
-      return(
-        <YesNoSelect />
-      )
-    }
-    case 'drugUse': {
-      return(
-        <YesNoSelect />
-      )
-    }
-    case 'otherSH': {
-      return(
-        <View style={styles.response}>
-          <TextField placeholder="SH" width="80%"/>
-        </View>    
       )
     }
   }
@@ -461,8 +233,8 @@ const Response = ({step}) => {
 const BackgroundInfo = ({xOffset}) => (
     <View style={styles.headerContainer}>
       <LinearGradient style={styles.upper} {...gradientLayout} >
-        <Header/>
-        <Step allSteps={19} step={xOffset/screenWidth} backgroundColor='#fff' highlightColor='pink' />
+        <Header title="Vitals" light="true" to="/triage/patients/:paitentId"/>
+        <Step allSteps={stepList.length-1} step={xOffset/screenWidth} backgroundColor='#fff' highlightColor='pink' />
       </LinearGradient>
     </View>
 )
