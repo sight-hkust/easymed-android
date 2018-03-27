@@ -25,8 +25,8 @@ const TextField = ({value, unit, width, keyboardType, placeholder, onChangeText,
     </View>
   )
 };
-
 export default TextField;
+
 
 const styles = StyleSheet.create({
   container: {
@@ -41,7 +41,14 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.12,
     shadowRadius: 10,
   },
-  
+  textbox: {
+    backgroundColor: '#fff',
+    borderRadius: 5,
+    shadowColor: '#3a4252',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.12,
+    shadowRadius: 10,
+  },
   unit: {
     flex: 8,
     fontSize: 24,

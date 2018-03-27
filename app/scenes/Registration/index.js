@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { View, StatusBar, StyleSheet, Text, TextInput, Platform } from 'react-native';
 import { Redirect } from 'react-router-native';
 import LinearGradient from 'react-native-linear-gradient';
-import Spinner from 'react-native-spinkit'
+import Spinner from 'react-native-spinkit';
+import Modal from 'react-native-modal';
 import { bindActionCreators } from 'redux';
 import { register } from '../../actions/auth';
 import { connect } from 'react-redux'; 
@@ -58,7 +59,21 @@ class Registration extends Component {
               <Textfield icon='lock-alt' obfuscate={true} placeholder='Confirm Password'/>
             </View>
             <Button title="Register" icon="user-plus" titleColor="#9196f0" round onPress={this.signUp.bind(this)}/>
-            <Spinner style={styles.loading} isVisible={this.props.loading} size={44} type='Bounce' color='white'/>
+            <Modal
+              isVisible={this.props.loading}
+              animationIn="fadeIn"
+              backdropOpacity={0}
+              style={{justifyContent: 'center'}}
+            >
+              <View style={styles.loading}>
+                <Spinner
+                isVisible={this.props.loading}
+                size={44}
+                style={{alignSelf: 'center'}}
+                type='Bounce' 
+                color='#81e2d9'/>
+              </View>
+            </Modal>
           </View>
         </LinearGradient>
       )
@@ -114,6 +129,12 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around'
   },
   loading: {
-    alignSelf: 'center'
+    alignSelf: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    height: 88,
+    width: 88,
+    justifyContent: 'center',
+    alignItems:'center',
+    borderRadius: 8
   }
 })

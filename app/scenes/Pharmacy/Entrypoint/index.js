@@ -11,7 +11,7 @@ const nameFormatter = (name) => {
 }
 
 const demoPatient1 = {
-  gender: 'F',
+  sex: 'female',
   name: 'Preah Reachanachâk Kampuchea',
   age: '34',
   tag: 18,
@@ -19,10 +19,11 @@ const demoPatient1 = {
 }
 
 const demoPatient2 = {
-  gender: 'M',
+  gender: 'male',
   name: 'Sanskrit Kambujadeśa',
   age: '26',
-  tag: 24
+  tag: 24,
+  id: 'testing'
 }
 
 const Toolbar = () => (

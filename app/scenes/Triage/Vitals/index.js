@@ -1,4 +1,6 @@
 import React, { Component } from 'react'
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 import { 
   View,
   KeyboardAvoidingView,
@@ -11,6 +13,7 @@ import {
   Dimensions,
   Switch
 } from 'react-native'
+import { createVitals } from '../../../actions/vitals';
 import LinearGradient from 'react-native-linear-gradient';
 import { IconButton, Button } from '../../../components/Button'
 import Icon from 'react-native-fontawesome-pro';
@@ -18,69 +21,27 @@ import TextField from '../../../components/TextField'
 import Step from '../../../components/Step'
 import BooleanSelect from '../../../components/BooleanSelect';
 import Header from '../../../components/Header';
+import Deworming from '../../../components/Deworming';
 
 const screenWidth = Dimensions.get('window').width
 
 const gradientLayout = {
-  colors: ['#F0788A','#EF546A'],
+  colors: ['#f0788a','#ef546a'],
   start: {x: 0.0, y: 1.0},
   end: {x: 1.0, y: 1.0},
   locations: [0, 0.75]
 }
 
-const stepList = [
-  {
-    step: 'vaccination',
-  },
-  {
-    step: 'deworming',
-  },
-  {
-    step: 'allergy',
-  },
-  {
-    step: 'bloodPressure',
-  },
-  {
-    step: 'pulseRateRespirationRate',
-  },
-  {
-    step: 'weightHeight',
-  },
-  {
-    step: 'temperature',
-  },
-  {
-    step: 'SpO2bloodSugar',
-  },
-];
+const stepList = ['pulseRateRespirationRate', 'bloodPressure', 'SpO2bloodSugar', 'temperature', 'weightHeight', 'deworming'];
 
 const Instruction = ({step}) => {
   switch(step) {
-    case 'vaccination': {
-      return (
-        <View style={styles.textWrapper}>
-          <Text style={styles.instruction}>Select the vaccination</Text>
-          <Text style={styles.instruction}>that the patient</Text>
-          <Text style={styles.instruction}>had before</Text>
-        </View>
-      )
-    }
     case 'deworming': {
       return (
         <View style={styles.textWrapper}>
           <Text style={styles.instruction}>Identify the patient's</Text>
-          <Text style={styles.instruction}>deworming history using</Text>
-          <Text style={styles.instruction}>the indicator below</Text>
-        </View>
-      )
-    }
-    case 'allergy': {
-      return (
-        <View style={styles.textWrapper}>
-          <Text style={styles.instruction}>Choose and enter</Text>
-          <Text style={styles.instruction}>the allergy information</Text>
-          <Text style={styles.instruction}>of the patient</Text>
+          <Text style={styles.instruction}>last deworming date</Text>
+          <Text style={styles.instruction}>from below</Text>
         </View>
       )
     }
@@ -132,23 +93,6 @@ const Instruction = ({step}) => {
   } 
 }
 
-const DewormingSelect = () => (
-  <View style={{justifyContent: 'space-around', alignItems: 'center', height: '100%'}}>
-    <TouchableOpacity style={styles.selectStatus}>
-      <Text style={styles.selectStatusText}>UNKNOWN</Text>
-    </TouchableOpacity>
-    <TouchableOpacity style={styles.selectStatus}>
-      <Text style={styles.selectStatusText}>WITHIN 3 MONTHS</Text>
-    </TouchableOpacity>
-    <TouchableOpacity style={styles.selectStatus}>
-      <Text style={styles.selectStatusText}>WITHIN 6 MONTHS</Text>
-    </TouchableOpacity>
-    <TouchableOpacity style={styles.selectStatus}>
-      <Text style={styles.selectStatusText}>NO</Text>
-    </TouchableOpacity>
-  </View>
-)
-
 const AllergySelect = () => (
   <View style={{justifyContent: 'space-around', alignItems: 'center', height: '100%'}}>
     <BooleanSelect title='No' icon='times' bgColor='#EF8585' color='blue' width='80%' />
@@ -163,67 +107,125 @@ const SubmitButton = () => (
   </View>
 )
 
-const Response = ({step}) => {
+const Response = ({step, mutate}) => {
   switch(step) {
-    case 'vaccination': {
-      return (
-        <View style={styles.response}>
-          <TextField placeholder="vaccination1" width="80%"/>
-          <TextField placeholder="vaccination2" width="80%"/>
-        </View>
-      )
-    }
-    case 'deworming': {
-      return (
-        <View style={{marginTop: 16, height: '40%'}}>
-          <DewormingSelect />
-        </View>
-      )
-    }
-    case 'allergy': {
-      return (
-        <View style={{marginTop: 16, height: '32%'}}>
-          <AllergySelect />
-        </View>
-      )
-    }
     case 'bloodPressure': {
       return (
         <View style={styles.response}>
-          <TextField placeholder="Upper BP" width="80%" keyboardType="numeric" unit="mmHg"/>
-          <TextField placeholder="Lower BP" width="80%" keyboardType="numeric" unit="mmHg"/>
+          <TextField 
+            placeholder="Upper BP" 
+            width="80%" 
+            keyboardType="numeric" 
+            unit="mmHg"
+            onChangeText={(bloodPressure) => mutate(
+              ({vitals}) => ({ vitals: { ...vitals, bloodPressure }})
+            )}
+          />
+          <TextField 
+            placeholder="Lower BP" 
+            width="80%" 
+            keyboardType="numeric" 
+            unit="mmHg"
+            onChangeText={(bloodPressure) => mutate(
+              ({vitals}) => ({ vitals: { ...vitals, bloodPressure: `${vitals.bloodPressure.split('/')[0]}/${bloodPressure}` }})
+            )}
+          />
         </View>
       )
     }
     case 'pulseRateRespirationRate': {
       return (
         <View style={styles.response}>
-          <TextField placeholder="Pulse" width="80%" keyboardType="numeric" unit="bpm"/>
-          <TextField placeholder="Respiration" width="80%" keyboardType="numeric" unit="bpm"/>
+          <TextField 
+            placeholder="Pulse" 
+            width="80%" 
+            keyboardType="numeric" 
+            unit="bpm"
+            onChangeText={(pulseRate) => mutate(
+              ({vitals}) => ({ vitals: { ...vitals, pulseRate }})
+            )}
+          />
+          <TextField 
+            placeholder="Respiration" 
+            width="80%" 
+            keyboardType="numeric" 
+            unit="bpm"
+            onChangeText={(respiratoryRate) => mutate(
+              ({vitals}) => ({ vitals: { ...vitals, respiratoryRate }})
+            )}
+          />
         </View>
       )
     }
     case 'weightHeight': {
       return(
         <View style={styles.response}>
-          <TextField placeholder="Weight" width="80%" keyboardType="numeric" unit="kg"/>
-          <TextField placeholder="Height" width="80%" keyboardType="numeric" unit="cm"/>
+          <TextField 
+            placeholder="Weight" 
+            width="80%" 
+            keyboardType="numeric" 
+            unit="kg"
+            onChangeText={(weight) => mutate(
+              ({vitals}) => ({ vitals: { ...vitals, weight }})
+            )}
+          />
+          <TextField 
+            placeholder="Height" 
+            width="80%" 
+            keyboardType="numeric" 
+            unit="cm"
+            onChangeText={(height) => mutate(
+              ({vitals}) => ({ vitals: { ...vitals, height }})
+            )}
+          />
         </View>
       )
     }
     case 'temperature': {
       return(
         <View style={styles.response}>
-          <TextField placeholder="Temperature" width="80%" keyboardType="numeric" unit="℃"/>
+          <TextField 
+            placeholder="Temperature" 
+            width="80%" 
+            keyboardType="numeric" 
+            unit="℃"
+            onChangeText={(temperature) => mutate(
+              ({vitals}) => ({ vitals: { ...vitals, temperature }})
+            )}
+          />
         </View>
       )
     }
     case 'SpO2bloodSugar': {
       return(
         <View style={styles.response}>
-          <TextField placeholder="SpO2" width="80%" keyboardType="numeric" unit="%"/>
-          <TextField placeholder="Blood Sugar" width="80%" keyboardType="numeric" unit="mmol/L"/>
-          <SubmitButton />
+          <TextField 
+            placeholder="SpO2" 
+            width="80%" 
+            keyboardType="numeric" 
+            unit="%"
+            onChangeText={(bloodOxygenSaturation) => mutate(
+              ({vitals}) => ({ vitals: { ...vitals, bloodOxygenSaturation }})
+            )}
+          />
+          <TextField 
+            placeholder="Blood Sugar" 
+            width="80%" 
+            keyboardType="numeric" 
+            unit="mmol/L"
+            onChangeText={(glucoseLevel) => mutate(
+              ({vitals}) => ({ vitals: { ...vitals, glucoseLevel }})
+            )}
+          />
+        </View>
+      )
+    }
+    case 'deworming': {
+      return (
+        <View style={{marginTop: 16, height: '40%'}}>
+          <Deworming onSelect={(lastDewormingDate) =>
+          mutate( ({vitals}) => ({ vitals: { ...vitals, lastDewormingDate }}) )
+        }/>
         </View>
       )
     }
@@ -239,14 +241,14 @@ const BackgroundInfo = ({xOffset}) => (
     </View>
 )
 
-const ScrollItem = ({step}) => (
+const ScrollItem = ({step, mutate}) => (
   <View style={{width: screenWidth}}>
     <Instruction step={step}/>
-    <Response step={step}/>
+    <Response step={step} mutate={mutate}/>
   </View>
 )
 
-const ScrollList = ({handleScroll, scrollViewDidChange}) => {
+const ScrollList = ({handleScroll, scrollViewDidChange, mutate}) => {
   return (
     <ScrollView 
       horizontal = {true} 
@@ -256,19 +258,30 @@ const ScrollList = ({handleScroll, scrollViewDidChange}) => {
       style={styles.scrollViewContainer}
       onContentSizeChange={scrollViewDidChange}
       >
-      {stepList.map(({step, stepNum}, i) => (
-        <ScrollItem key={i} step={step}/>
+      {stepList.map((step, i) => (
+        <ScrollItem key={i} step={step} mutate={mutate}/>
       ))}
     </ScrollView>
   )
 };
 
-export default class Vitals extends Component {
+class Vitals extends Component {
   constructor(props) {
     super(props);
     this.handleScroll = this.handleScroll.bind(this);
     this.state = {
       xOffset:0,
+      vitals: {
+        pulseRate: '',
+        bloodPressure: '',
+        respiratoryRate: '',
+        temperature: '',
+        glucoseLevel: '',
+        bloodOxygenSaturation: '',
+        weight: '',
+        height: '',
+        lastDewormingDate: null
+      }
     }
   }
 
@@ -280,21 +293,44 @@ export default class Vitals extends Component {
     StatusBar.setBarStyle('light-content')
   }
 
+  submit() {
+    console.log(this.state.vitals)
+  }
+
   render() {
     return (
       <KeyboardAvoidingView style={styles.parentContainer}>
         <BackgroundInfo xOffset={this.state.xOffset}/>
-        <ScrollList handleScroll={this.handleScroll}/> 
+        <ScrollList handleScroll={this.handleScroll} mutate={this.setState.bind(this)}/>
+        <Button 
+            title="Submit" 
+            onPress={this.submit.bind(this)} 
+            bgColor="#1d9dff" titleColor="#fff" 
+            icon="chevron-right"
+            width="50%"
+            round
+          />
       </KeyboardAvoidingView>
     )
   }
 }
+
+const mapDispatchToProps = (dispatch) => ({
+  actions: bindActionCreators({createVitals}, dispatch)
+})
+
+const mapStateToProps = (state) => ({
+  vitalsId: state.vitals.id
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(Vitals)
 
 const styles = StyleSheet.create({
   parentContainer: {
     flex: 1,
     justifyContent: 'flex-start',
     backgroundColor: '#f5f6fb',
+    paddingBottom: 12
   },
   headerContainer: {
     flex: 1,

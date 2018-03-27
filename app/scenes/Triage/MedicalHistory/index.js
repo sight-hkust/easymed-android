@@ -22,7 +22,7 @@ import Header from '../../../components/Header';
 const screenWidth = Dimensions.get('window').width
 
 const gradientLayout = {
-  colors: ['#F0788A','#EF546A'],
+  colors: ['#E9D9AE','#E1CB90'],
   start: {x: 0.0, y: 1.0},
   end: {x: 1.0, y: 1.0},
   locations: [0, 0.75]

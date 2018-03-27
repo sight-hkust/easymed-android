@@ -1,27 +1,28 @@
 import {
-    CREATE_PROFILE_REQUEST,
-    CREATE_PROFILE_SUCCESS,
-    CREATE_PROFILE_ERROR,
-    SEARCH_PROFILE_REQUEST,
-    SEARCH_PROFILE_SUCCESS,
-    SEARCH_PROFILE_ERROR
+    CREATE_PATIENT_REQUEST,
+    CREATE_PATIENT_SUCCESS,
+    CREATE_PATIENT_ERROR,
+    SEARCH_PATIENT_REQUEST,
+    SEARCH_PATIENT_SUCCESS,
+    SEARCH_PATIENT_ERROR
 } from '../actions/constants'
 
 const initialState = {
-    profile: {},
+    patientId: null,
+    loading: false,
     error: null
 };
 
 const profileReducer = (state = initialState, {type, payload}) => {
     switch(type) {
-        case CREATE_PROFILE_REQUEST: {
-            return {...state };
+        case CREATE_PATIENT_REQUEST: {
+            return {...state, loading: true };
         }
-        case CREATE_PROFILE_SUCCESS: {
-            return {...state };
+        case CREATE_PATIENT_SUCCESS: {
+            return {...state, loading: false, patientId: payload.patientId};
         }
-        case CREATE_PROFILE_ERROR: {
-            return {...state, error: payload.error};
+        case CREATE_PATIENT_ERROR: {
+            return {...state, loading: false, error: payload.error};
         }
         default: return state;
     }

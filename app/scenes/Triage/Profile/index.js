@@ -11,10 +11,13 @@ import {
   Dimensions,
   Switch 
 } from 'react-native'
+import { Redirect } from 'react-router-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { createPatient } from '../../../actions/patient';
 import LinearGradient from 'react-native-linear-gradient';
+import Modal from 'react-native-modal';
+import Spinner from 'react-native-spinkit';
 import { IconButton, Button } from '../../../components/Button'
 import Icon from 'react-native-fontawesome-pro';
 import Header from '../../../components/Header';
@@ -113,7 +116,7 @@ const Instruction = ({step}) => {
   }
 }
 
-const Response = ({step, mutate, submit, profile}) => {
+const Response = ({step, mutate}) => {
   switch(step) {
     case 'name': {
       return (
@@ -213,18 +216,11 @@ const Response = ({step, mutate, submit, profile}) => {
             keyboardType="numeric"
             onChangeText={(tag) => mutate({tag})}
           />
-          <SubmitButton onPress={submit(profile)}/>
         </View>
       )
     }
   }
 }
-
-const SubmitButton = (onPress) => (
-  <View style={{width:'100%', position:'absolute', bottom:'-24%' , zIndex:10}}>
-    <Button title="Submit" onPress={onPress} bgColor="#1d9dff" titleColor="#fff" icon="chevron-right" round width="50%"/>
-  </View>
-)
 
 const BackgroundInfo = ({xOffset}) => (
     <View style={styles.headerContainer}>
@@ -235,14 +231,14 @@ const BackgroundInfo = ({xOffset}) => (
     </View>
 )
 
-const ScrollItem = ({step, mutate, submit, profile}) => (
+const ScrollItem = ({step, mutate}) => (
   <View style={{width}}>
     <Instruction step={step}/>
-    <Response step={step} mutate={mutate} submit={submit} profile={profile}/>
+    <Response step={step} mutate={mutate}/>
   </View>
 )
 
-const ScrollList = ({handleScroll, scrollViewDidChange, mutate, submit, profile}) => {
+const ScrollList = ({handleScroll, scrollViewDidChange, mutate}) => {
   return (
     <ScrollView 
       horizontal = {true} 
@@ -253,7 +249,7 @@ const ScrollList = ({handleScroll, scrollViewDidChange, mutate, submit, profile}
       onContentSizeChange={scrollViewDidChange}
       >
       {stepList.map((step, i) => (
-        <ScrollItem key={i} step={step} mutate={mutate} submit={submit} profile={profile}/>
+        <ScrollItem key={i} step={step} mutate={mutate}/>
       ))}
     </ScrollView>
   )
@@ -277,7 +273,7 @@ class Profile extends Component {
       },
       tag: ''
     }
-    this.createPatient = props.createPatient.bind(this)
+    this.createPatient = props.actions.createPatient
   }
 
   handleScroll({nativeEvent: { contentOffset: { x }}}){
@@ -288,13 +284,46 @@ class Profile extends Component {
     StatusBar.setBarStyle('light-content', true)
   }
 
+  submit() {
+    this.createPatient(this.state.profile)
+  }
+
   render() {
-    return (
-      <KeyboardAvoidingView style={styles.parentContainer}>
-        <BackgroundInfo xOffset={this.state.xOffset}/>
-        <ScrollList handleScroll={this.handleScroll} mutate={this.setState.bind(this)} submit={this.createPatient} profile={this.state.profile}/> 
-      </KeyboardAvoidingView>
-    )
+    const {patientId} = this.props
+    if(patientId) {
+      return <Redirect to={`/triage/patients/${patientId}`}/>
+    }
+    else {
+      return (
+        <KeyboardAvoidingView style={styles.parentContainer}>
+          <BackgroundInfo xOffset={this.state.xOffset}/>
+          <ScrollList handleScroll={this.handleScroll} mutate={this.setState.bind(this)} />
+          <Button 
+            title="Submit" 
+            onPress={this.submit.bind(this)} 
+            bgColor="#1d9dff" titleColor="#fff" 
+            icon="chevron-right"
+            width="50%"
+            round
+          />
+            <Modal
+              isVisible={this.props.loading}
+              animationIn="fadeIn"
+              backdropOpacity={0}
+              style={{justifyContent: 'center'}}
+            >
+              <View style={styles.loading}>
+                <Spinner
+                isVisible={this.props.loading}
+                size={44}
+                style={{alignSelf: 'center'}}
+                type='Bounce' 
+                color='#81e2d9'/>
+              </View>
+            </Modal>
+        </KeyboardAvoidingView>
+      )
+    }
   }
 }
 
@@ -303,8 +332,8 @@ const mapDispatchToProps = (dispatch) => ({
 })
 
 const mapStateToProps = (state) => ({
-  loading: state.patient.loading,
-  success: state.patient.success
+  loading: state.profile.loading,
+  patientId: state.profile.patientId
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Profile)
@@ -314,6 +343,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-start',
     backgroundColor: '#f5f6fb',
+    paddingBottom: 12
   },
   headerContainer: {
     flex: 1,
@@ -353,5 +383,14 @@ const styles = StyleSheet.create({
   },
   footer: {
     marginTop: 18
+  },
+  loading: {
+    alignSelf: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    height: 88,
+    width: 88,
+    justifyContent: 'center',
+    alignItems:'center',
+    borderRadius: 8
   }
 })

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Image, Keyboard, View, Text, TextInput, StyleSheet, StatusBar, Platform } from 'react-native';
-import Spinner from 'react-native-spinkit'
+import Spinner from 'react-native-spinkit';
+import Modal from 'react-native-modal';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Redirect } from 'react-router-native';
@@ -79,7 +80,21 @@ class Login extends Component {
             <Button title="login" icon="chevron-circle-right" opaque bgColor="#9196f0" round onPress={this.authenticate.bind(this)}/>
             <Button title="create account" icon="user-plus" bgColor="#5beed1" titleColor="white" to={'/register'} round/>
           </View>
-          <Spinner style={styles.loading} isVisible={this.props.loading} size={44} type='Bounce' color='white'/>
+          <Modal
+              isVisible={this.props.loading}
+              animationIn="fadeIn"
+              backdropOpacity={0}
+              style={{justifyContent: 'center'}}
+            >
+              <View style={styles.loading}>
+                <Spinner
+                isVisible={this.props.loading}
+                size={44}
+                style={{alignSelf: 'center'}}
+                type='Bounce' 
+                color='#81e2d9'/>
+              </View>
+          </Modal>
         </LinearGradient>
       )
     }
@@ -154,5 +169,14 @@ const styles = StyleSheet.create({
     height: '30%',
     justifyContent: 'space-around',
     flexDirection: 'column'
+  },
+  loading: {
+    alignSelf: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    height: 88,
+    width: 88,
+    justifyContent: 'center',
+    alignItems:'center',
+    borderRadius: 8
   }
 })

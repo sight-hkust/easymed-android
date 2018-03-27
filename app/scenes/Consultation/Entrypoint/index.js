@@ -6,17 +6,19 @@ import Header from '../../../components/Header'
 import { PatientListItem as Patient } from '../../../components/Patient'
 
 const demoPatient1 = {
-  gender: 'F',
+  sex: 'female',
   name: 'Preah Reachanachâk Kampuchea',
   age: '34',
-  tag: 18
+  tag: 18,
+  id: 1234
 }
 
 const demoPatient2 = {
-  gender: 'M',
+  sex: 'male',
   name: 'Sanskrit Kambujadeśa',
   age: '26',
-  tag: 24
+  tag: 24,
+  id: 1234
 }
 
 const Toolbar = () => (
@@ -40,11 +42,11 @@ const ServiceQueue = () => {
   return (
     <ScrollView>
       {/* <EmptyStub /> */}
-      <Patient patient={demoPatient1} to='/' />
-      <Patient patient={demoPatient2} to='/' />
-      <Patient patient={demoPatient1} to='/' />
-      <Patient patient={demoPatient2} to='/' />
-      <Patient patient={demoPatient2} to='/' />
+      <Patient patient={demoPatient1} to={`/consultation/patients/${demoPatient1.id}`} />
+      <Patient patient={demoPatient2} tto={`/consultation/patients/${demoPatient2.id}`} />
+      <Patient patient={demoPatient1} to={`/consultation/patients/${demoPatient1.id}`} />
+      <Patient patient={demoPatient2} to={`/consultation/patients/${demoPatient2.id}`} />
+      <Patient patient={demoPatient2} to={`/consultation/patients/${demoPatient2.id}`} />
     </ScrollView>
   )
 }

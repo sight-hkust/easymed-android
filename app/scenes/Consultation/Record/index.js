@@ -1,6 +1,16 @@
 import React, { Component } from 'react'
 import { Image, View, Text, StatusBar, StyleSheet, ScrollView } from 'react-native'
 import Icon from 'react-native-fontawesome-pro';
+import Header from '../../../components/Header';
+import { IconButton } from '../../../components/Button';
+
+const Toolbar = () => (
+  <View style={styles.toolbar}>
+    <IconButton name="plus" color="#3c4859" />
+    <IconButton name="edit" color="#3c4859" />
+    <IconButton name="search" color="#3c4859"/>
+  </View>
+)
 
 const Gender = ({sex}) => {
   const style = {
@@ -90,9 +100,11 @@ export default class Record extends Component {
   render() {
     return (
       <View style={styles.container}>
+        <Header title="Medical Record" to="/consultation" />
+        <Toolbar />
         <ScrollView>
           <Gender sex="male"/>
-          <PatientName name="Peter Quill" alternate="Starlord"/>
+          <PatientName name="Preah R" alternate="Bopha"/>
           <Vitals/>
           <Cases />
         </ScrollView>
@@ -107,7 +119,15 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     paddingTop: '6%',
     backgroundColor: '#f5f6fb',
-    alignItems: 'center'
+  },
+  toolbar: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginRight: 12,
+    width: '40%',
+    height: 56,
+    alignItems: 'center',
+    alignSelf: 'flex-end'
   },
   name: {
     marginVertical: 12,
@@ -140,6 +160,7 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     backgroundColor: '#fff',
     justifyContent: 'space-between',
+    alignSelf: 'center',
     alignItems: 'center',
     marginVertical: 8,
     paddingVertical: 12,
@@ -154,7 +175,8 @@ const styles = StyleSheet.create({
   cases: {
     height: 224,
     width: 336,
-    marginVertical: 8
+    marginVertical: 8,
+    alignSelf: 'center',
   },
   record: {
     borderRadius: 6,

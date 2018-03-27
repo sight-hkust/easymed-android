@@ -6,35 +6,35 @@ import Icon from 'react-native-fontawesome-pro';
 
 const Menu = () => (
   <View style={styles.container}>
-    <Header title="Add Records"/>
+    <Header title="Add Records" to="/triage"/>
     <ScrollView>
       <Link style={styles.menuItem} to="/triage/patients/:patientId/vitals">
         <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
-          <Icon name="heartbeat" size={18} type="solid" color="#566DF0"/>
+          <Icon name="heartbeat" size={20} type="solid" color="#566DF0"/>
           <Text style={styles.text}>Vitals</Text>
         </View>
       </Link>
       <Link style={styles.menuItem} to="/triage/patients/:patientId/history">
         <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
-          <Icon name="procedures" size={18} type="solid" color="#566DF0"/>
+          <Icon name="procedures" size={20} type="solid" color="#566DF0"/>
           <Text style={styles.text}>Previous Medical History</Text>
         </View>
       </Link>
       <Link style={styles.menuItem} to="/triage/patients/:patientId/screening">
         <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
-          <Icon name="diagnoses" size={18} type="solid" color="#566DF0"/>
+          <Icon name="diagnoses" size={20} type="solid" color="#566DF0"/>
           <Text style={styles.text}>Screening</Text>
         </View>
       </Link>
       <Link style={styles.menuItem} to="/triage/patients/:patientId/vaccination">
         <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
-          <Icon name="allergies" size={18} type="solid" color="#566DF0"/>
+          <Icon name="allergies" size={20} type="solid" color="#566DF0"/>
           <Text style={styles.text}>Drug History and Allergies</Text>
         </View>
       </Link>
       <Link style={styles.menuItem} to="/triage/patients/:patientId/pregnancy">
         <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
-          <Icon name="female" size={18} type="solid" color="#566DF0"/>
+          <Icon name="female" size={20} type="solid" color="#566DF0"/>
           <Text style={styles.text}>Pregnancy</Text>
         </View>
       </Link>

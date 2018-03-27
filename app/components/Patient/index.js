@@ -1,7 +1,7 @@
 import React from 'react'
 import { View, StyleSheet, Text, TouchableOpacity } from 'react-native'
 import { Link } from 'react-router-native'
-import Icon from '../Icon'
+import Icon from 'react-native-fontawesome-pro';
 import { IconButton } from '../Button'
 
 const Tag = ({tag}) => (
@@ -10,11 +10,11 @@ const Tag = ({tag}) => (
   </View>
 )
 
-const nameFormatter = (name) => {
-  return name.split(' ').map((part, i) => { if(i == 0) { return part } else if (i == 1) { return part.substring(0,1) } else return ''}).join(' ').toUpperCase()
+const nameFormatter = ({regular}) => {
+  return regular.split(' ').map((part, i) => { if(i == 0) { return part } else if (i == 1) { return part.substring(0,1) } else return ''}).join(' ').toUpperCase()
 }
 
-const PatientListItem = ({patient: {age, gender, name, tag}, to}) => (
+const PatientListItem = ({patient: {age, sex, name, tag=0}, to}) => (
   <Link component={TouchableOpacity} to={to} style={styles.patient} activeOpacity={0.4}>
     <Tag tag={tag}/>
     <View style={styles.patientInfoContainer}>
@@ -23,7 +23,7 @@ const PatientListItem = ({patient: {age, gender, name, tag}, to}) => (
         <Text style={styles.patientPhysicalAttributeText}>AGE: {age}</Text>
         <View style={styles.patientGender}>
           <Text style={styles.patientPhysicalAttributeText}>SEX: </Text>
-          <Icon name={gender==='F'?'venus':'mars'} color={gender==='F'?'#ff5273':'#4c79fc'} size={18}/>
+          <Icon name={sex==='female'?'venus':'mars'} color={sex==='female'?'#ff5273':'#4c79fc'} size={18}/>
         </View>
       </View>
     </View>

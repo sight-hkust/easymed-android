@@ -32,14 +32,27 @@ async function deauthenticate(){
 
 async function createPatient(profile){
   const Patient = Parse.Object.extend('Patient')
-  const Profile = Parse.Object.extend('Profile')
-  const _patient = new Patient()
-  const _profile = new Profile()
-  Object.keys(_profile).forEach(attribute => _profile.set(attribute, profile[attribute]))
-  patient.addUnique('profile', _profile)
+  let _patient = new Patient()
+  _patient.set('profile', profile)
   try {
-    await Promise.all([_profile.save(), _patient.save()])
+    await _patient.save()
     return _patient.id
+  } catch (error) {
+    console.log(error)
+    throw error
+  }
+}
+
+async function fetchPatients() {
+  const Patient = Parse.Object.extend('Patient')
+  const query = new Parse.Query(Patient)
+  try {
+    const result = await query.find()
+    return result.map((patient) => ({
+      ...patient.attributes.profile,
+      id: patient.id,
+      age: new Date().getFullYear() - new Date(patient.attributes.profile.dob).getFullYear()
+    }))
   } catch (error) {
     throw error
   }
@@ -100,4 +113,6 @@ export {
   deauthenticate,
   insertVitalsRecord,
   insertMedicalHistory,
+  createPatient,
+  fetchPatients
 }
