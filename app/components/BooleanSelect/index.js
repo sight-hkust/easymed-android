@@ -1,16 +1,47 @@
-import React from 'react'
+import React, { Component }from 'react'
 import { Keyboard, View, StyleSheet, Text, TouchableOpacity } from 'react-native'
 import { Link } from 'react-router-native';
-import Icon from '../Icon'
+import Icon from 'react-native-fontawesome-pro';
 
-const BooleanSelect = ({title, icon, bgColor, width, onPress}) => (
-    <TouchableOpacity style={{...styles.default, width}} onPress={onPress}>
-      <View style={{width:72, height:56, backgroundColor:bgColor, alignItems:'flex-start', justifyContent:'center', paddingLeft:12, borderTopLeftRadius:5, borderBottomLeftRadius:5, marginRight:24 }}>
-        { icon && <Icon name={icon} color='#fff' size={40}/> }
+export default class BooleanSelect extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      selected: ''
+    }
+  }
+
+  render() {
+    const highlighted = {
+      ...StyleSheet.flatten(styles.default),
+      borderRightWidth: 6,
+      borderStyle: 'solid',
+      borderColor: '#1d9dff'
+    }
+    return (
+      <View style={{...StyleSheet.flatten(styles.response), height: '28%'}}>
+        <TouchableOpacity style={this.state.selected==='yes'?highlighted:styles.default} onPress={() => {
+          this.setState({selected: 'yes'})
+          this.props.onSelect('yes')
+        }}>
+          <View style={{width:72, height:56, backgroundColor:'#7BD2A8', alignItems:'flex-start', justifyContent:'center', paddingLeft:12, borderTopLeftRadius:5, borderBottomLeftRadius:5, marginRight:24 }}>
+            <Icon name="check" color='#fff' size={40}/>
+          </View>
+          <Text style={{fontFamily: 'Nunito-Bold', color:'#3c4859', fontSize:24 }}>{'yes'.toUpperCase()}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={this.state.selected==='no'?highlighted:styles.default} onPress={() => {
+          this.setState({selected: 'no'})
+          this.props.onSelect('no')
+        }}>
+          <View style={{width:72, height:56, backgroundColor:'#EF8585', alignItems:'flex-start', justifyContent:'center', paddingLeft:12, borderTopLeftRadius:5, borderBottomLeftRadius:5, marginRight:24 }}>
+            <Icon name="times" color='#fff' size={40}/>
+          </View>
+          <Text style={{fontFamily: 'Nunito-Bold', color:'#3c4859', fontSize:24 }}>{'no'.toUpperCase()}</Text>
+        </TouchableOpacity>
       </View>
-      <Text style={{fontFamily: 'Nunito-Bold', color:'#3c4859', fontSize:24 }}>{title.toUpperCase()}</Text>
-    </TouchableOpacity>
-)
+    )
+  }
+}
 
 const styles = {
   default: {
@@ -28,7 +59,12 @@ const styles = {
     shadowRadius: 10,
     alignItems: 'center',
     justifyContent: 'flex-start'
+  },
+  response: {
+    marginTop: 16,
+    height: '28%',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    paddingBottom: '8%'
   }
 }
-
-export default BooleanSelect

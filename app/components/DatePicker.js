@@ -91,7 +91,7 @@ class DatePickerSheet extends Component {
   }
 }
 
-export default class Deworming extends Component {
+export default class DatePicker extends Component {
   constructor(props) {
     super(props)
     this.state = {

@@ -43,6 +43,28 @@ async function createPatient(profile){
   }
 }
 
+async function fetchMedicines() {
+  const Medicine = Parse.Object.extend('Medicine')
+  const query = new Parse.Query(Medicine)
+  try {
+    const result = await query.find()
+    return result.map((medicine) => medicine.attributes)
+  } catch (error) {
+    throw error
+  }
+}
+
+async function fetchDiagnosis() {
+  const Diagnosis = Parse.Object.extend('Diagnosis')
+  const query = new Parse.Query(Diagnosis)
+  try {
+    const result = await query.find()
+    return result.map((diagnosis) => diagnosis.attributes)
+  } catch (error) {
+    throw error
+  }
+}
+
 async function fetchPatients() {
   const Patient = Parse.Object.extend('Patient')
   const query = new Parse.Query(Patient)
@@ -114,5 +136,7 @@ export {
   insertVitalsRecord,
   insertMedicalHistory,
   createPatient,
-  fetchPatients
+  fetchPatients,
+  fetchDiagnosis,
+  fetchMedicines
 }

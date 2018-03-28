@@ -21,7 +21,7 @@ import TextField from '../../../components/TextField'
 import Step from '../../../components/Step'
 import BooleanSelect from '../../../components/BooleanSelect';
 import Header from '../../../components/Header';
-import Deworming from '../../../components/Deworming';
+import DatePicker from '../../../components/DatePicker';
 
 const screenWidth = Dimensions.get('window').width
 
@@ -223,7 +223,7 @@ const Response = ({step, mutate}) => {
     case 'deworming': {
       return (
         <View style={{marginTop: 16, height: '40%'}}>
-          <Deworming onSelect={(lastDewormingDate) =>
+          <DatePicker onSelect={(lastDewormingDate) =>
           mutate( ({vitals}) => ({ vitals: { ...vitals, lastDewormingDate }}) )
         }/>
         </View>
@@ -265,7 +265,7 @@ const ScrollList = ({handleScroll, scrollViewDidChange, mutate}) => {
   )
 };
 
-class Vitals extends Component {
+export default class Vitals extends Component {
   constructor(props) {
     super(props);
     this.handleScroll = this.handleScroll.bind(this);
@@ -315,15 +315,15 @@ class Vitals extends Component {
   }
 }
 
-const mapDispatchToProps = (dispatch) => ({
-  actions: bindActionCreators({createVitals}, dispatch)
-})
+// const mapDispatchToProps = (dispatch) => ({
+//   actions: bindActionCreators({createVitals}, dispatch)
+// })
 
-const mapStateToProps = (state) => ({
-  vitalsId: state.vitals.id
-})
+// const mapStateToProps = (state) => ({
+//   vitalsId: state.vitals.id
+// })
 
-export default connect(mapStateToProps, mapDispatchToProps)(Vitals)
+// export default connect(mapStateToProps, mapDispatchToProps)(Vitals)
 
 const styles = StyleSheet.create({
   parentContainer: {

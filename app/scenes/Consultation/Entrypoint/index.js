@@ -7,7 +7,9 @@ import { PatientListItem as Patient } from '../../../components/Patient'
 
 const demoPatient1 = {
   sex: 'female',
-  name: 'Preah Reachanachâk Kampuchea',
+  name: {
+    regular: 'Preah Reachanachâk Kampuchea'
+  },
   age: '34',
   tag: 18,
   id: 1234
@@ -15,7 +17,9 @@ const demoPatient1 = {
 
 const demoPatient2 = {
   sex: 'male',
-  name: 'Sanskrit Kambujadeśa',
+  name: {
+    regular: 'Sanskrit Kambujadeśa'
+  },
   age: '26',
   tag: 24,
   id: 1234

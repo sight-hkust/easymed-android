@@ -28,32 +28,7 @@ const gradientLayout = {
   locations: [0, 0.75]
 }
 
-const stepList = [
-  {
-    step: 'HTN',
-  },
-  {
-    step: 'DM',
-  },
-  {
-    step: 'TB',
-  },
-  {
-    step: 'asthma',
-  },
-  {
-    step: 'hepatitisABC',
-  },
-  {
-    step: 'malaria',
-  },
-  {
-    step: 'HIV',
-  },
-  {
-    step: 'otherPMH',
-  },
-];
+const stepList = ['HTN', 'DM', 'TB', 'asthma', 'hepatitisABC', 'malaria', 'HIV','otherPMH',];
 
 const Instruction = ({step}) => {
   switch(step) {
@@ -132,62 +107,63 @@ const Instruction = ({step}) => {
   } 
 }
 
-const YesNoUnknownSelect = () => (
-  <View style={{...StyleSheet.flatten(styles.response), height: '40%'}}>
-    <BooleanSelect title='Yes' icon='check' bgColor='#7BD2A8' color='blue' width='80%'/>
-    <BooleanSelect title='No' icon='times' bgColor='#EF8585' color='blue' width='80%' />
-    <BooleanSelect title='Unknown' icon='question' bgColor='#F9E397' color='blue' width='80%' />
-  </View>
-)
-
-const SubmitButton = () => (
-  <View style={{width:'100%', position:'absolute', top:'100%', zIndex:10}}>
-    <Button title="Submit" icon="chevron-right" titleColor="#3c4859" round width="50%"/>
-  </View>
-)
-
-const Response = ({step}) => {
+const Response = ({step, mutate}) => {
   switch(step) {
     case 'HTN': {
       return(
-        <YesNoUnknownSelect />
+        <BooleanSelect onSelect={(hypertension) =>
+          mutate( ({medicalHistory}) => ({ medicalHistory: { ...medicalHistory, hypertension }}) )
+        }/>
       )
     }
     case 'DM': {
       return(
-        <YesNoUnknownSelect />
+        <BooleanSelect onSelect={(diabetes) =>
+          mutate( ({medicalHistory}) => ({ medicalHistory: { ...medicalHistory, diabetes }}) )
+        }/>
       )
     }
     case 'TB': {
       return(
-        <YesNoUnknownSelect />
+        <BooleanSelect onSelect={(tuberculosis) =>
+          mutate( ({medicalHistory}) => ({ medicalHistory: { ...medicalHistory, tuberculosis }}) )
+        }/>
       )
     }
     case 'asthma': {
       return(
-        <YesNoUnknownSelect />
+        <BooleanSelect onSelect={(asthma) =>
+          mutate( ({medicalHistory}) => ({ medicalHistory: { ...medicalHistory, asthma }}) )
+        }/>
       )
     }
     case 'hepatitisABC': {
       return(
-        <YesNoUnknownSelect />
+        <BooleanSelect onSelect={(hepatitis) =>
+          mutate( ({medicalHistory}) => ({ medicalHistory: { ...medicalHistory, hepatitis }}) )
+        }/>
       )
     }
     case 'malaria': {
       return(
-        <YesNoUnknownSelect />
+        <BooleanSelect onSelect={(malaria) =>
+          mutate( ({medicalHistory}) => ({ medicalHistory: { ...medicalHistory, malaria }}) )
+        }/>
       )
     }
     case 'HIV': {
       return(
-        <YesNoUnknownSelect />
+        <BooleanSelect onSelect={(HIV) =>
+          mutate( ({medicalHistory}) => ({ medicalHistory: { ...medicalHistory, HIV }}) )
+        }/>
       )
     }
     case 'otherPMH': {
       return(
         <View style={styles.response}>
-          <TextField placeholder="PMH" width="80%"/>
-          <SubmitButton />
+          <TextField placeholder="PMH" width="80%" onChangeText={(other) => mutate(
+            ({medicalHistory}) => ({medicalHistory: {...medicalHistory, other}})
+          )} />
         </View>
       )
     }
@@ -203,14 +179,14 @@ const BackgroundInfo = ({xOffset}) => (
     </View>
 )
 
-const ScrollItem = ({step}) => (
+const ScrollItem = ({step, mutate}) => (
   <View style={{width: screenWidth}}>
     <Instruction step={step}/>
-    <Response step={step}/>
+    <Response step={step} mutate={mutate}/>
   </View>
 )
 
-const ScrollList = ({handleScroll, scrollViewDidChange}) => {
+const ScrollList = ({handleScroll, scrollViewDidChange, mutate}) => {
   return (
     <ScrollView 
       horizontal = {true} 
@@ -220,8 +196,8 @@ const ScrollList = ({handleScroll, scrollViewDidChange}) => {
       style={styles.scrollViewContainer}
       onContentSizeChange={scrollViewDidChange}
       >
-      {stepList.map(({step, stepNum}, i) => (
-        <ScrollItem key={i} step={step}/>
+      {stepList.map((step, i) => (
+        <ScrollItem key={i} step={step} mutate={mutate}/>
       ))}
     </ScrollView>
   )
@@ -233,6 +209,16 @@ export default class MedicalHistory extends Component {
     this.handleScroll = this.handleScroll.bind(this);
     this.state = {
       xOffset:0,
+      medicalHistory: {
+        hypertension: '',
+        diabetes: '',
+        tuberculosis: '',
+        asthma: '',
+        malaria: '',
+        hepatitis: '',
+        HIV: '',
+        other: ''
+      }
     }
   }
 
@@ -248,7 +234,7 @@ export default class MedicalHistory extends Component {
     return (
       <KeyboardAvoidingView style={styles.parentContainer}>
         <BackgroundInfo xOffset={this.state.xOffset}/>
-        <ScrollList handleScroll={this.handleScroll}/> 
+        <ScrollList handleScroll={this.handleScroll} mutate={this.setState.bind(this)}/> 
       </KeyboardAvoidingView>
     )
   }

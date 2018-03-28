@@ -3,6 +3,7 @@ import { Image, View, Text, StatusBar, StyleSheet, ScrollView } from 'react-nati
 import Icon from 'react-native-fontawesome-pro';
 import Header from '../../../components/Header';
 import { IconButton } from '../../../components/Button';
+import Modal from 'react-native-modal';
 
 const Toolbar = () => (
   <View style={styles.toolbar}>

@@ -6,13 +6,16 @@ import Header from '../../../components/Header'
 import { PatientListItem as Patient } from '../../../components/Patient'
 import { Link } from 'react-router-native'
 
-const nameFormatter = (name) => {
-  return name.split(' ').map((part, i) => { if(i == 0) { return part } else if (i == 1) { return part.substring(0,1) } else return ''}).join(' ').toUpperCase()
+const nameFormatter = ({regular}) => {
+  return regular.split(' ').map((part, i) => { if(i == 0) { return part } else if (i == 1) { return part.substring(0,1) } else return ''}).join(' ').toUpperCase()
 }
 
 const demoPatient1 = {
   sex: 'female',
-  name: 'Preah Reachanachâk Kampuchea',
+  name: {
+    regular: 'Preah Reachanachâk',
+    khmer: 'Kampuchea'
+  },
   age: '34',
   tag: 18,
   id: 'something'
@@ -20,7 +23,10 @@ const demoPatient1 = {
 
 const demoPatient2 = {
   gender: 'male',
-  name: 'Sanskrit Kambujadeśa',
+  name: {
+    regular: 'Sanskrit Kambujadeśa',
+    khmer: 'Kambujadeśa'
+  },
   age: '26',
   tag: 24,
   id: 'testing'

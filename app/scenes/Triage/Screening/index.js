@@ -28,20 +28,7 @@ const gradientLayout = {
   locations: [0, 0.75]
 }
 
-const stepList = [
-  {
-    step: 'tobacco',
-  },
-  {
-    step: 'ETOH',
-  },
-  {
-    step: 'drugUse',
-  },
-  {
-    step: 'otherSH',
-  },
-];
+const stepList = ['tobacco', 'ETOH', 'drugUse', 'otherSH',];
 
 const Instruction = ({step}) => {
   switch(step) {
@@ -84,41 +71,49 @@ const Instruction = ({step}) => {
   } 
 }
 
-const YesNoSelect = () => (
-  <View style={{...StyleSheet.flatten(styles.response), height: '28%'}}>
-    <BooleanSelect title='Yes' icon='check' bgColor='#7BD2A8' color='blue' width='80%'/>
-    <BooleanSelect title='No' icon='times' bgColor='#EF8585' color='blue' width='80%' />
-  </View>
-)
-
 const SubmitButton = () => (
   <View style={{width:'100%', position:'absolute', top:'100%', zIndex:10}}>
     <Button title="Submit" icon="chevron-right" titleColor="#3c4859" round width="50%"/>
   </View>
 )
 
-const Response = ({step}) => {
+const Response = ({step, mutate}) => {
   switch(step) {
     case 'tobacco': {
       return(
-        <YesNoSelect />
+        <BooleanSelect onSelect={(tobaccoUse) => 
+          mutate(
+            ({screening}) => ({ screening: { ...screening, tobaccoUse}})
+          )
+        }/>
       )
     }
     case 'ETOH': {
       return(
-        <YesNoSelect />
+        <BooleanSelect onSelect={(alchoholUse) => 
+          mutate(
+            ({screening}) => ({ screening: { ...screening, alchoholUse}})
+          )
+        }/>
       )
     }
     case 'drugUse': {
       return(
-        <YesNoSelect />
+        <BooleanSelect onSelect={(drugUse) => 
+          mutate(
+            ({screening}) => ({ screening: { ...screening, drugUse}})
+          )
+        }/>
       )
     }
     case 'otherSH': {
       return(
         <View style={styles.response}>
-          <TextField placeholder="SH" width="80%"/>
-          <SubmitButton />
+          <TextField placeholder="SH" width="80%" onChangeText={
+            (other) => mutate(
+              ({screening}) => ({ screening: { ...screening, other}})
+            )
+          }/>
         </View>    
       )
     }
@@ -134,14 +129,14 @@ const BackgroundInfo = ({xOffset}) => (
     </View>
 )
 
-const ScrollItem = ({step}) => (
+const ScrollItem = ({step, mutate}) => (
   <View style={{width: screenWidth}}>
     <Instruction step={step}/>
-    <Response step={step}/>
+    <Response step={step} mutate={mutate}/>
   </View>
 )
 
-const ScrollList = ({handleScroll, scrollViewDidChange}) => {
+const ScrollList = ({handleScroll, scrollViewDidChange, mutate}) => {
   return (
     <ScrollView 
       horizontal = {true} 
@@ -151,8 +146,8 @@ const ScrollList = ({handleScroll, scrollViewDidChange}) => {
       style={styles.scrollViewContainer}
       onContentSizeChange={scrollViewDidChange}
       >
-      {stepList.map(({step, stepNum}, i) => (
-        <ScrollItem key={i} step={step}/>
+      {stepList.map((step, i) => (
+        <ScrollItem key={i} step={step} mutate={mutate}/>
       ))}
     </ScrollView>
   )
@@ -164,6 +159,12 @@ export default class Screening extends Component {
     this.handleScroll = this.handleScroll.bind(this);
     this.state = {
       xOffset:0,
+      screening: {
+        tobaccoUse: '',
+        alchoholUse: '',
+        drugUse: '',
+        other: ''
+      }
     }
   }
 
@@ -179,7 +180,7 @@ export default class Screening extends Component {
     return (
       <KeyboardAvoidingView style={styles.parentContainer}>
         <BackgroundInfo xOffset={this.state.xOffset}/>
-        <ScrollList handleScroll={this.handleScroll}/> 
+        <ScrollList handleScroll={this.handleScroll} mutate={this.setState.bind(this)}/> 
       </KeyboardAvoidingView>
     )
   }

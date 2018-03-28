@@ -6,6 +6,7 @@ import {
 
 const initialState = {
     vitals: {},
+    id: '',
     error: null
 }
 

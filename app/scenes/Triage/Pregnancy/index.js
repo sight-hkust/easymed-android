@@ -17,6 +17,7 @@ import Icon from 'react-native-fontawesome-pro';
 import Header from '../../../components/Header';
 import TextField from '../../../components/TextField';
 import Step from '../../../components/Step';
+import DatePicker from '../../../components/DatePicker';
 import BooleanSelect from '../../../components/BooleanSelect';
 
 const screenWidth = Dimensions.get('window').width
@@ -107,75 +108,75 @@ const Instruction = ({step}) => {
   } 
 }
 
-const YesNoUnknownSelect = () => (
-  <View style={{...StyleSheet.flatten(styles.response), height: '40%'}}>
-    <BooleanSelect title='Yes' icon='check' bgColor='#7BD2A8' color='blue' width='80%'/>
-    <BooleanSelect title='No' icon='times' bgColor='#EF8585' color='blue' width='80%' />
-    <BooleanSelect title='Unknown' icon='question' bgColor='#F9E397' color='blue' width='80%' />
-  </View>
-)
-
-const YesNoSelect = () => (
-  <View style={{...StyleSheet.flatten(styles.response), height: '28%'}}>
-    <BooleanSelect title='Yes' icon='check' bgColor='#7BD2A8' color='blue' width='80%'/>
-    <BooleanSelect title='No' icon='times' bgColor='#EF8585' color='blue' width='80%' />
-  </View>
-)
-
 const SubmitButton = () => (
   <View style={{width:'100%', position:'absolute', top:'100%', zIndex:10}}>
     <Button title="Submit" icon="chevron-right" titleColor="#3c4859" round width="50%"/>
   </View>
 )
 
-const Response = ({step}) => {
+const Response = ({step, mutate}) => {
   switch(step) {
     case 'lmp': {
       return (
         <View style={styles.response}>
-          <TextField placeholder="Date" width="80%"/>
+          <DatePicker onSelect={(lastMenstrualPeriodDate) =>
+          mutate( ({pregnancy}) => ({ pregnancy: { ...pregnancy, lastMenstrualPeriodDate }}) )
+        }/>
         </View>
       )
     }
     case 'gestation': {
       return (
         <View style={styles.response}>
-          <TextField placeholder="Weeks" width="80%"/>
+          <TextField placeholder="Weeks" width="80%" onChangeText={(gestationalAge) => mutate(
+            ({pregnancy}) => ({pregnancy: {...pregnancy, gestationalAge}})
+          )}/>
         </View>
       )
     }
     case 'breastFeeding': {
-      return <YesNoSelect />
+      return <BooleanSelect onSelect={(breastFeeding) =>
+        mutate( ({pregnancy}) => ({ pregnancy: { ...pregnancy, breastFeeding }}) )
+      }/>
     }
     case 'contraceptiveUse': {
-      return <YesNoSelect />
+      return <BooleanSelect  onSelect={(contraceptiveUse) =>
+        mutate( ({pregnancy}) => ({ pregnancy: { ...pregnancy, contraceptiveUse }}) )
+      }/>
     }
     case 'liveBirth': {
       return (
         <View style={styles.response}>
-          <TextField placeholder="Live Birth" width="80%"/>
+          <TextField placeholder="Live Birth" width="80%" onChangeText={(liveBirth) => mutate(
+            ({pregnancy}) => ({pregnancy: {...pregnancy, liveBirth}})
+          )}/>
         </View>
       )
     }
     case 'miscarriage': {
       return (
         <View style={styles.response}>
-          <TextField placeholder="Miscarriage" width="80%"/>
+          <TextField placeholder="Miscarriage" width="80%" onChangeText={(miscarriage) => mutate(
+            ({pregnancy}) => ({pregnancy: {...pregnancy, miscarriage}})
+          )}/>
         </View>
       )
     }
     case 'abortion': {
       return (
         <View style={styles.response}>
-          <TextField placeholder="Abortion" width="80%"/>
+          <TextField placeholder="Abortion" width="80%" onChangeText={(abortion) => mutate(
+            ({pregnancy}) => ({pregnancy: {...pregnancy, abortion}})
+          )}/>
         </View>
       )
     }
     case 'stillBorn': {
       return (
         <View style={styles.response}>
-          <TextField placeholder="Still Born" width="80%"/>
-          <SubmitButton />
+          <TextField placeholder="Still Born" width="80%" onChangeText={(stillBorn) => mutate(
+            ({pregnancy}) => ({pregnancy: {...pregnancy, stillBorn}})
+          )}/>
         </View>
       )
     }
@@ -191,14 +192,14 @@ const BackgroundInfo = ({xOffset}) => (
     </View>
 )
 
-const ScrollItem = ({step}) => (
+const ScrollItem = ({step, mutate}) => (
   <View style={{width: screenWidth}}>
     <Instruction step={step}/>
-    <Response step={step}/>
+    <Response step={step} mutate={mutate}/>
   </View>
 )
 
-const ScrollList = ({handleScroll, scrollViewDidChange}) => {
+const ScrollList = ({handleScroll, scrollViewDidChange, mutate}) => {
   return (
     <ScrollView 
       horizontal = {true} 
@@ -209,7 +210,7 @@ const ScrollList = ({handleScroll, scrollViewDidChange}) => {
       onContentSizeChange={scrollViewDidChange}
       >
       {stepList.map((step, i) => (
-        <ScrollItem key={i} step={step}/>
+        <ScrollItem key={i} step={step} mutate={mutate}/>
       ))}
     </ScrollView>
   )
@@ -221,6 +222,16 @@ export default class Pregnancy extends Component {
     this.handleScroll = this.handleScroll.bind(this);
     this.state = {
       xOffset:0,
+      pregnancy: {
+        lastMenstrualPeriodDate: null,
+        gestationalAge: '',
+        breastFeeding: '',
+        contraceptiveUse: '',
+        liveBirth: '',
+        miscarriage: '',
+        abortion: '',
+        stillBorn: ''
+      }
     }
   }
 
@@ -236,7 +247,7 @@ export default class Pregnancy extends Component {
     return (
       <KeyboardAvoidingView style={styles.parentContainer} behaviro="padding">
         <BackgroundInfo xOffset={this.state.xOffset}/>
-        <ScrollList handleScroll={this.handleScroll}/> 
+        <ScrollList handleScroll={this.handleScroll} mutate={this.setState.bind(this)}/> 
       </KeyboardAvoidingView>
     )
   }

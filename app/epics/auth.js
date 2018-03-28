@@ -15,9 +15,10 @@ import { Observable } from 'rxjs';
 import 'rxjs/add/operator/concatMap';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
+import 'rxjs/add/operator/debounce'
 
 const registerEpic = action$ => 
-  action$.ofType(AUTH_REGISTER_REQUEST).concatMap(({payload}) => {
+  action$.ofType(AUTH_REGISTER_REQUEST).debounce(500).concatMap(({payload}) => {
     const {username, password} = payload
     return Observable.fromPromise(register(username, password))
   })
@@ -25,7 +26,7 @@ const registerEpic = action$ =>
   .catch(error => Observable.of({type: AUTH_REGISTER_ERROR, payload: {error}}))
 
 const loginEpic = action$ => 
-  action$.ofType(AUTH_LOGIN_REQUEST).concatMap(({payload}) => {
+  action$.ofType(AUTH_LOGIN_REQUEST).debounce(500).concatMap(({payload}) => {
     const {username, password} = payload
     return Observable.fromPromise(authenticate(username, password))
   })

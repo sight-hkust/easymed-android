@@ -3,6 +3,7 @@ import { View, Text, ScrollView, StyleSheet } from 'react-native';
 import { Link } from 'react-router-native';
 import Header from '../../../components/Header';
 import Icon from 'react-native-fontawesome-pro';
+import { Button } from '../../../components/Button'
 
 const Menu = () => (
   <View style={styles.container}>
@@ -39,6 +40,13 @@ const Menu = () => (
         </View>
       </Link>
     </ScrollView>
+    <Button 
+      title="Submit"
+      bgColor="#1d9dff" titleColor="#fff" 
+      icon="chevron-right"
+      width="50%"
+      round
+    />
   </View>
 )
 
@@ -48,7 +56,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f5f6fb',
-    paddingTop: '6%',
+    paddingVertical: '6%',
     justifyContent: 'space-between',
   },
   menuItem: {
