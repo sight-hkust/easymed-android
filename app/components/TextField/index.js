@@ -33,7 +33,6 @@ const TextBox = ({value, width, placeholder, onChangeText, onSubmitEditing}) => 
         style={[styles.input, {height: Platform.OS == 'android' ? 40 : 20}]}
         value={value}
         placeholder={placeholder}
-        keyboardType={keyboardType}
         underlineColorAndroid='transparent'
         onChangeText={onChangeText}
         onSubmitEditing={onSubmitEditing}
@@ -41,6 +40,8 @@ const TextBox = ({value, width, placeholder, onChangeText, onSubmitEditing}) => 
       </TextInput>
   </View>
 )
+
+export { TextBox, TextField }
 
 export default TextField;
 
@@ -65,6 +66,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.5,
     shadowOffset: { width: 1, height: 3 },
     shadowRadius: 5,
+    width: '90%',
+    height: 240
   },
   unit: {
     flex: 8,

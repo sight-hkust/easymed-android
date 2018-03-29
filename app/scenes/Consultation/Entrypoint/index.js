@@ -3,7 +3,7 @@ import { View, Image, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity 
 import { IconButton } from '../../../components/Button'
 import Icon from 'react-native-fontawesome-pro';
 import Header from '../../../components/Header'
-import { PatientListItem as Patient } from '../../../components/Patient'
+import { PatientQueueItem as Patient } from '../../../components/Patient'
 
 const demoPatient1 = {
   sex: 'female',

@@ -24,7 +24,7 @@ const Button = ({title, icon, onPress, round=false, opaque=true, titleColor, bgC
   if(to){
     return (
       <Link to={to} component={TouchableOpacity} style={{...styles.default, ...style}} activeOpacity={0.25}>
-        <Text style={{fontFamily: 'Quicksand-Medium', marginRight: icon?4:0, color: titleColor?titleColor:'#fff'}}>{title.toUpperCase()}</Text>
+        <Text style={{fontFamily: 'Quicksand-Medium', fontSize: 16, marginRight: icon?8:0, color: titleColor?titleColor:'#fff'}}>{title.toUpperCase()}</Text>
         { icon && <Icon name={icon} type="solid" color={titleColor?titleColor:'#fff'}/> }
       </Link>
     )

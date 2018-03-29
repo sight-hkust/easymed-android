@@ -3,7 +3,7 @@ import { View, Image, ScrollView, StyleSheet, Text, TouchableOpacity } from 'rea
 import { IconButton } from '../../../components/Button'
 import Icon from 'react-native-fontawesome-pro';
 import Header from '../../../components/Header'
-import { PatientListItem as Patient } from '../../../components/Patient'
+import { PatientQueueItem as Patient } from '../../../components/Patient'
 import { Link } from 'react-router-native'
 
 const nameFormatter = ({regular}) => {

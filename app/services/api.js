@@ -43,6 +43,10 @@ async function createPatient(profile){
   }
 }
 
+// async function queuePatient(patientId) {
+//   const Queue = Parse.Object.extend('Queue')
+// }
+
 async function fetchMedicines() {
   const Medicine = Parse.Object.extend('Medicine')
   const query = new Parse.Query(Medicine)

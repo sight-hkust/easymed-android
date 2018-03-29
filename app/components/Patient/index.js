@@ -14,7 +14,7 @@ const nameFormatter = ({regular}) => {
   return regular.split(' ').map((part, i) => { if(i == 0) { return part } else if (i == 1) { return part.substring(0,1) } else return ''}).join(' ').toUpperCase()
 }
 
-const PatientListItem = ({patient: {age, sex, name, tag=0}, to}) => (
+const PatientQueueItem = ({patient: {age, sex, name, tag=0}, to}) => (
   <Link component={TouchableOpacity} to={to} style={styles.patient} activeOpacity={0.4}>
     <Tag tag={tag}/>
     <View style={styles.patientInfoContainer}>
@@ -30,6 +30,37 @@ const PatientListItem = ({patient: {age, sex, name, tag=0}, to}) => (
     <IconButton name="chevron-circle-right" type="solid" color="#3c4859" size={24}/>
   </Link>
 )
+
+const PatientListItem = ({patient: {age, sex, name}, onPress}) => {
+  const gender = {
+    height: 56,
+    width: 56,
+    borderRadius: 28,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: sex==='female'?'#ff5273':'#4c79fc',
+    elevation: 1,
+    borderWidth: 3,
+    borderStyle: 'solid',
+    borderColor: sex==='female'?'#ff718c':'#7c9dfc'
+  }
+
+  return (
+    <TouchableOpacity style={styles.patient} onPress={onPress}>
+      <View style={gender}>
+        <Icon name={sex==='female'?'venus':'mars'} color="white" size={24}/>
+      </View>
+      <View style={styles.patientInfoContainer}>
+        <Text style={styles.patientName}>{nameFormatter(name)}</Text>
+        <View style={styles.patientPhysicalRemarks}>
+          <Text style={styles.patientPhysicalAttributeText}>AGE: {age}</Text>
+        </View>
+      </View>
+      <IconButton name="chevron-circle-right" type="solid" color="#3c4859" size={24}/>
+    </TouchableOpacity>
+  )
+}
+
 
 const PatientProfile = ({patient: {age, gender, name}}) => {
   const style = {
@@ -106,4 +137,4 @@ const styles = StyleSheet.create({
   }
 })
 
-export { PatientListItem }
+export { PatientListItem, PatientQueueItem }

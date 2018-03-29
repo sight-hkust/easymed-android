@@ -235,6 +235,13 @@ export default class MedicalHistory extends Component {
       <KeyboardAvoidingView style={styles.parentContainer}>
         <BackgroundInfo xOffset={this.state.xOffset}/>
         <ScrollList handleScroll={this.handleScroll} mutate={this.setState.bind(this)}/> 
+        <Button 
+            title="Submit"
+            bgColor="#1d9dff" titleColor="#fff" 
+            icon="chevron-right"
+            width="50%"
+            round
+          />
       </KeyboardAvoidingView>
     )
   }
@@ -245,6 +252,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-start',
     backgroundColor: '#f5f6fb',
+    paddingBottom: 12
   },
   headerContainer: {
     flex: 1,

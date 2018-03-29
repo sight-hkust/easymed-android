@@ -15,7 +15,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import { IconButton, Button } from '../../../components/Button'
 import Icon from 'react-native-fontawesome-pro';
 import Header from '../../../components/Header';
-import TextField from '../../../components/TextField';
+import {TextBox, TextField} from '../../../components/TextField';
 import Step from '../../../components/Step';
 import DatePicker from '../../../components/DatePicker';
 import BooleanSelect from '../../../components/BooleanSelect';
@@ -23,7 +23,7 @@ import BooleanSelect from '../../../components/BooleanSelect';
 const screenWidth = Dimensions.get('window').width
 
 const gradientLayout = {
-  colors: ['#A594F9','#9687E3'],
+  colors: ['#00C8A0','#00DBAF'],
   start: {x: 0.0, y: 1.0},
   end: {x: 1.0, y: 1.0},
   locations: [0, 0.75]
@@ -100,57 +100,42 @@ const Response = ({step, mutate}) => {
   switch(step) {
     case 'chiefComplaints': {
       return (
-        <View style={styles.response}>
-          <DatePicker onSelect={(lastMenstrualPeriodDate) =>
-          mutate( ({pregnancy}) => ({ pregnancy: { ...pregnancy, lastMenstrualPeriodDate }}) )
-        }/>
+        <View style={{ marginTop: 64, height: '28%', justifyContent: 'space-around', alignItems: 'center', paddingBottom: '8%'}}>
+          <TextBox />
         </View>
       )
     }
     case 'physicalExaminations': {
       return (
-        <View style={styles.response}>
-          <TextField placeholder="Weeks" width="80%" onChangeText={(gestationalAge) => mutate(
-            ({pregnancy}) => ({pregnancy: {...pregnancy, gestationalAge}})
-          )}/>
-        </View>
+        <View style={{ marginTop: 64, height: '28%', justifyContent: 'space-around', alignItems: 'center', paddingBottom: '8%'}}>
+        <TextBox />
+      </View>
       )
     }
     case 'investigation': {
-      return <BooleanSelect onSelect={(breastFeeding) =>
-        mutate( ({pregnancy}) => ({ pregnancy: { ...pregnancy, breastFeeding }}) )
-      }/>
+      return (<View style={{ marginTop: 64, height: '28%', justifyContent: 'space-around', alignItems: 'center', paddingBottom: '8%'}}>
+      <TextBox />
+    </View>)
     }
     case 'diagnosis': {
-      return <BooleanSelect  onSelect={(contraceptiveUse) =>
-        mutate( ({pregnancy}) => ({ pregnancy: { ...pregnancy, contraceptiveUse }}) )
-      }/>
+      return (
+        <View style={{ marginTop: 64, height: '28%', justifyContent: 'space-around', alignItems: 'center', paddingBottom: '8%'}}>
+        <TextBox />
+      </View>
+      )
     }
     case 'advise': {
       return (
-        <View style={styles.response}>
-          <TextField placeholder="Live Birth" width="80%" onChangeText={(liveBirth) => mutate(
-            ({pregnancy}) => ({pregnancy: {...pregnancy, liveBirth}})
-          )}/>
-        </View>
-      )
-    }
-    case 'miscarriage': {
-      return (
-        <View style={styles.response}>
-          <TextField placeholder="Miscarriage" width="80%" onChangeText={(miscarriage) => mutate(
-            ({pregnancy}) => ({pregnancy: {...pregnancy, miscarriage}})
-          )}/>
-        </View>
+        <View style={{ marginTop: 64, height: '28%', justifyContent: 'space-around', alignItems: 'center', paddingBottom: '8%'}}>
+        <TextBox />
+      </View>
       )
     }
     case 'followUp': {
       return (
-        <View style={styles.response}>
-          <TextField placeholder="Abortion" width="80%" onChangeText={(abortion) => mutate(
-            ({pregnancy}) => ({pregnancy: {...pregnancy, abortion}})
-          )}/>
-        </View>
+        <View style={{ marginTop: 64, height: '28%', justifyContent: 'space-around', alignItems: 'center', paddingBottom: '8%'}}>
+        <TextBox />
+      </View>
       )
     }
   }
@@ -159,7 +144,7 @@ const Response = ({step, mutate}) => {
 const BackgroundInfo = ({xOffset}) => (
     <View style={styles.headerContainer}>
       <LinearGradient style={styles.upper} {...gradientLayout} >
-        <Header title="Pregnancy" light="true" to="/triage/patients/:paitentId"/>
+        <Header title="Consultation" light="true" to="/triage/patients/:paitentId"/>
         <Step allSteps={stepList.length-1} step={xOffset/screenWidth} backgroundColor='#fff' highlightColor='pink' />
       </LinearGradient>
     </View>

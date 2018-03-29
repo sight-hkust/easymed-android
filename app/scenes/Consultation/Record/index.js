@@ -83,7 +83,7 @@ const Cases = () => (
 
 const NewConsultationSession = ({toggle}) => (
   <View style={styles.newConsultationSession}>
-    <Button title="New Case" titleColor="#3c4859" icon="file-plus" width="95%" round/>
+    <Button title="New Case" titleColor="#3c4859" to="/consultation/patients/test/session" icon="file-plus" width="95%" round/>
     <Button title="New Folder" titleColor="#3c4859" icon="folder-open" width="95%" round/>
     <Button title="Cancel" titleColor="#fff" bgColor="#d27787" onPress={toggle}/>
   </View>
@@ -93,8 +93,13 @@ export default class Record extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      isModalPresent: false
+      isModalPresent: false,
+      pathPrefix: props.match.url
     }
+  }
+
+  componentWillUnmount() {
+    this.setState({ isModalPresent: false })
   }
 
   componentWillMount() {
@@ -123,7 +128,9 @@ export default class Record extends Component {
         <Modal isVisible={this.state.isModalPresent}
           backdropOpacity={0}
           style={{height: Dimensions.get('window').height*.5, justifyContent: 'flex-end'}}>
-          <NewConsultationSession toggle={this.toggleNewSessionDialog.bind(this)}/>
+          <NewConsultationSession
+            toggle={this.toggleNewSessionDialog.bind(this)}
+          />
         </Modal>
       </View>
     )

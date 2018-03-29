@@ -60,13 +60,6 @@ export default class Menu extends Component {
               </Link>
             ))}
           </ScrollView>
-          <Button 
-            title="Submit"
-            bgColor="#1d9dff" titleColor="#fff" 
-            icon="chevron-right"
-            width="50%"
-            round
-          />
         </View>
     )
   }
