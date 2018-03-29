@@ -77,7 +77,7 @@ class Login extends Component {
             <Textfield icon='key' obfuscate={true} placeholder='Password' onChangeText={(password)=>this.setState({password})}/>
           </View>
           <View style={styles.footer}>
-            <Button title="login" icon="chevron-circle-right" opaque bgColor="#9196f0" round onPress={this.authenticate.bind(this)}/>
+            <Button title="login" icon="chevron-circle-right" opaque bgColor="#9196f0" width={128} round onPress={this.authenticate.bind(this)}/>
             <Button title="create account" icon="user-plus" bgColor="#5beed1" titleColor="white" to={'/register'} round/>
           </View>
           <Modal

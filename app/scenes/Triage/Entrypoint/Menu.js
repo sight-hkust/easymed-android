@@ -5,52 +5,72 @@ import Header from '../../../components/Header';
 import Icon from 'react-native-fontawesome-pro';
 import { Button } from '../../../components/Button'
 
-const Menu = () => (
-  <View style={styles.container}>
-    <Header title="Add Records" to="/triage"/>
-    <ScrollView>
-      <Link style={styles.menuItem} to="/triage/patients/:patientId/vitals">
-        <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
-          <Icon name="heartbeat" size={20} type="solid" color="#566DF0"/>
-          <Text style={styles.text}>Vitals</Text>
-        </View>
-      </Link>
-      <Link style={styles.menuItem} to="/triage/patients/:patientId/history">
-        <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
-          <Icon name="procedures" size={20} type="solid" color="#566DF0"/>
-          <Text style={styles.text}>Previous Medical History</Text>
-        </View>
-      </Link>
-      <Link style={styles.menuItem} to="/triage/patients/:patientId/screening">
-        <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
-          <Icon name="diagnoses" size={20} type="solid" color="#566DF0"/>
-          <Text style={styles.text}>Screening</Text>
-        </View>
-      </Link>
-      <Link style={styles.menuItem} to="/triage/patients/:patientId/vaccination">
-        <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
-          <Icon name="allergies" size={20} type="solid" color="#566DF0"/>
-          <Text style={styles.text}>Drug History and Allergies</Text>
-        </View>
-      </Link>
-      <Link style={styles.menuItem} to="/triage/patients/:patientId/pregnancy">
-        <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
-          <Icon name="female" size={20} type="solid" color="#566DF0"/>
-          <Text style={styles.text}>Pregnancy</Text>
-        </View>
-      </Link>
-    </ScrollView>
-    <Button 
-      title="Submit"
-      bgColor="#1d9dff" titleColor="#fff" 
-      icon="chevron-right"
-      width="50%"
-      round
-    />
-  </View>
-)
+const menuItems = [
+  {
+    destination: '/vitals',
+    icon: 'heartbeat',
+    color: '#566df0',
+    title: 'Vitals'
+  },
+  {
+    destination: '/history',
+    icon: 'procedures',
+    color: '#566df0',
+    title: 'Previous Medical History'
+  },
+  {
+    destination: '/screening',
+    icon: 'diagnoses',
+    color: '#566df0',
+    title: 'Screening'
+  },
+  {
+    destination: '/vaccination',
+    icon: 'allergies',
+    color: '#566df0',
+    title: 'Drug History and Allergies'
+  },
+  {
+    destination: '/pregnancy',
+    icon: 'female',
+    color: '#566df0',
+    title: 'Pregnancy'
+  }
+]
 
-export default Menu
+export default class Menu extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      pathPrefix: props.match.url
+    }
+  }
+
+  render() {
+    return (
+      <View style={styles.container}>
+          <Header title="Add Records" to="/triage"/>
+          <ScrollView>
+            {menuItems.map(({destination, icon, color, title}, i) => (
+              <Link style={styles.menuItem} to={`${this.state.pathPrefix}${destination}`} key={i}>
+                <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
+                  <Icon name={`${icon}`} size={20} type="solid" color={`${color}`}/>
+                  <Text style={styles.text}>{title}</Text>
+                </View>
+              </Link>
+            ))}
+          </ScrollView>
+          <Button 
+            title="Submit"
+            bgColor="#1d9dff" titleColor="#fff" 
+            icon="chevron-right"
+            width="50%"
+            round
+          />
+        </View>
+    )
+  }
+}
 
 const styles = StyleSheet.create({
   container: {

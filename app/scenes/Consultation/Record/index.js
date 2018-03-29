@@ -1,17 +1,9 @@
 import React, { Component } from 'react'
-import { Image, View, Text, StatusBar, StyleSheet, ScrollView } from 'react-native'
+import { Dimensions ,Image, View, Text, StatusBar, StyleSheet, ScrollView } from 'react-native'
 import Icon from 'react-native-fontawesome-pro';
 import Header from '../../../components/Header';
-import { IconButton } from '../../../components/Button';
+import { IconButton, Button } from '../../../components/Button';
 import Modal from 'react-native-modal';
-
-const Toolbar = () => (
-  <View style={styles.toolbar}>
-    <IconButton name="plus" color="#3c4859" />
-    <IconButton name="edit" color="#3c4859" />
-    <IconButton name="search" color="#3c4859"/>
-  </View>
-)
 
 const Gender = ({sex}) => {
   const style = {
@@ -89,26 +81,50 @@ const Cases = () => (
   </View>
 )
 
+const NewConsultationSession = ({toggle}) => (
+  <View style={styles.newConsultationSession}>
+    <Button title="New Case" titleColor="#3c4859" icon="file-plus" width="95%" round/>
+    <Button title="New Folder" titleColor="#3c4859" icon="folder-open" width="95%" round/>
+    <Button title="Cancel" titleColor="#fff" bgColor="#d27787" onPress={toggle}/>
+  </View>
+)
+
 export default class Record extends Component {
   constructor(props) {
     super(props)
+    this.state = {
+      isModalPresent: false
+    }
   }
 
   componentWillMount() {
     StatusBar.setBarStyle('dark-content', true)
   }
 
+  toggleNewSessionDialog() {
+    this.setState({isModalPresent: !this.state.isModalPresent})
+  }
+
   render() {
     return (
       <View style={styles.container}>
         <Header title="Medical Record" to="/consultation" />
-        <Toolbar />
+        <View style={styles.toolbar}>
+          <IconButton name="plus" onPress={this.toggleNewSessionDialog.bind(this)} color="#3c4859" />
+          <IconButton name="edit" color="#3c4859" />
+          <IconButton name="search" color="#3c4859"/>
+        </View>
         <ScrollView>
           <Gender sex="male"/>
           <PatientName name="Preah R" alternate="Bopha"/>
           <Vitals/>
           <Cases />
         </ScrollView>
+        <Modal isVisible={this.state.isModalPresent}
+          backdropOpacity={0}
+          style={{height: Dimensions.get('window').height*.5, justifyContent: 'flex-end'}}>
+          <NewConsultationSession toggle={this.toggleNewSessionDialog.bind(this)}/>
+        </Modal>
       </View>
     )
   }
@@ -192,5 +208,17 @@ const styles = StyleSheet.create({
     borderStyle: 'solid',
     borderLeftWidth: 5,
     borderLeftColor: '#566DF0'
+  },
+  newConsultationSession: {
+    backgroundColor: '#fff',
+    height: 200,
+    width: '100%',
+    justifyContent: 'space-around',
+    borderRadius: 8,
+    shadowColor: '#3a4252',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.12,
+    shadowRadius: 10,
+    margin: 0
   }
 })

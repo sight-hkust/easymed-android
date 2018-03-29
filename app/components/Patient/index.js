@@ -27,7 +27,7 @@ const PatientListItem = ({patient: {age, sex, name, tag=0}, to}) => (
         </View>
       </View>
     </View>
-    <IconButton name="chevron-circle-right" color="#3c4859" size={24}/>
+    <IconButton name="chevron-circle-right" type="solid" color="#3c4859" size={24}/>
   </Link>
 )
 
