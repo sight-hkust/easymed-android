@@ -38,44 +38,20 @@ export default class MaritalStatus extends Component {
       borderStyle: 'solid',
       paddingRight: 4
     }
+    const options = ['married', 'divorced', 'widowed', 'single']
     return (
       <View style={{justifyContent: 'space-around', alignItems: 'center', height: '100%'}}>
-        <TouchableOpacity
-          style={this.state.selected==='married'?highlighted:styles.maritalStatus}
-          onPress={() => {
-            this.setState({selected: 'married'})
-            this.props.onSelect('married')
-          }}
-        >
-          <Text style={styles.maritalStatusText}>MARRIED</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={this.state.selected==='divorced'?highlighted:styles.maritalStatus}
-          onPress={() => {
-            this.setState({selected: 'divorced'})
-            this.props.onSelect('divorced')
-          }}
-        >
-          <Text style={styles.maritalStatusText}>DIVORCED</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={this.state.selected==='widowed'?highlighted:styles.maritalStatus}
-          onPress={() => {
-            this.setState({selected: 'widowed'})
-            this.props.onSelect('widowed')
-          }}
-        >
-          <Text style={styles.maritalStatusText}>WIDOWED</Text>
-        </TouchableOpacity>
-        <TouchableOpacity 
-          style={this.state.selected==='single'?highlighted:styles.maritalStatus}
-          onPress={() => {
-            this.setState({selected: 'single'})
-            this.props.onSelect('single')
-          }}
-        >
-          <Text style={styles.maritalStatusText}>SINGLE</Text>
-        </TouchableOpacity>
+        {options.map(status => (
+          <TouchableOpacity
+            style={this.state.selected===status?highlighted:styles.maritalStatus}
+            onPress={() => {
+              this.setState({selected: status})
+              this.props.onSelect(status)
+            }}
+          >
+            <Text style={styles.maritalStatusText}>{status.toUpperCase()}</Text>
+          </TouchableOpacity>
+        ))}
       </View>
     )
   }
