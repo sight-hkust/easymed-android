@@ -16,11 +16,9 @@ import { Button } from './Button';
 
 const styles = StyleSheet.create({
   response: {
-    marginTop: 16,
     height: '28%',
     justifyContent: 'space-around',
     alignItems: 'center',
-    paddingBottom: '8%'
   },
   datePickerButton: {
     height: 52,

@@ -39,7 +39,7 @@ export default class MaritalStatus extends Component {
       paddingRight: 4
     }
     return (
-      <View style={{justifyContent: 'space-around', alignItems: 'center', height: '100%'}}>
+      <View style={{justifyContent: 'space-between', alignItems: 'center', height: '100%'}}>
         <TouchableOpacity
           style={this.state.selected==='married'?highlighted:styles.maritalStatus}
           onPress={() => {

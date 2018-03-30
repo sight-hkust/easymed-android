@@ -19,7 +19,7 @@ export default class BooleanSelect extends Component {
       borderColor: '#1d9dff'
     }
     return (
-      <View style={{...StyleSheet.flatten(styles.response), height: '28%'}}>
+      <View style={{...StyleSheet.flatten(styles.response), height: '100%'}}>
         <TouchableOpacity style={this.state.selected==='yes'?highlighted:styles.default} onPress={() => {
           this.setState({selected: 'yes'})
           this.props.onSelect('yes')
@@ -61,10 +61,8 @@ const styles = {
     justifyContent: 'flex-start'
   },
   response: {
-    marginTop: 16,
     height: '28%',
-    justifyContent: 'space-around',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    paddingBottom: '8%'
   }
 }

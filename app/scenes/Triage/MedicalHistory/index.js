@@ -111,56 +111,70 @@ const Response = ({step, mutate}) => {
   switch(step) {
     case 'HTN': {
       return(
-        <BooleanSelect onSelect={(hypertension) =>
-          mutate( ({medicalHistory}) => ({ medicalHistory: { ...medicalHistory, hypertension }}) )
-        }/>
+        <View style={styles.response}>
+          <BooleanSelect onSelect={(hypertension) =>
+            mutate( ({medicalHistory}) => ({ medicalHistory: { ...medicalHistory, hypertension }}) )
+          }/>
+        </View>
       )
     }
     case 'DM': {
       return(
-        <BooleanSelect onSelect={(diabetes) =>
-          mutate( ({medicalHistory}) => ({ medicalHistory: { ...medicalHistory, diabetes }}) )
-        }/>
+        <View style={styles.response}>
+          <BooleanSelect onSelect={(diabetes) =>
+            mutate( ({medicalHistory}) => ({ medicalHistory: { ...medicalHistory, diabetes }}) )
+          }/>
+        </View>
       )
     }
     case 'TB': {
       return(
-        <BooleanSelect onSelect={(tuberculosis) =>
-          mutate( ({medicalHistory}) => ({ medicalHistory: { ...medicalHistory, tuberculosis }}) )
-        }/>
+        <View style={styles.response}>
+          <BooleanSelect onSelect={(tuberculosis) =>
+            mutate( ({medicalHistory}) => ({ medicalHistory: { ...medicalHistory, tuberculosis }}) )
+          }/>
+        </View>
       )
     }
     case 'asthma': {
       return(
-        <BooleanSelect onSelect={(asthma) =>
-          mutate( ({medicalHistory}) => ({ medicalHistory: { ...medicalHistory, asthma }}) )
-        }/>
+        <View style={styles.response}>
+          <BooleanSelect onSelect={(asthma) =>
+            mutate( ({medicalHistory}) => ({ medicalHistory: { ...medicalHistory, asthma }}) )
+          }/>
+        </View>
       )
     }
     case 'hepatitisABC': {
       return(
-        <BooleanSelect onSelect={(hepatitis) =>
-          mutate( ({medicalHistory}) => ({ medicalHistory: { ...medicalHistory, hepatitis }}) )
-        }/>
+        <View style={styles.response}>
+          <BooleanSelect onSelect={(hepatitis) =>
+            mutate( ({medicalHistory}) => ({ medicalHistory: { ...medicalHistory, hepatitis }}) )
+          }/>
+        </View>
       )
     }
     case 'malaria': {
       return(
-        <BooleanSelect onSelect={(malaria) =>
-          mutate( ({medicalHistory}) => ({ medicalHistory: { ...medicalHistory, malaria }}) )
-        }/>
+        <View style={styles.response}>
+          <BooleanSelect onSelect={(malaria) =>
+            mutate( ({medicalHistory}) => ({ medicalHistory: { ...medicalHistory, malaria }}) )
+          }/>
+        </View>
       )
     }
     case 'HIV': {
       return(
-        <BooleanSelect onSelect={(HIV) =>
-          mutate( ({medicalHistory}) => ({ medicalHistory: { ...medicalHistory, HIV }}) )
-        }/>
+        <View style={styles.response}>
+          <BooleanSelect onSelect={(HIV) =>
+            mutate( ({medicalHistory}) => ({ medicalHistory: { ...medicalHistory, HIV }}) )
+          }/>
+        </View>
       )
     }
     case 'otherPMH': {
       return(
-        <View style={styles.response}>
+        <View style={{alignItems:'center'}}>
           <TextField placeholder="PMH" width="80%" onChangeText={(other) => mutate(
             ({medicalHistory}) => ({medicalHistory: {...medicalHistory, other}})
           )} />
@@ -170,38 +184,12 @@ const Response = ({step, mutate}) => {
   }
 }
 
-const BackgroundInfo = ({xOffset}) => (
-    <View style={styles.headerContainer}>
-      <LinearGradient style={styles.upper} {...gradientLayout} >
-        <Header title="Medical History" light="true" to="/triage/patients/:paitentId"/>
-        <Step allSteps={stepList.length-1} step={xOffset/screenWidth} backgroundColor='#fff' highlightColor='pink' />
-      </LinearGradient>
-    </View>
-)
-
-const ScrollItem = ({step, mutate}) => (
-  <View style={{width: screenWidth}}>
-    <Instruction step={step}/>
-    <Response step={step} mutate={mutate}/>
+const HeaderContainer = ({xOffset}) => (
+  <View style={styles.headerContainer}>
+    <Header title="Medical History" light="true" to="/triage/patients/:paitentId"/>
+    <Step allSteps={stepList.length-1} step={xOffset/screenWidth} backgroundColor='#fff' highlightColor='#FAEB9A' />
   </View>
 )
-
-const ScrollList = ({handleScroll, scrollViewDidChange, mutate}) => {
-  return (
-    <ScrollView 
-      horizontal = {true} 
-      pagingEnabled ={true}
-      onScroll = {handleScroll}
-      scrollEventThrottle = {1}
-      style={styles.scrollViewContainer}
-      onContentSizeChange={scrollViewDidChange}
-      >
-      {stepList.map((step, i) => (
-        <ScrollItem key={i} step={step} mutate={mutate}/>
-      ))}
-    </ScrollView>
-  )
-};
 
 export default class MedicalHistory extends Component {
   constructor(props) {
@@ -224,24 +212,63 @@ export default class MedicalHistory extends Component {
 
    handleScroll({nativeEvent: { contentOffset: { x }}}){
      this.setState({ xOffset: x})
+     this.refs.responseScroll.scrollTo({x: x, animated:false})
    }
 
   componentWillMount() {
     StatusBar.setBarStyle('light-content')
   }
 
+  submit() {
+    console.log(this.state.vitals)
+  }
+
   render() {
     return (
       <KeyboardAvoidingView style={styles.parentContainer}>
-        <BackgroundInfo xOffset={this.state.xOffset}/>
-        <ScrollList handleScroll={this.handleScroll} mutate={this.setState.bind(this)}/> 
-        <Button 
-            title="Submit"
-            bgColor="#1d9dff" titleColor="#fff" 
-            icon="chevron-right"
-            width="50%"
-            round
-          />
+        <HeaderContainer xOffset={this.state.xOffset}/>
+
+        <ScrollView 
+          ref = 'questionScroll'
+          horizontal = {true} 
+          pagingEnabled = {true}
+          onScroll = {this.handleScroll}
+          scrollEventThrottle = {1}
+          showsHorizontalScrollIndicator = {false}
+          style={styles.questionContainer}
+          >
+          {stepList.map((step, i) => (
+            <View style={{width: screenWidth}} key={i}>
+              <Instruction step={step}/>
+            </View>
+          ))}
+        </ScrollView>
+
+        <ScrollView 
+          ref = 'responseScroll'
+          horizontal = {true} 
+          pagingEnabled ={true}
+          scrollEnabled = {false}
+          showsHorizontalScrollIndicator = {false}
+          style={styles.responseContainer}
+          >
+          {stepList.map((step, i) => (
+            <View style={{width: screenWidth, justifyContent:'flex-start'}} key={i}>
+              <Response step={step} mutate={this.setState.bind(this)}/>
+            </View>
+          ))}
+        </ScrollView>
+
+        <View style={{height:'8%'}}>
+          <Button 
+              title="Submit" 
+              onPress={this.submit.bind(this)} 
+              bgColor="#1d9dff" titleColor="#fff" 
+              icon="chevron-right"
+              width="50%"
+              round
+            />
+        </View>
       </KeyboardAvoidingView>
     )
   }
@@ -252,24 +279,21 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-start',
     backgroundColor: '#f5f6fb',
-    paddingBottom: 12
+    paddingBottom: 16
   },
   headerContainer: {
-    flex: 1,
-    justifyContent: 'flex-start',
+    height: '20%',
+    justifyContent: 'space-around',
+    backgroundColor: '#E9D9AE',
+  },
+  questionContainer:{
+    height: '24%',
+    backgroundColor: '#E9D9AE',
+  },
+  responseContainer:{
+    height: '48%',
     backgroundColor: '#f5f6fb',
-    zIndex: 0,
-  },
-  scrollViewContainer: {
-    flex: 1,
-    position: 'absolute',
-    top: '20%',
-    height: '100%',
-    paddingTop: 16,
-  },
-  upper: {
-    height: '45%',
-    paddingTop: '10%'
+    paddingTop: 40,
   },
   textWrapper: {
     marginTop: 20,
@@ -284,10 +308,7 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   response: {
-    marginTop: 16,
-    height: '28%',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    paddingBottom: '8%'
-  },
+    height: '56%',
+    width: '100%',
+  }
 })

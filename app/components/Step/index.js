@@ -34,8 +34,6 @@ const styles = {
       flexDirection: 'row',
       justifyContent: 'center',
       alignItems: 'center',
-      paddingTop: 40,
-      paddingBottom: 16,
     }
 }
 

@@ -108,17 +108,11 @@ const Instruction = ({step}) => {
   } 
 }
 
-const SubmitButton = () => (
-  <View style={{width:'100%', position:'absolute', top:'100%', zIndex:10}}>
-    <Button title="Submit" icon="chevron-right" titleColor="#3c4859" round width="50%"/>
-  </View>
-)
-
 const Response = ({step, mutate}) => {
   switch(step) {
     case 'lmp': {
       return (
-        <View style={styles.response}>
+        <View style={{height:'72%'}}>
           <DatePicker onSelect={(lastMenstrualPeriodDate) =>
           mutate( ({pregnancy}) => ({ pregnancy: { ...pregnancy, lastMenstrualPeriodDate }}) )
         }/>
@@ -135,14 +129,22 @@ const Response = ({step, mutate}) => {
       )
     }
     case 'breastFeeding': {
-      return <BooleanSelect onSelect={(breastFeeding) =>
-        mutate( ({pregnancy}) => ({ pregnancy: { ...pregnancy, breastFeeding }}) )
-      }/>
+      return(
+        <View style={{height:'56%'}}>
+          <BooleanSelect onSelect={(breastFeeding) =>
+            mutate( ({pregnancy}) => ({ pregnancy: { ...pregnancy, breastFeeding }}) )
+          }/>
+        </View>
+      )
     }
     case 'contraceptiveUse': {
-      return <BooleanSelect  onSelect={(contraceptiveUse) =>
-        mutate( ({pregnancy}) => ({ pregnancy: { ...pregnancy, contraceptiveUse }}) )
-      }/>
+      return(
+        <View style={{height:'56%'}}>
+          <BooleanSelect  onSelect={(contraceptiveUse) =>
+            mutate( ({pregnancy}) => ({ pregnancy: { ...pregnancy, contraceptiveUse }}) )
+          }/>
+        </View>
+      )
     }
     case 'liveBirth': {
       return (
@@ -183,38 +185,12 @@ const Response = ({step, mutate}) => {
   }
 }
 
-const BackgroundInfo = ({xOffset}) => (
-    <View style={styles.headerContainer}>
-      <LinearGradient style={styles.upper} {...gradientLayout} >
-        <Header title="Pregnancy" light="true" to="/triage/patients/:paitentId"/>
-        <Step allSteps={stepList.length-1} step={xOffset/screenWidth} backgroundColor='#fff' highlightColor='pink' />
-      </LinearGradient>
-    </View>
-)
-
-const ScrollItem = ({step, mutate}) => (
-  <View style={{width: screenWidth}}>
-    <Instruction step={step}/>
-    <Response step={step} mutate={mutate}/>
+const HeaderContainer = ({xOffset}) => (
+  <View style={styles.headerContainer}>
+    <Header title="Pregnancy" light="true" to="/triage/patients/:paitentId"/>
+    <Step allSteps={stepList.length-1} step={xOffset/screenWidth} backgroundColor='#fff' highlightColor='#FAEB9A' />
   </View>
 )
-
-const ScrollList = ({handleScroll, scrollViewDidChange, mutate}) => {
-  return (
-    <ScrollView 
-      horizontal = {true} 
-      pagingEnabled ={true}
-      onScroll = {handleScroll}
-      scrollEventThrottle = {1}
-      style={styles.scrollViewContainer}
-      onContentSizeChange={scrollViewDidChange}
-      >
-      {stepList.map((step, i) => (
-        <ScrollItem key={i} step={step} mutate={mutate}/>
-      ))}
-    </ScrollView>
-  )
-};
 
 export default class Pregnancy extends Component {
   constructor(props) {
@@ -235,26 +211,66 @@ export default class Pregnancy extends Component {
     }
   }
 
-   handleScroll({nativeEvent: { contentOffset: { x }}}){
-     this.setState({ xOffset: x})
-   }
+  handleScroll({nativeEvent: { contentOffset: { x }}}){
+    this.setState({ xOffset: x})
+    this.refs.responseScroll.scrollTo({x: x, animated:false})
+  }
 
   componentWillMount() {
     StatusBar.setBarStyle('light-content')
   }
 
+  submit() {
+    console.log(this.state.vitals)
+  }
+
   render() {
     return (
       <KeyboardAvoidingView style={styles.parentContainer} behaviro="padding">
-        <BackgroundInfo xOffset={this.state.xOffset}/>
-        <ScrollList handleScroll={this.handleScroll} mutate={this.setState.bind(this)}/> 
-        <Button 
-            title="Submit"
-            bgColor="#1d9dff" titleColor="#fff" 
-            icon="chevron-right"
-            width="50%"
-            round
-          />
+        <HeaderContainer xOffset={this.state.xOffset}/>
+
+        <ScrollView 
+          ref = 'questionScroll'
+          horizontal = {true} 
+          pagingEnabled = {true}
+          onScroll = {this.handleScroll}
+          scrollEventThrottle = {1}
+          showsHorizontalScrollIndicator = {false}
+          style={styles.questionContainer}
+          >
+          {stepList.map((step, i) => (
+            <View style={{width: screenWidth}} key={i}>
+              <Instruction step={step}/>
+            </View>
+          ))}
+        </ScrollView>
+        
+        <ScrollView 
+          ref = 'responseScroll'
+          horizontal = {true} 
+          pagingEnabled ={true}
+          scrollEnabled = {false}
+          showsHorizontalScrollIndicator = {false}
+          style={styles.responseContainer}
+          >
+          {stepList.map((step, i) => (
+            <View style={{width: screenWidth, justifyContent:'flex-start'}} key={i}>
+              <Response step={step} mutate={this.setState.bind(this)}/>
+            </View>
+          ))}
+        </ScrollView>
+
+        <View style={{height:'8%'}}>
+          <Button 
+              title="Submit" 
+              onPress={this.submit.bind(this)} 
+              bgColor="#1d9dff" titleColor="#fff" 
+              icon="chevron-right"
+              width="50%"
+              round
+            />
+        </View>
+
       </KeyboardAvoidingView>
     )
   }
@@ -265,40 +281,21 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-start',
     backgroundColor: '#f5f6fb',
-    paddingBottom: 12
+    paddingBottom: 16
   },
   headerContainer: {
-    flex: 1,
-    justifyContent: 'flex-start',
+    height: '20%',
+    justifyContent: 'space-around',
+    backgroundColor: '#9687E3',
+  },
+  questionContainer:{
+    height: '24%',
+    backgroundColor: '#9687E3',
+  },
+  responseContainer:{
+    height: '48%',
     backgroundColor: '#f5f6fb',
-    zIndex: 0,
-  },
-  scrollViewContainer: {
-    flex: 1,
-    position: 'absolute',
-    top: '20%',
-    height: '100%',
-    paddingTop: 16,
-  },
-  upper: {
-    height: '45%',
-    paddingTop: '10%'
-  },
-  header: {
-    flexDirection: 'row',
-    height: 44,
-    justifyContent: 'space-between',
-    marginBottom: 32,
-    alignItems: 'center'
-  },
-  headerText: {
-    fontSize: 36,
-    fontFamily: 'Nunito-Bold',
-    textAlign: 'right',
-    backgroundColor: '#fff0',
-    color: '#fff',
-    marginRight: 20,
-    marginTop: 32,
+    paddingTop: 40,
   },
   textWrapper: {
     marginTop: 20,
@@ -313,49 +310,9 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   response: {
-    marginTop: 16,
-    height: '28%',
-    justifyContent: 'space-around',
+    height: '52%',
+    width: '100%',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    paddingBottom: '8%'
-  },
-  gender: {
-    width: 112,
-    height: 112,
-    borderRadius: 5,
-    backgroundColor: '#fff',
-    shadowColor: '#3a4252',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.12,
-    shadowRadius: 10,
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    paddingVertical: 16
-  },
-  genderText: {
-    fontSize: 26,
-    fontFamily: 'Nunito-Bold',
-    color: '#3c4859'
-  },
-  selectStatus: {
-    height: 56,
-    width: '80%',
-    borderRadius: 5,
-    backgroundColor: '#fff',
-    shadowColor: '#3a4252',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.12,
-    shadowRadius: 10,
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  selectStatusText: {
-    fontSize: 22,
-    fontFamily: 'Nunito-Bold',
-    color: '#3c4859',
-    marginLeft: 12
-  },
-  footer: {
-    marginTop: 18
   }
 })

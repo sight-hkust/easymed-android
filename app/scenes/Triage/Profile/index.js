@@ -29,6 +29,7 @@ import MaritalStatus from '../../../components/MaritalStatus';
 import Birthday from '../../../components/Birthday';
 
 const { width, height } = Dimensions.get('window')
+const screenWidth = Dimensions.get('window').width
 
 const gradientLayout = {
   colors: ['#19AEFA','#1D9DFF'],
@@ -151,14 +152,16 @@ const Response = ({step, mutate}) => {
     }
     case 'dob': {
       return (
-        <Birthday onSelect={(dob) =>
-          mutate( ({profile}) => ({ profile: { ...profile, dob }}) )
-        }/>
+        <View style={{height: '64%'}}>
+          <Birthday onSelect={(dob) =>
+            mutate( ({profile}) => ({ profile: { ...profile, dob }}) )
+          }/>
+        </View>
       )
     }
     case 'married': {
       return (
-        <View style={{marginTop: 16, height: '40%'}}>
+        <View style={{height: '92%'}}>
           <MaritalStatus onSelect={(status) => mutate(
             ({profile}) => ({ profile: { ...profile, status }})
           )} />
@@ -222,39 +225,12 @@ const Response = ({step, mutate}) => {
   }
 }
 
-const BackgroundInfo = ({xOffset}) => (
-    <View style={styles.headerContainer}>
-      <LinearGradient style={styles.upper} {...gradientLayout} >
-        <Header title="Profile" light to="/triage"/>
-        <Step allSteps={stepList.length-1} step={xOffset/width} backgroundColor='#fff' highlightColor='pink' />
-      </LinearGradient>
-    </View>
-)
-
-const ScrollItem = ({step, mutate}) => (
-  <View style={{width}}>
-    <Instruction step={step}/>
-    <Response step={step} mutate={mutate}/>
+const HeaderContainer = ({xOffset}) => (
+  <View style={styles.headerContainer}>
+    <Header title="Profile" light="true" to="/triage"/>
+    <Step allSteps={stepList.length-1} step={xOffset/screenWidth} backgroundColor='#fff' highlightColor='#FAEB9A' />
   </View>
 )
-
-const ScrollList = ({handleScroll, scrollViewDidChange, mutate}) => {
-  return (
-    <ScrollView 
-      horizontal = {true} 
-      pagingEnabled ={true}
-      onScroll = {handleScroll}
-      scrollEventThrottle = {1}
-      style={styles.scrollViewContainer}
-      onContentSizeChange={scrollViewDidChange}
-      >
-      {stepList.map((step, i) => (
-        <ScrollItem key={i} step={step} mutate={mutate}/>
-      ))}
-    </ScrollView>
-  )
-};
-
 class Profile extends Component {
   constructor(props) {
     super(props);
@@ -278,6 +254,7 @@ class Profile extends Component {
 
   handleScroll({nativeEvent: { contentOffset: { x }}}){
     this.setState({ xOffset: x})
+    this.refs.responseScroll.scrollTo({x: x, animated:false})
   }
 
   componentWillMount() {
@@ -296,16 +273,48 @@ class Profile extends Component {
     else {
       return (
         <KeyboardAvoidingView style={styles.parentContainer}>
-          <BackgroundInfo xOffset={this.state.xOffset}/>
-          <ScrollList handleScroll={this.handleScroll} mutate={this.setState.bind(this)} />
-          <Button 
-            title="Submit" 
-            onPress={this.submit.bind(this)} 
-            bgColor="#1d9dff" titleColor="#fff" 
-            icon="chevron-right"
-            width="50%"
-            round
-          />
+          <HeaderContainer xOffset={this.state.xOffset}/>
+          <ScrollView 
+            ref = 'questionScroll'
+            horizontal = {true} 
+            pagingEnabled = {true}
+            onScroll = {this.handleScroll}
+            scrollEventThrottle = {1}
+            showsHorizontalScrollIndicator = {false}
+            style={styles.questionContainer}
+            >
+            {stepList.map((step, i) => (
+              <View style={{width: screenWidth}} key={i}>
+                <Instruction step={step}/>
+              </View>
+            ))}
+          </ScrollView>
+          
+          <ScrollView 
+            ref = 'responseScroll'
+            horizontal = {true} 
+            pagingEnabled ={true}
+            scrollEnabled = {false}
+            showsHorizontalScrollIndicator = {false}
+            style={styles.responseContainer}
+            >
+            {stepList.map((step, i) => (
+              <View style={{width: screenWidth, justifyContent:'flex-start'}} key={i}>
+                <Response step={step} mutate={this.setState.bind(this)}/>
+              </View>
+            ))}
+          </ScrollView>
+
+          <View style={{height:'8%'}}>
+            <Button 
+                title="Submit" 
+                onPress={this.submit.bind(this)} 
+                bgColor="#1d9dff" titleColor="#fff" 
+                icon="chevron-right"
+                width="50%"
+                round
+              />
+          </View>
             <Modal
               isVisible={this.props.loading}
               animationIn="fadeIn"
@@ -343,24 +352,21 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-start',
     backgroundColor: '#f5f6fb',
-    paddingBottom: 12
+    paddingBottom: 16
   },
   headerContainer: {
-    flex: 1,
-    justifyContent: 'flex-start',
+    height: '20%',
+    justifyContent: 'space-around',
+    backgroundColor: '#1D9DFF',
+  },
+  questionContainer:{
+    height: '24%',
+    backgroundColor: '#1D9DFF',
+  },
+  responseContainer:{
+    height: '48%',
     backgroundColor: '#f5f6fb',
-    zIndex: 0,
-  },
-  scrollViewContainer: {
-    flex: 1,
-    position: 'absolute',
-    top: height*.2,
-    height,
-    paddingTop: 16,
-  },
-  upper: {
-    height: height*.45,
-    paddingTop: height*.06,
+    paddingTop: 40,
   },
   textWrapper: {
     marginTop: 20,
@@ -375,14 +381,10 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   response: {
-    marginTop: 16,
-    height: '28%',
-    justifyContent: 'space-around',
+    height: '56%',
+    width: '100%',
     alignItems: 'center',
-    paddingBottom: '8%'
-  },
-  footer: {
-    marginTop: 18
+    justifyContent: 'space-between'
   },
   loading: {
     alignSelf: 'center',
