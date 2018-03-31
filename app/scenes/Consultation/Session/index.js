@@ -12,6 +12,7 @@ import {
   Switch 
 } from 'react-native'
 import LinearGradient from 'react-native-linear-gradient';
+import ImagePicker from 'react-native-image-picker';
 import { IconButton, Button } from '../../../components/Button'
 import Icon from 'react-native-fontawesome-pro';
 import Header from '../../../components/Header';
@@ -90,66 +91,93 @@ const Instruction = ({step}) => {
   } 
 }
 
-const Response = ({step, mutate}) => {
+const Response = ({step, mutate, handleCameraPress, pictureSource}) => {
   switch(step) {
     case 'chiefComplaints': {
       return (
         <View style={styles.response}>
-          <TextBox />
+          <TextBox width='10%'/>
         </View>
       )
     }
     case 'physicalExaminations': {
       return (
-        <View style={styles.response}>
-          <TextBox />
-        </View>
+          <ScrollView
+            horizontal = {true} 
+            pagingEnabled = {true}
+            scrollEventThrottle = {1}
+            showsHorizontalScrollIndicator = {false}>
+            <View style={{width:screenWidth, justifyContent:'flex-start', alignItems:'center'}}>
+              <Button 
+                  title="From camera" 
+                  bgColor="#91D2CC" titleColor="#fff" 
+                  icon="camera"
+                  width="64%"
+                  onPress= {handleCameraPress}
+                />
+              <Image
+                  source={pictureSource?pictureSource:require('../../../../assets/images/imagePlaceHolder.png')}
+                  style={{marginTop:'6%', height:'60%', width:'64%', borderRadius:5 }}
+                />
+            </View>
+            <View style={{width:screenWidth, alignItems:'center'}}>
+              <TextBox />
+            </View>
+          </ScrollView>
+
       )
     }
     case 'investigation': {
       return (
         <View style={styles.response}>
-          <TextBox />
+          <TextBox width='10%'/>
         </View>
       )
     }
     case 'diagnosis': {
       return (
         <View style={styles.response}>
-          <TextBox />
+          <TextBox width='10%'/>
         </View>
       )
     }
     case 'advise': {
       return (
         <View style={styles.response}>
-          <TextBox />
+          <TextBox width='10%'/>
         </View>
       )
     }
     case 'followUp': {
       return (
         <View style={styles.response}>
-          <TextBox />
+          <TextBox width='10%'/>
         </View>
       )
     }
   }
 }
 
-const HeaderContainer = ({xOffset}) => (
-  <View style={styles.headerContainer}>
-    <Header title="Consultation" light="true" to="/triage/patients/:paitentId"/>
-    <Step allSteps={stepList.length-1} step={xOffset/screenWidth} backgroundColor='#fff' highlightColor='#FAEB9A' />
-  </View>
-)
+const HeaderContainer = ({xOffset, pathPrefix}) => {
+  const path = pathPrefix.replace('/session','')
+  return (
+    <View style={styles.headerContainer}>
+      <Header title="Consultation" light="true" to={path}/>
+      <Step allSteps={stepList.length-1} step={xOffset/screenWidth} backgroundColor='#fff' highlightColor='#FAEB9A' />
+    </View>
+  )
+}
+
 
 export default class Session extends Component {
   constructor(props) {
     super(props);
     this.handleScroll = this.handleScroll.bind(this);
+    this.handleCameraPress = this.handleCameraPress.bind(this);
     this.state = {
+      pathPrefix: props.match.url,
       xOffset:0,
+      pictureSource: null,
       pregnancy: {
         lastMenstrualPeriodDate: null,
         gestationalAge: '',
@@ -159,14 +187,42 @@ export default class Session extends Component {
         miscarriage: '',
         abortion: '',
         stillBorn: ''
+      },
+      options: {
+        title: 'Select Picture',
+        storageOptions: {
+          skipBackup: true,
+          path: 'images'
+        }
       }
     }
   }
 
-   handleScroll({nativeEvent: { contentOffset: { x }}}){
+  handleScroll({nativeEvent: { contentOffset: { x }}}){
      this.setState({ xOffset: x})
      this.refs.responseScroll.scrollTo({x: x, animated:false})
    }
+
+
+  handleCameraPress(){
+    ImagePicker.showImagePicker(this.state.options, (response) => {
+      console.log('Response = ', response)
+    
+      if (response.didCancel) {
+        console.log('User cancelled image picker')
+      }
+      else if (response.error) {
+        console.log('ImagePicker Error: ', response.error)
+      }
+      else if (response.customButton) {
+        console.log('User tapped custom button: ', response.customButton)
+      }
+      else {
+        let source = { uri: response.uri }
+        this.setState({pictureSource: source})
+      }
+    })
+  }
 
   componentWillMount() {
     StatusBar.setBarStyle('light-content')
@@ -179,7 +235,7 @@ export default class Session extends Component {
   render() {
     return (
       <KeyboardAvoidingView style={styles.parentContainer} behaviro="padding">
-        <HeaderContainer xOffset={this.state.xOffset}/>
+        <HeaderContainer xOffset={this.state.xOffset} pathPrefix={this.state.pathPrefix}/>
 
         <ScrollView 
           ref = 'questionScroll'
@@ -207,7 +263,7 @@ export default class Session extends Component {
           >
           {stepList.map((step, i) => (
             <View style={{width: screenWidth, justifyContent:'flex-start'}} key={i}>
-              <Response step={step} mutate={this.setState.bind(this)}/>
+              <Response step={step} mutate={this.setState.bind(this)} handleCameraPress={this.handleCameraPress} pictureSource={this.state.pictureSource}/>
             </View>
           ))}
         </ScrollView>
@@ -262,7 +318,7 @@ const styles = StyleSheet.create({
   },
   response: {
     height: '100%',
-    justifyContent: 'flex-start',
+    justifyContent: 'space-between',
     alignItems: 'center',
   }
 })
