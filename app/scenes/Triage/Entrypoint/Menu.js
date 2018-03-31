@@ -60,6 +60,13 @@ export default class Menu extends Component {
               </Link>
             ))}
           </ScrollView>
+          <Button 
+                title="Checkout"
+                bgColor="#1d9dff" titleColor="#fff" 
+                icon="check"
+                width="50%"
+                round
+              />
         </View>
     )
   }

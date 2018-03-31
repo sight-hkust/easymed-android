@@ -32,10 +32,13 @@ async function deauthenticate(){
 
 async function createPatient(profile){
   const Patient = Parse.Object.extend('Patient')
+  const Profile = Parse.Object.extend('Profile')
+  let _profile = new Profile()
+  Object.keys(profile).forEach(attribute => _profile.set(attribute, profile[attribute]))
   let _patient = new Patient()
-  _patient.set('profile', profile)
+  _patient.set('profile', _profile)
   try {
-    await _patient.save()
+    await Promise.all([_profile.save(), _patient.save()])
     return _patient.id
   } catch (error) {
     console.log(error)
@@ -71,23 +74,74 @@ async function fetchDiagnosis() {
 
 async function fetchPatients() {
   const Patient = Parse.Object.extend('Patient')
+  const Profile = Parse.Object.extend('Profile')
   const query = new Parse.Query(Patient)
   try {
     const result = await query.find()
-    return result.map((patient) => ({
-      ...patient.attributes.profile,
-      id: patient.id,
-      age: new Date().getFullYear() - new Date(patient.attributes.profile.dob).getFullYear()
-    }))
+    const patients = await Promise.all([...result.map(async (patient) => {
+      const profileQuery = new Parse.Query(Profile)
+      const profile = (await profileQuery.get(patient.attributes.profile.id)).attributes
+      return {
+        ...profile,
+        id: patient.id,
+        age: new Date().getFullYear() - new Date(profile.dob).getFullYear()
+      }
+    })])
+    return patients
   } catch (error) {
     throw error
+  }
+}
+
+async function fetchPatientQueue(stage) {
+  const Queue = Parse.Object.extend('Queue')
+  const query = new Parse.Query(Queue)
+  query.equalTo('stage', stage)
+  try {
+    const result = await query.find()
+    const patients = await Promise.all([...result.map(async ({attributes: {patient, tag}}) => {
+      const {id} = patient.attributes.profile
+      const profile = await findProfile(id)
+      return {...profile, tag}
+    })])
+    return patients
+  } catch (error) {
+    
+  }
+}
+
+async function queuePatient(tag, patientId, stage) {
+  try {
+    const Queue = Parse.Object.extend('Queue')
+    const Patient = Parse.Object.extend('Patient')
+    const _patient = await new Parse.Query(Patient).get(patientId)
+    const enlisting = new Queue()
+    enlisting.set('stage', stage)
+    enlisting.set('patient', _patient)
+    enlisting.set('tag', Math.abs(tag))
+    await enlisting.save()
+    const profile = await findProfile(_patient.attributes.profile.id)
+    return {patient: {...profile, tag}, queueId: enlisting.id}
+  } catch (error) {
+    console.log(error)
+    throw error
+  }
+}
+
+async function findProfile(id) {
+  try {
+    const Profile = Parse.Object.extend('Profile')
+    const _profile = (await new Parse.Query(Profile).get(id)).attributes
+    return {..._profile, age: new Date().getFullYear() - new Date(_profile.dob).getFullYear()}
+  } catch (error) {
+    
   }
 }
 
 async function findPatient(patientId) {
   try {
     const Patient = Parse.Object.extend('Patient')
-    const _patient = Parse.Query(Patient).get(patientId)
+    const _patient = await new Parse.Query(Patient).get(patientId)
     return _patient
   } catch (error) {
     throw error
@@ -140,7 +194,9 @@ export {
   insertVitalsRecord,
   insertMedicalHistory,
   createPatient,
+  queuePatient,
   fetchPatients,
+  fetchPatientQueue,
   fetchDiagnosis,
   fetchMedicines
 }

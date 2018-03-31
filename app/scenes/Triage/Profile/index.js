@@ -14,7 +14,7 @@ import {
 import { Redirect } from 'react-router-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { createPatient } from '../../../actions/patient';
+import { createPatient, instantiate, queuePatient } from '../../../actions/patient';
 import LinearGradient from 'react-native-linear-gradient';
 import Modal from 'react-native-modal';
 import Spinner from 'react-native-spinkit';
@@ -247,9 +247,12 @@ class Profile extends Component {
         status: '',
         nationality: ''
       },
-      tag: ''
+      tag: '',
+      queueStatus: false
     }
     this.createPatient = props.actions.createPatient
+    this.queuePatient = props.actions.queuePatient
+    this.reset = props.actions.instantiate
   }
 
   handleScroll({nativeEvent: { contentOffset: { x }}}){
@@ -257,18 +260,29 @@ class Profile extends Component {
     this.refs.responseScroll.scrollTo({x: x, animated:false})
   }
 
+  componentDidUpdate() {
+    if(this.props.patientId && !this.state.queueStatus) {
+      this.setState({queueStatus: true})
+      this.queuePatient(this.state.tag, this.props.patientId, 'triage')
+    }
+  }
+
+  componentWillUnmount() {
+    this.reset()
+  }
+
   componentWillMount() {
     StatusBar.setBarStyle('light-content', true)
   }
 
   submit() {
-    this.createPatient(this.state.profile)
+    const { profile, tag } = this.state
+    this.createPatient(profile, tag)
   }
 
   render() {
-    const {patientId} = this.props
-    if(patientId) {
-      return <Redirect to={`/triage/patients/${patientId}`}/>
+    if(this.props.queueId) {
+      return <Redirect to={`/triage/patients/${this.props.queueId}`}/>
     }
     else {
       return (
@@ -276,10 +290,10 @@ class Profile extends Component {
           <HeaderContainer xOffset={this.state.xOffset}/>
           <ScrollView 
             ref = 'questionScroll'
-            horizontal = {true} 
-            pagingEnabled = {true}
-            onScroll = {this.handleScroll}
-            scrollEventThrottle = {1}
+            horizontal
+            pagingEnabled
+            onScroll={this.handleScroll}
+            scrollEventThrottle={1}
             showsHorizontalScrollIndicator = {false}
             style={styles.questionContainer}
             >
@@ -337,12 +351,13 @@ class Profile extends Component {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-  actions: bindActionCreators({createPatient}, dispatch)
+  actions: bindActionCreators({createPatient, queuePatient, instantiate}, dispatch)
 })
 
 const mapStateToProps = (state) => ({
   loading: state.profile.loading,
-  patientId: state.profile.patientId
+  patientId: state.profile.patientId,
+  queueId: state.profile.queueId
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Profile)

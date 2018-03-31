@@ -20,7 +20,7 @@ const authPersistConfig = {
 const profilePersisConfig = {
   key: 'profile',
   storage,
-  blacklist: ['patientId', 'loading']
+  blacklist: ['patientId', 'loading', 'queueStatus']
 }
 
 const patientsPersistConfig = {

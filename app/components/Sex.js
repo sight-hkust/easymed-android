@@ -53,7 +53,7 @@ export default class Sex extends Component {
               this.setState({selected: gender})
               this.props.onSelect(gender)
             }}
-        >
+          >
           <Icon name={icon} size={44} color={color}/>
           <Text style={styles.genderText}>{gender}</Text>
         </TouchableOpacity>
