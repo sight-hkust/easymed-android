@@ -99,10 +99,10 @@ async function fetchPatientQueue(stage) {
   query.equalTo('stage', stage)
   try {
     const result = await query.find()
-    const patients = await Promise.all([...result.map(async ({attributes: {patient, tag}}) => {
+    const patients = await Promise.all([...result.map(async ({queueId, attributes: {patient, tag}}) => {
       const {id} = patient.attributes.profile
       const profile = await findProfile(id)
-      return {...profile, tag}
+      return {patient: {...profile, tag, id: patient.id}, queueId}
     })])
     return patients
   } catch (error) {
@@ -121,7 +121,7 @@ async function queuePatient(tag, patientId, stage) {
     enlisting.set('tag', Math.abs(tag))
     await enlisting.save()
     const profile = await findProfile(_patient.attributes.profile.id)
-    return {patient: {...profile, tag}, queueId: enlisting.id}
+    return {patient: {...profile, tag, id: patientId}, queueId: enlisting.id}
   } catch (error) {
     console.log(error)
     throw error

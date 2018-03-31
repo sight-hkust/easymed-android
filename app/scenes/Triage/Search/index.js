@@ -47,7 +47,7 @@ class Search extends Component {
     if (!auto) {
       this.setState({loading: this.props.loading})
     }
-    this.fetchPatientQueue(this.props.match.url.split('/')[1])
+    this.fetchPatientQueue('triage')
   }
 
   toggleOperationSelection() {
