@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import { Dimensions, View, Text, StyleSheet, ScrollView } from 'react-native';
+import { Dimensions, View, Text, StyleSheet, ScrollView, RefreshControl } from 'react-native';
 import Icon from 'react-native-fontawesome-pro';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import Modal from 'react-native-modal';
-import { fetchPatientList, fetchPatientInQueue } from '../../../actions/patient';
+import { fetchPatientList, fetchPatientQueue } from '../../../actions/patient';
 import Header from '../../../components/Header';
 import { Button } from '../../../components/Button';
 import { PatientListItem, PatientQueueItem } from '../../../components/Patient';
@@ -27,18 +27,27 @@ class Search extends Component {
   constructor(props) {
     super(props)
     this.state = {
+      viewing: 'Queue',
+      loading: props.loading,
       query: '',
       filter: '',
       isModalPresent: false,
       patientTBA: null
     }
     this.fetchPatientList = props.actions.fetchPatientList
-    // this.fetchPatientsInQueue = props.actions.fetchPatientInQueue
+    this.fetchPatientQueue = props.actions.fetchPatientQueue
   }
 
   componentWillMount() {
     this.fetchPatientList()
-    // this.fetchPatientInQueue()
+    this.refreshPatientQueue(true)
+  }
+
+  refreshPatientQueue(auto) {
+    if (!auto) {
+      this.setState({loading: this.props.loading})
+    }
+    this.fetchPatientQueue(this.props.match.url.split('/')[1])
   }
 
   toggleOperationSelection() {
@@ -51,34 +60,27 @@ class Search extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Header title="Search" to="/triage" />
+        <Header title={this.state.viewing} to="/triage" />
         <ScrollView
-          horizontal = {true} 
-          pagingEnabled ={true}
+          horizontal
+          pagingEnabled
+          showsHorizontalScrollIndicator = {false}
+          scrollEventThrottle = {1}
+          onScroll={(event) => event.nativeEvent.contentOffset.x?this.setState({viewing:'All'}):this.setState({viewing: 'Queue'})}
         >
           <View style={{width: Dimensions.get('window').width}}>
-            <View>
-              <Text>Visiting Queue</Text>
-            </View>
-            {/* <ScrollView
-              refreshControl={
-                <RefreshControl
-                  refreshing={this.state.refreshing}
-                  onRefresh={this._onRefresh.bind(this)}
-                />}
-            >
-              {this.props.patients && this.props.patients.map((patient, i) => (
-                <PatientListItem patient={patient} key={i} />
-              ))}
-            </ScrollView> */}
-            <ScrollView>
-              {this.props.patients && this.props.patients.map((patient, i) => (
-                <PatientQueueItem patient={patient} key={i} to="/triage/patients/test"/>
+            <ScrollView refreshControl={
+              <RefreshControl
+                refreshing={this.state.loading.queue}
+                onRefresh={this.refreshPatientQueue.bind(this)}
+              />
+            }>
+              {this.props.queue && this.props.queue.map(({patient, queueId}, i) => (
+                <PatientQueueItem patient={patient} key={i} to={`/triage/patients/${queueId}`}/>
               ))}
             </ScrollView>
           </View>
           <View style={{width: Dimensions.get('window').width}}>
-            <Text>All</Text>
             <ScrollView>
               {this.props.patients && this.props.patients.map((patient, i) => (
                 <PatientListItem patient={patient} key={i} onPress={this.toggleOperationSelection.bind(this)} />
@@ -99,11 +101,13 @@ class Search extends Component {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-  actions: bindActionCreators({fetchPatientList}, dispatch)
+  actions: bindActionCreators({fetchPatientList, fetchPatientQueue}, dispatch)
 })
 
 const mapStateToProps = (state) => ({
-  patients: state.patients.patients
+  patients: state.patients.all,
+  queue: state.patients.queue,
+  loading: state.patients.loading
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Search)
