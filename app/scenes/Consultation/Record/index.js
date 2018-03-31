@@ -4,6 +4,7 @@ import Icon from 'react-native-fontawesome-pro';
 import Header from '../../../components/Header';
 import { IconButton, Button } from '../../../components/Button';
 import Modal from 'react-native-modal';
+import { faChevronDoubleLeft } from '@fortawesome/fontawesome-pro-light';
 
 const Gender = ({sex}) => {
   const style = {
@@ -73,17 +74,62 @@ const Vitals = ({vitals}) => (
 const Cases = () => (
   <View style={styles.cases}>
     <ScrollView>
-      <View style={styles.record}></View>
-      <View style={styles.record}></View>
-      <View style={styles.record}></View>
-      <View style={styles.record}></View>
+      <View style={styles.record}>
+        <View style={{height:24, width:64, backgroundColor: '#FFCE45', borderRadius: 8, alignItems:'center', justifyContent:'center'}}>
+          <Text style={{fontFamily: 'Nunito-Bold', color: '#fff', fontSize: 12}}>123456</Text>
+        </View>
+
+        <View style={{height:'80%', width:'60%', alignItems:'flex-start', justifyContent:'center', paddingLeft:8}}>
+          <Text style={{fontFamily: 'Nunito-Bold', color: '#A4A6AA', fontSize: 16}}>11/07/2017</Text>
+          <Text style={{fontFamily: 'Nunito-Bold', color: '#3c4859', fontSize: 18}}>Fever</Text>
+        </View>
+        
+        <IconButton name="chevron-circle-right" type="solid" color="#3c4859" size={24}/>
+      </View>
+
+      <View style={styles.record}>
+        <View style={{height:24, width:64, backgroundColor: '#FFCE45', borderRadius: 8, alignItems:'center', justifyContent:'center'}}>
+          <Text style={{fontFamily: 'Nunito-Bold', color: '#fff', fontSize: 12}}>123456</Text>
+        </View>
+
+        <View style={{height:'80%', width:'60%', alignItems:'flex-start', justifyContent:'center', paddingLeft:8}}>
+          <Text style={{fontFamily: 'Nunito-Bold', color: '#A4A6AA', fontSize: 16}}>11/07/2017</Text>
+          <Text style={{fontFamily: 'Nunito-Bold', color: '#3c4859', fontSize: 18}}>Fever</Text>
+        </View>
+        
+        <IconButton name="chevron-circle-right" type="solid" color="#3c4859" size={24}/>
+      </View>
+      <View style={styles.record}>
+        <View style={{height:24, width:64, backgroundColor: '#FFCE45', borderRadius: 8, alignItems:'center', justifyContent:'center'}}>
+          <Text style={{fontFamily: 'Nunito-Bold', color: '#fff', fontSize: 12}}>123456</Text>
+        </View>
+
+        <View style={{height:'80%', width:'60%', alignItems:'flex-start', justifyContent:'center', paddingLeft:8}}>
+          <Text style={{fontFamily: 'Nunito-Bold', color: '#A4A6AA', fontSize: 16}}>11/07/2017</Text>
+          <Text style={{fontFamily: 'Nunito-Bold', color: '#3c4859', fontSize: 18}}>Fever</Text>
+        </View>
+        
+        <IconButton name="chevron-circle-right" type="solid" color="#3c4859" size={24}/>
+      </View>
+      <View style={styles.record}>
+        <View style={{height:24, width:64, backgroundColor: '#FFCE45', borderRadius: 8, alignItems:'center', justifyContent:'center'}}>
+          <Text style={{fontFamily: 'Nunito-Bold', color: '#fff', fontSize: 12}}>123456</Text>
+        </View>
+
+        <View style={{height:'80%', width:'60%', alignItems:'flex-start', justifyContent:'center', paddingLeft:8}}>
+          <Text style={{fontFamily: 'Nunito-Bold', color: '#A4A6AA', fontSize: 16}}>11/07/2017</Text>
+          <Text style={{fontFamily: 'Nunito-Bold', color: '#3c4859', fontSize: 18}}>Fever</Text>
+        </View>
+        
+        <IconButton name="chevron-circle-right" type="solid" color="#3c4859" size={24}/>
+      </View>
     </ScrollView>
   </View>
 )
 
-const NewConsultationSession = ({toggle}) => (
+const NewConsultationSession = ({toggle, pathPrefix}) => (
   <View style={styles.newConsultationSession}>
-    <Button title="New Case" titleColor="#3c4859" to="/consultation/patients/test/session" icon="file-plus" width="95%" round/>
+    <Button title="New Case" titleColor="#3c4859" to={`${pathPrefix}/session`} icon="file-plus" width="95%" round/>
     <Button title="New Folder" titleColor="#3c4859" icon="folder-open" width="95%" round/>
     <Button title="Cancel" titleColor="#fff" bgColor="#d27787" onPress={toggle}/>
   </View>
@@ -130,6 +176,7 @@ export default class Record extends Component {
           style={{height: Dimensions.get('window').height*.5, justifyContent: 'flex-end'}}>
           <NewConsultationSession
             toggle={this.toggleNewSessionDialog.bind(this)}
+            pathPrefix={this.state.pathPrefix}
           />
         </Modal>
       </View>
@@ -214,7 +261,12 @@ const styles = StyleSheet.create({
     marginVertical: 6,
     borderStyle: 'solid',
     borderLeftWidth: 5,
-    borderLeftColor: '#566DF0'
+    borderLeftColor: '#566DF0',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 8
+    
   },
   newConsultationSession: {
     backgroundColor: '#fff',
