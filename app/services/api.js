@@ -46,10 +46,6 @@ async function createPatient(profile){
   }
 }
 
-// async function queuePatient(patientId) {
-//   const Queue = Parse.Object.extend('Queue')
-// }
-
 async function fetchMedicines() {
   const Medicine = Parse.Object.extend('Medicine')
   const query = new Parse.Query(Medicine)
@@ -99,10 +95,10 @@ async function fetchPatientQueue(stage) {
   query.equalTo('stage', stage)
   try {
     const result = await query.find()
-    const patients = await Promise.all([...result.map(async ({queueId, attributes: {patient, tag}}) => {
-      const {id} = patient.attributes.profile
-      const profile = await findProfile(id)
-      return {patient: {...profile, tag, id: patient.id}, queueId}
+    const patients = await Promise.all([...result.map(async ({id, attributes: {patient, tag}}) => {
+      patient = await findPatient(patient.id)
+      const profile = await findProfile(patient.attributes.profile.id)
+      return {patient: {...profile, tag, id: patient.id}, queueId: id}
     })])
     return patients
   } catch (error) {
@@ -128,13 +124,25 @@ async function queuePatient(tag, patientId, stage) {
   }
 }
 
+async function transferPatient(queueId, stage) {
+  try {
+    const Queue = Parse.Object.extend('Queue')
+    const queuingPatient = await new Parse.Query(Queue).get(queueId)
+    queuingPatient.set('stage', stage)
+    await queuingPatient.save()
+    return queuePatient.id
+  } catch (error) {
+    throw error
+  }
+}
+
 async function findProfile(id) {
   try {
     const Profile = Parse.Object.extend('Profile')
     const _profile = (await new Parse.Query(Profile).get(id)).attributes
     return {..._profile, age: new Date().getFullYear() - new Date(_profile.dob).getFullYear()}
   } catch (error) {
-    
+    throw error
   }
 }
 
@@ -195,6 +203,7 @@ export {
   insertMedicalHistory,
   createPatient,
   queuePatient,
+  transferPatient,
   fetchPatients,
   fetchPatientQueue,
   fetchDiagnosis,

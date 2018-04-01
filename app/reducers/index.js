@@ -26,7 +26,7 @@ const profilePersisConfig = {
 const patientsPersistConfig = {
   key: 'patients',
   storage,
-  blacklist: ['patients', 'loading']
+  blacklist: ['all', 'queue', 'loading']
 }
 
 const config = {

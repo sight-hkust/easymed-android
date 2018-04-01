@@ -5,6 +5,8 @@ import {
   FETCH_PATIENT_LIST_REQUEST,
   FETCH_PATIENT_QUEUE_REQUEST,
   QUEUE_PATIENT_REQUEST,
+  TRANSFER_PATIENT_REQUEST,
+  RESET_PATIENT_QUEUE
 } from './constants';
   
   
@@ -29,4 +31,13 @@ export const fetchPatientQueue = (stage) => ({
 export const queuePatient = (tag, patientId, stage) => ({
   type: QUEUE_PATIENT_REQUEST,
   payload: {tag, patientId, stage}
+})
+
+export const transferPatient = (queueId, stage) => ({
+  type: TRANSFER_PATIENT_REQUEST,
+  payload: {queueId, stage}
+})
+
+export const resetPatientQueue = () => ({
+  type: RESET_PATIENT_QUEUE
 })

@@ -10,9 +10,12 @@ import {
   QUEUE_PATIENT_ERROR,
   CREATE_PATIENT_REQUEST,
   CREATE_PATIENT_SUCCESS,
-  CREATE_PATIENT_ERROR
+  CREATE_PATIENT_ERROR,
+  TRANSFER_PATIENT_REQUEST,
+  TRANSFER_PATIENT_SUCCESS,
+  TRANSFER_PATIENT_ERROR
 } from '../actions/constants';
-import { createPatient, fetchPatients, fetchPatientQueue, queuePatient } from '../services/api'
+import { createPatient, fetchPatients, fetchPatientQueue, queuePatient, transferPatient } from '../services/api'
 import { ActionsObservable } from 'redux-observable'
 import { Observable } from 'rxjs';
 import 'rxjs/add/operator/concatMap';
@@ -45,10 +48,23 @@ const fetchPatientQueueEpic = action$ =>
 const queuePatientEpic = action$ =>
   action$.ofType(QUEUE_PATIENT_REQUEST).concatMap(({payload}) => {
     const { tag, patientId, stage } = payload
-    console.log('hello')
     return Observable.fromPromise(queuePatient(tag, patientId, stage))
   })
   .map(({patient, queueId}) => ({type: QUEUE_PATIENT_SUCCESS, payload: {patient, queueId}}))
   .catch(error => Observable.of({type: QUEUE_PATIENT_ERROR, payload: {error}}))
 
-export { createPatientEpic, fetchPatientListEpic, fetchPatientQueueEpic, queuePatientEpic }
+const transferPatientEpic = action$ =>
+  action$.ofType(TRANSFER_PATIENT_REQUEST).concatMap(({payload}) => {
+    const { stage, queueId } = payload
+    return Observable.fromPromise(transferPatient(queueId, stage))
+  })
+  .map(queueId => ({type: TRANSFER_PATIENT_SUCCESS, payload: {queueId}}))
+  .catch(error => Observable.of({type: TRANSFER_PATIENT_ERROR, payload: {error}}))
+
+export { 
+  createPatientEpic,
+  fetchPatientListEpic,
+  fetchPatientQueueEpic,
+  queuePatientEpic,
+  transferPatientEpic
+}
