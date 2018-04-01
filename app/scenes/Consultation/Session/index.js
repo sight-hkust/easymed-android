@@ -30,7 +30,7 @@ const gradientLayout = {
   locations: [0, 0.75]
 }
 
-const stepList = ['chiefComplaints', 'physicalExaminations', 'investigation', 'diagnosis', 'advise', 'followUp'];
+const stepList = ['chiefComplaints', 'physicalExaminations', 'investigation', 'diagnosis', 'prescription', 'advise', 'followUp'];
 
 const Instruction = ({step}) => {
   switch(step) {
@@ -64,8 +64,17 @@ const Instruction = ({step}) => {
     case 'diagnosis': {
       return (
         <View style={styles.textWrapper}>
-          <Text style={styles.instruction}>Please indicate whether</Text>
-          <Text style={styles.instruction}>patient uses contraceptive</Text>
+          <Text style={styles.instruction}>Enter the diagnosis</Text>
+          <Text style={styles.instruction}>of the patient</Text>
+          <Text style={styles.instruction}>below</Text>
+        </View>
+      )
+    }
+    case 'prescription': {
+      return (
+        <View style={styles.textWrapper}>
+          <Text style={styles.instruction}>Enter the prescription</Text>
+          <Text style={styles.instruction}>of the patient</Text>
           <Text style={styles.instruction}>below</Text>
         </View>
       )
@@ -96,7 +105,9 @@ const Response = ({step, mutate, handleCameraPress, pictureSource}) => {
     case 'chiefComplaints': {
       return (
         <View style={styles.response}>
-          <TextBox width='10%'/>
+          <TextBox placeholder='Type the chief complanints here' 
+                   onChangeText={(chiefComplaints) => mutate(({session}) => 
+                    ({session: {...session, chiefComplaints}}))}/>
         </View>
       )
     }
@@ -107,21 +118,33 @@ const Response = ({step, mutate, handleCameraPress, pictureSource}) => {
             pagingEnabled = {true}
             scrollEventThrottle = {1}
             showsHorizontalScrollIndicator = {false}>
-            <View style={{width:screenWidth, justifyContent:'flex-start', alignItems:'center'}}>
-              <Button 
-                  title="From camera" 
-                  bgColor="#91D2CC" titleColor="#fff" 
-                  icon="camera"
-                  width="64%"
-                  onPress= {handleCameraPress}
-                />
-              <Image
-                  source={pictureSource?pictureSource:require('../../../../assets/images/imagePlaceHolder.png')}
-                  style={{marginTop:'6%', height:'60%', width:'64%', borderRadius:5 }}
-                />
+            <View style={{width:screenWidth, justifyContent:'flex-start'}}>
+              <View style={{width:screenWidth, justifyContent:'flex-start', alignItems:'center', zIndex:0}}>
+                <Button 
+                    title='From camera' 
+                    bgColor='#91D2CC' titleColor='#fff' 
+                    icon='camera'
+                    width='64%'
+                    onPress= {handleCameraPress}
+                  />
+                <Image
+                    source={pictureSource?pictureSource:require('../../../../assets/images/imagePlaceHolder.png')}
+                    style={{marginTop:'6%', height:'60%', width:'64%', borderRadius:5 }}
+                  />
+              </View>
+              <View style={{position:'absolute', top:'28%', left:'86%', zIndex:1}}>
+                <IconButton name='chevron-right' color='#8c919c' size={28}/>
+              </View>
             </View>
-            <View style={{width:screenWidth, alignItems:'center'}}>
-              <TextBox />
+            <View style={{width:screenWidth, justifyContent:'flex-start'}}>
+              <View style={{width:screenWidth, alignItems:'center', zIndex:0}}>
+                <TextBox placeholder='Type the physical examinations here'
+                         onChangeText={(physicalExaminations) => mutate(({session}) => 
+                         ({session: {...session, physicalExaminations}}))}/>
+              </View>
+              <View style={{position:'absolute', top:'32%', left:'2%', zIndex:1}}>
+                <IconButton name='chevron-left' color='#8c919c' size={28}/>
+              </View>
             </View>
           </ScrollView>
 
@@ -130,28 +153,45 @@ const Response = ({step, mutate, handleCameraPress, pictureSource}) => {
     case 'investigation': {
       return (
         <View style={styles.response}>
-          <TextBox width='10%'/>
+          <TextBox placeholder='Type the investigation here'
+                   onChangeText={(investigation) => mutate(({session}) => 
+                   ({session: {...session, investigation}}))}/>
         </View>
       )
     }
     case 'diagnosis': {
       return (
         <View style={styles.response}>
-          <TextBox width='10%'/>
+          <TextBox placeholder='Type the diagnosis here'
+                   onChangeText={(diagnosis) => mutate(({session}) => 
+                   ({session: {...session, diagnosis}}))}/>
+        </View>
+      )
+    }
+    case 'prescription': {
+      return (
+        <View style={styles.response}>
+          <TextBox placeholder='Type the prescription here'
+                   onChangeText={(prescription) => mutate(({session}) => 
+                   ({session: {...session, prescription}}))}/>
         </View>
       )
     }
     case 'advise': {
       return (
         <View style={styles.response}>
-          <TextBox width='10%'/>
+          <TextBox placeholder='Type the advise here'
+                   onChangeText={(advise) => mutate(({session}) => 
+                   ({session: {...session, advise}}))}/>
         </View>
       )
     }
     case 'followUp': {
       return (
         <View style={styles.response}>
-          <TextBox width='10%'/>
+          <TextBox placeholder='Type the follow up here'
+                   onChangeText={(followUp) => mutate(({session}) => 
+                   ({session: {...session, followUp}}))}/>
         </View>
       )
     }
@@ -178,15 +218,14 @@ export default class Session extends Component {
       pathPrefix: props.match.url,
       xOffset:0,
       pictureSource: null,
-      pregnancy: {
-        lastMenstrualPeriodDate: null,
-        gestationalAge: '',
-        breastFeeding: '',
-        contraceptiveUse: '',
-        liveBirth: '',
-        miscarriage: '',
-        abortion: '',
-        stillBorn: ''
+      session: {
+        chiefComplaints: '',
+        physicalExaminations: '',
+        investigation: '',
+        diagnosis: '',
+        prescription: '',
+        advise: '',
+        followUp: ''
       },
       options: {
         title: 'Select Picture',
@@ -229,9 +268,13 @@ export default class Session extends Component {
   }
 
   submit() {
-    console.log(this.state.vitals)
+    console.log(this.state.session)
   }
 
+  componentDidUpdate() {
+    console.log(this.state.session)
+  }
+  
   render() {
     return (
       <KeyboardAvoidingView style={styles.parentContainer} behaviro="padding">

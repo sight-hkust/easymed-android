@@ -36,6 +36,7 @@ const TextBox = ({value, width, placeholder, onChangeText, onSubmitEditing}) => 
         underlineColorAndroid='transparent'
         onChangeText={onChangeText}
         onSubmitEditing={onSubmitEditing}
+        multiline = {true}
       >
       </TextInput>
   </View>
@@ -66,7 +67,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.5,
     shadowOffset: { width: 1, height: 3 },
     shadowRadius: 5,
-    width: '80%',
+    width: '68%',
     height: 240
   },
   unit: {
@@ -85,5 +86,6 @@ const styles = StyleSheet.create({
     fontFamily: 'Quicksand-Medium',
     color: '#3c4859',
     paddingHorizontal: 20,
+    paddingTop: 12
   },
 });
