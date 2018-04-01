@@ -117,7 +117,7 @@ const Instruction = ({step}) => {
   }
 }
 
-const Response = ({step, mutate}) => {
+const Response = ({step, mutate, dob}) => {
   switch(step) {
     case 'name': {
       return (
@@ -152,10 +152,15 @@ const Response = ({step, mutate}) => {
     }
     case 'dob': {
       return (
-        <View style={{height: '64%'}}>
+        <View style={{height:'48%', justifyContent: 'space-between'}}>
           <Birthday onSelect={(dob) =>
             mutate( ({profile}) => ({ profile: { ...profile, dob }}) )
           }/>
+          <View style={{backgroundColor:'#fff', marginTop:24, borderRadius:5, height:52, width:'80%', alignSelf:'center', alignItems:'center', justifyContent:'center', shadowColor: '#e4e4e4', shadowOpacity: 0.5, shadowOffset: { width: 1, height: 3 }, shadowRadius: 5}}>
+            <Text style={{fontFamily:'Quicksand-Medium', color:dob?'#3c4859':'#A8B0CE', fontSize:18}}>
+              {dob?dob.toDateString():'Date of Birth'}
+            </Text>
+          </View>
         </View>
       )
     }
@@ -314,7 +319,7 @@ class Profile extends Component {
             >
             {stepList.map((step, i) => (
               <View style={{width: screenWidth, justifyContent:'flex-start'}} key={i}>
-                <Response step={step} mutate={this.setState.bind(this)}/>
+                <Response step={step} mutate={this.setState.bind(this)} dob={this.state.profile.dob}/>
               </View>
             ))}
           </ScrollView>
@@ -396,7 +401,7 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   response: {
-    height: '56%',
+    height: '52%',
     width: '100%',
     alignItems: 'center',
     justifyContent: 'space-between'

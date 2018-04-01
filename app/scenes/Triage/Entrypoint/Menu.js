@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, ScrollView, StyleSheet, StatusBar } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, StatusBar, TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Link } from 'react-router-native';
@@ -42,7 +42,7 @@ const menuItems = [
 ]
 
 const Metric = ({to, icon, color, title}) => (
-  <Link style={{...StyleSheet.flatten(styles.menuItem), borderLeftColor: color}} to={to}>
+  <Link style={{...StyleSheet.flatten(styles.menuItem), borderLeftColor: color}} to={to} component={TouchableOpacity} activeOpacity={0.25}>
     <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
       <Icon name={`${icon}`} size={20} type="solid" color={`${color}`}/>
       <Text style={styles.text}>{title}</Text>

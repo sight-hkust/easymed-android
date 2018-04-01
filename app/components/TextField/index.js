@@ -30,7 +30,7 @@ const TextBox = ({value, width, placeholder, onChangeText, onSubmitEditing}) => 
   <View style={styles.textbox}>
     <TextInput
         underlineColorAndroid='transparent'
-        style={[styles.input, {height: Platform.OS == 'android' ? 40 : 20}]}
+        style={[styles.inputBox, {height: Platform.OS == 'android' ? 40 : 20}]}
         value={value}
         placeholder={placeholder}
         underlineColorAndroid='transparent'
@@ -80,6 +80,15 @@ const styles = StyleSheet.create({
   },
 
   input: {
+    flex: 12,
+    height: 52, 
+    fontSize: 18,
+    fontFamily: 'Quicksand-Medium',
+    color: '#3c4859',
+    paddingHorizontal: 20,
+  },
+
+  inputBox: {
     flex: 12,
     height: 52, 
     fontSize: 18,

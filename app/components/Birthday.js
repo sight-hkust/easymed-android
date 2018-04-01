@@ -19,7 +19,6 @@ const styles = StyleSheet.create({
     height: '100%',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingBottom: '8%',
   },
   datePickerButton: {
     height: 52,

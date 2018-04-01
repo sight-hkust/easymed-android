@@ -14,7 +14,7 @@ import {
 import LinearGradient from 'react-native-linear-gradient';
 import { IconButton, Button } from '../../../components/Button'
 import Icon from 'react-native-fontawesome-pro';
-import TextField from '../../../components/TextField'
+import {TextField, TextBox} from '../../../components/TextField'
 import Step from '../../../components/Step'
 import BooleanSelect from '../../../components/BooleanSelect';
 import Header from '../../../components/Header';
@@ -115,7 +115,7 @@ const Response = ({step, mutate}) => {
     case 'otherSH': {
       return(
         <View style={{alignItems:'center'}}>
-          <TextField placeholder="SH" width="80%" onChangeText={
+          <TextBox placeholder="Type the social history here" width="80%" onChangeText={
             (other) => mutate(
               ({screening}) => ({ screening: { ...screening, other}})
             )

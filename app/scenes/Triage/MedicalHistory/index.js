@@ -14,7 +14,7 @@ import {
 import LinearGradient from 'react-native-linear-gradient';
 import { IconButton, Button } from '../../../components/Button'
 import Icon from 'react-native-fontawesome-pro';
-import TextField from '../../../components/TextField'
+import { TextField, TextBox } from '../../../components/TextField'
 import Step from '../../../components/Step'
 import BooleanSelect from '../../../components/BooleanSelect';
 import Header from '../../../components/Header';
@@ -175,7 +175,7 @@ const Response = ({step, mutate}) => {
     case 'otherPMH': {
       return(
         <View style={{alignItems:'center'}}>
-          <TextField placeholder="PMH" width="80%" onChangeText={(other) => mutate(
+          <TextBox placeholder="Type the past medical history" width="80%" onChangeText={(other) => mutate(
             ({medicalHistory}) => ({medicalHistory: {...medicalHistory, other}})
           )} />
         </View>

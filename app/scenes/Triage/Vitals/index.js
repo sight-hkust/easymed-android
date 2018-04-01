@@ -93,7 +93,7 @@ const Instruction = ({step}) => {
   } 
 }
 
-const Response = ({step, mutate}) => {
+const Response = ({step, mutate, ldw}) => {
   switch(step) {
     case 'bloodPressure': {
       return (
@@ -208,10 +208,15 @@ const Response = ({step, mutate}) => {
     }
     case 'deworming': {
       return (
-        <View style={{height:'72%'}}>
+        <View style={{height:'48%', justifyContent: 'space-between', marginTop:8}}>
           <DatePicker onSelect={(lastDewormingDate) =>
           mutate( ({vitals}) => ({ vitals: { ...vitals, lastDewormingDate }}) )
           }/>
+          <View style={{backgroundColor:'#fff', borderRadius:5, height:52, width:'80%', alignSelf:'center' ,alignItems:'center', justifyContent:'center', shadowColor: '#e4e4e4', shadowOpacity: 0.5, shadowOffset: { width: 1, height: 3 }, shadowRadius: 5}}>
+            <Text style={{fontFamily:'Quicksand-Medium', color:ldw?'#3c4859':'#A8B0CE', fontSize:18}}>
+              {ldw?ldw.toDateString():'Last deworming date'}
+            </Text>
+          </View>
         </View>
       )
     }
@@ -300,7 +305,7 @@ export default class Vitals extends Component {
           >
           {stepList.map((step, i) => (
             <View style={{width: screenWidth, justifyContent:'flex-start'}} key={i}>
-              <Response step={step} mutate={this.setState.bind(this)}/>
+              <Response step={step} mutate={this.setState.bind(this)} ldw={this.state.vitals.lastDewormingDate}/>
             </View>
           ))}
         </ScrollView>

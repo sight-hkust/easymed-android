@@ -108,14 +108,19 @@ const Instruction = ({step}) => {
   } 
 }
 
-const Response = ({step, mutate}) => {
+const Response = ({step, mutate, lmp}) => {
   switch(step) {
     case 'lmp': {
       return (
-        <View style={{height:'72%'}}>
+        <View style={{height:'48%', justifyContent: 'space-between', marginTop:8}}>
           <DatePicker onSelect={(lastMenstrualPeriodDate) =>
           mutate( ({pregnancy}) => ({ pregnancy: { ...pregnancy, lastMenstrualPeriodDate }}) )
-        }/>
+          }/>
+          <View style={{backgroundColor:'#fff', borderRadius:5, height:52, width:'80%', alignSelf:'center' ,alignItems:'center', justifyContent:'center', shadowColor: '#e4e4e4', shadowOpacity: 0.5, shadowOffset: { width: 1, height: 3 }, shadowRadius: 5}}>
+            <Text style={{fontFamily:'Quicksand-Medium', color:lmp?'#3c4859':'#A8B0CE', fontSize:18}}>
+              {lmp?lmp.toDateString():'Last menstrual period date'}
+            </Text>
+          </View>
         </View>
       )
     }
@@ -224,6 +229,10 @@ export default class Pregnancy extends Component {
     console.log(this.state.vitals)
   }
 
+  componentDidUpdate() {
+    console.log(this.state.pregnancy)
+  }
+
   render() {
     return (
       <KeyboardAvoidingView style={styles.parentContainer} behavior="position">
@@ -255,7 +264,7 @@ export default class Pregnancy extends Component {
           >
           {stepList.map((step, i) => (
             <View style={{width: screenWidth, justifyContent:'flex-start'}} key={i}>
-              <Response step={step} mutate={this.setState.bind(this)}/>
+              <Response step={step} mutate={this.setState.bind(this)} lmp={this.state.pregnancy.lastMenstrualPeriodDate}/>
             </View>
           ))}
         </ScrollView>
