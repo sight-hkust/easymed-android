@@ -3,8 +3,8 @@ import { Keyboard, View, StyleSheet, Text, TouchableOpacity } from 'react-native
 import { Link } from 'react-router-native';
 import Icon from 'react-native-fontawesome-pro';
 
-const KeyboardDismissButton = () => (
-  <TouchableOpacity style={{...styles.dismissButton}} onPress={Keyboard.dismiss}>
+const KeyboardDismissButton = ({top, bottom, right, left}) => (
+  <TouchableOpacity style={{...styles.dismissButton, top, bottom, right, left}} onPress={Keyboard.dismiss}>
     <Icon name="keyboard" size={22} color="white"/>
   </TouchableOpacity>
 )
@@ -75,8 +75,6 @@ const styles = {
     margin: 8,
     paddingTop: 2,
     position: 'absolute',
-    bottom: 24,
-    right: 4,
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',

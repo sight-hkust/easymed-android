@@ -8,9 +8,10 @@ import {
   QUEUE_PATIENT_REQUEST,
   QUEUE_PATIENT_SUCCESS,
   QUEUE_PATIENT_ERROR,
-  FORWARD_PATIENT_STAGE_REQUEST,
-  FORWARD_PATIENT_STAGE_SUCCESS,
-  FORWARD_PATIENT_STAGE_ERROR
+  TRANSFER_PATIENT_REQUEST,
+  TRANSFER_PATIENT_SUCCESS,
+  TRANSFER_PATIENT_ERROR,
+  RESET_PATIENT_QUEUE
 } from '../actions/constants'
 
 const initialState = {
@@ -49,14 +50,17 @@ const patientsReducer = (state = initialState, {type, payload}) => {
       case QUEUE_PATIENT_ERROR: {
           return {...state, loading: {...state.loading, spinner:false}, error: payload.error}
       }
-      case FORWARD_PATIENT_STAGE_REQUEST: {
+      case TRANSFER_PATIENT_REQUEST: {
           return {...state, loading: {...state.loading, spinner: true}}
       }
-      case FORWARD_PATIENT_STAGE_SUCCESS: {
-          return {...state, loading: {...state.loading, spinner: false}}
+      case TRANSFER_PATIENT_SUCCESS: {
+          return {...state, loading: {...state.loading, spinner: false}, queue: state.queue.filter(({queueId}) => queueId!==payload.queueId)}
       }
-      case FORWARD_PATIENT_STAGE_ERROR: {
+      case TRANSFER_PATIENT_ERROR: {
           return {...state, loading: {...state.loading, spinner: false}, error: payload.error}
+      }
+      case RESET_PATIENT_QUEUE: {
+          return {...state, queue: []}
       }
       default: return state;
   }

@@ -4,7 +4,7 @@ import Icon from 'react-native-fontawesome-pro';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import Modal from 'react-native-modal';
-import { fetchPatientList, fetchPatientQueue } from '../../../actions/patient';
+import { fetchPatientList, fetchPatientQueue, resetPatientQueue } from '../../../actions/patient';
 import Header from '../../../components/Header';
 import { Button } from '../../../components/Button';
 import { PatientListItem, PatientQueueItem } from '../../../components/Patient';
@@ -23,7 +23,7 @@ const SelectOperation = ({toggle, addPatient, viewRecord}) => (
   </View>
 )
 
-class Search extends Component {
+class Admission extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -110,7 +110,7 @@ const mapStateToProps = (state) => ({
   loading: state.patients.loading
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(Search)
+export default connect(mapStateToProps, mapDispatchToProps)(Admission)
 
 const styles = StyleSheet.create({
   container: {

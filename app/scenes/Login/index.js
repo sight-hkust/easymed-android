@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Image, Keyboard, View, Text, TextInput, StyleSheet, StatusBar, Platform } from 'react-native';
+import { Image, Keyboard, Dimensions, View, Text, TextInput, StyleSheet, StatusBar, Platform } from 'react-native';
 import Spinner from 'react-native-spinkit';
 import Modal from 'react-native-modal';
 import { connect } from 'react-redux';
@@ -70,7 +70,7 @@ class Login extends Component {
     else {
       return (
         <LinearGradient {...gradientLayout} style={styles.container}>
-          { this.state.isKeyboardPresent && <KeyboardDismissButton />}
+          { this.state.isKeyboardPresent && <KeyboardDismissButton top={24} right={6} />}
           <Header />
           <View style={styles.crendentials}>
             <Textfield icon='user' placeholder='Username' onChangeText={(username)=>this.setState({username})}/>

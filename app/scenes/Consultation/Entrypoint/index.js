@@ -1,29 +1,12 @@
 import React, { Component } from 'react';
 import { View, Image, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { fetchPatientQueue, resetPatientQueue } from '../../../actions/patient';
 import { IconButton } from '../../../components/Button'
 import Icon from 'react-native-fontawesome-pro';
 import Header from '../../../components/Header'
 import { PatientQueueItem as Patient } from '../../../components/Patient'
-
-const demoPatient1 = {
-  sex: 'female',
-  name: {
-    regular: 'Preah Reachanachâk Kampuchea'
-  },
-  age: '34',
-  tag: 18,
-  id: 1234
-}
-
-const demoPatient2 = {
-  sex: 'male',
-  name: {
-    regular: 'Sanskrit Kambujadeśa'
-  },
-  age: '26',
-  tag: 24,
-  id: 1234
-}
 
 const Toolbar = () => (
   <View style={styles.toolbar}>
@@ -42,26 +25,45 @@ const EmptyStub = () => (
   </View>
 )
 
-const ServiceQueue = () => {
+const ServiceQueue = ({queue}) => {
   return (
     <ScrollView>
       {/* <EmptyStub /> */}
-      <Patient patient={demoPatient1} to={`/consultation/patients/${demoPatient1.id}`} />
-      <Patient patient={demoPatient2} tto={`/consultation/patients/${demoPatient2.id}`} />
-      <Patient patient={demoPatient1} to={`/consultation/patients/${demoPatient1.id}`} />
-      <Patient patient={demoPatient2} to={`/consultation/patients/${demoPatient2.id}`} />
-      <Patient patient={demoPatient2} to={`/consultation/patients/${demoPatient2.id}`} />
+      {queue.map(({patient, queueId}) => (
+        <Patient 
+          patient={patient}
+          to={`/consultation/patients/${patient.id}`}
+          key={queueId} />
+      ))}
     </ScrollView>
   )
 }
 
-export default class Entrypoint extends Component {
+class Entrypoint extends Component {
   constructor(props) {
     super(props)
+    this.state = {
+      loading: props.loading
+    }
+    this.fetchPatientQueue = props.actions.fetchPatientQueue
+    this.resetPatientQueue = props.actions.resetPatientQueue
   }
 
   componentWillMount() {
     StatusBar.setBarStyle('dark-content', true)
+    this.refreshPatientQueue(true)
+  }
+
+  componentWillUnmount() {
+    this.resetPatientQueue()
+  }
+
+  refreshPatientQueue(auto) {
+    console.log('stop1')
+    if (!auto) {
+      this.setState({loading: this.props.loading})
+    }
+    this.fetchPatientQueue('consultation')
   }
 
   render() {
@@ -69,12 +71,22 @@ export default class Entrypoint extends Component {
       <View style={styles.container}>
         <Header title="Consultation" />
         <Toolbar />
-        <ServiceQueue/>
+        <ServiceQueue queue={this.props.queue}/>
       </View>
     )
   }
 }
 
+const mapDispatchToProps = (dispatch) => ({
+  actions: bindActionCreators({fetchPatientQueue, resetPatientQueue}, dispatch)
+})
+
+const mapStateToProps = (state) => ({
+  queue: state.patients.queue,
+  loading: state.patients.loading
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(Entrypoint)
 
 const styles = StyleSheet.create({
   container: {

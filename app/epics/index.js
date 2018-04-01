@@ -3,6 +3,7 @@ import { registerEpic, loginEpic, logoutEpic } from '../epics/auth'
 import { 
     createPatientEpic,
     queuePatientEpic,
+    transferPatientEpic,
     fetchPatientListEpic,
     fetchPatientQueueEpic
 } from './patients'
@@ -15,6 +16,7 @@ export const epics = combineEpics (
     vitalsEpic,
     createPatientEpic,
     queuePatientEpic,
+    transferPatientEpic,
     fetchPatientListEpic,
     fetchPatientQueueEpic
 )
