@@ -23,7 +23,7 @@ const PatientQueueItem = ({patient: {age, sex, name, tag=0}, to}) => (
         <Text style={styles.patientPhysicalAttributeText}>AGE: {age}</Text>
         <View style={styles.patientGender}>
           <Text style={styles.patientPhysicalAttributeText}>SEX: </Text>
-          <Icon name={sex==='female'?'venus':'mars'} color={sex==='female'?'#ff5273':'#4c79fc'} size={18}/>
+          <Icon name={sex==='Female'?'venus':'mars'} color={sex==='Female'?'#ff5273':'#4c79fc'} size={18}/>
         </View>
       </View>
     </View>

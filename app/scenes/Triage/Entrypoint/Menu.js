@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, ScrollView, StyleSheet, StatusBar, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, StyleSheet, StatusBar } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Link } from 'react-router-native';
@@ -9,12 +9,6 @@ import Icon from 'react-native-fontawesome-pro';
 import { Button } from '../../../components/Button'
 
 const menuItems = [
-  {
-    destination: '/vitals',
-    icon: 'heartbeat',
-    color: '#ef798a',
-    title: 'Vitals'
-  },
   {
     destination: '/history',
     icon: 'procedures',
@@ -32,12 +26,6 @@ const menuItems = [
     icon: 'allergies',
     color: '#7d82b8',
     title: 'Drug History and Allergies'
-  },
-  {
-    destination: '/pregnancy',
-    icon: 'female',
-    color: '#f4649e',
-    title: 'Pregnancy'
   }
 ]
 
@@ -54,7 +42,6 @@ class Menu extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      pathPrefix: props.match.url,
       queueId: props.match.params.queueId,
       patient: props.patient
     }
@@ -74,15 +61,21 @@ class Menu extends Component {
       <View style={styles.container}>
           <Header title="Add Records" to="/triage"/>
           <ScrollView>
+            <Metric title="Vitals" icon="heartbeat" color="#ef798a" to={`/triage/patients/${this.state.queueId}/vitals`} />
             {menuItems.map(({destination, icon, color, title}, i) => (
               <Metric
-                to={`${this.state.pathPrefix}${destination}`}
+                to={`/triage/patients/${this.state.patient.id}${destination}`}
                 title={title}
                 icon={icon}
                 color={color}
                 key={i}
               />
             ))}
+            {this.state.patient.sex === 'Female' && <Metric title="Pregnancy"
+                                                            icon="female"
+                                                            color="#f4649e"
+                                                            to={`/triage/patients/${this.state.queueId}/pregnancy`}
+                                                    />}
           </ScrollView>
           <Button 
                 title="Checkout"
