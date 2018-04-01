@@ -223,9 +223,9 @@ const Response = ({step, mutate, ldw}) => {
   }
 }
 
-const HeaderContainer = ({xOffset}) => (
+const HeaderContainer = ({xOffset, path}) => (
   <View style={styles.headerContainer}>
-    <Header title="Vitals" light="true" to="/triage/patients/:paitentId"/>
+    <Header title="Vitals" light="true" to={`/triage/patients/${path}`}/>
     <Step allSteps={stepList.length-1} step={xOffset/screenWidth} backgroundColor='#fff' highlightColor='#FAEB9A' />
   </View>
 )
@@ -237,6 +237,7 @@ export default class Vitals extends Component {
     this.state = {
       xOffset:0,
       isKeyboardPresent: false,
+      queueId: props.match.params.queueId,
       vitals: {
         pulseRate: '',
         bloodPressure: '',
@@ -277,8 +278,7 @@ export default class Vitals extends Component {
   render() {
     return (
       <KeyboardAvoidingView style={styles.parentContainer} behavior="position">
-        <HeaderContainer xOffset={this.state.xOffset}/>
-        { this.state.isKeyboardPresent && <KeyboardDismissButton />}
+        <HeaderContainer xOffset={this.state.xOffset} path={this.state.queueId}/>
         <ScrollView 
           ref = 'questionScroll'
           horizontal = {true} 
@@ -329,11 +329,7 @@ export default class Vitals extends Component {
 //   actions: bindActionCreators({createVitals}, dispatch)
 // })
 
-// const mapStateToProps = (state) => ({
-//   vitalsId: state.vitals.id
-// })
-
-// export default connect(mapStateToProps, mapDispatchToProps)(Vitals)
+// export default connect(mapStateToProps)(Vitals)
 
 const styles = StyleSheet.create({
   parentContainer: {

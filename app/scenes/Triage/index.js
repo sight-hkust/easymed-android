@@ -15,10 +15,10 @@ const Triage = ({match}) => (
     <Route path={`${match.url}/profile`} component={Profile} />
     <Route path={`${match.url}/patients/admission`} component={Admission} />
     <Route exact path={`${match.url}/patients/:queueId`} component={Menu} />
-    <Route path={`${match.url}/patients/:patientId/vitals`} component={Vitals} />
-    <Route path={`${match.url}/patients/:patientId/pregnancy`} component={Pregnancy} />
-    <Route path={`${match.url}/patients/:patientId/screening`} component={Screening} />
-    <Route path={`${match.url}/patients/:patientid/history`} component={MedicalHistory} />
+    <Route path={`${match.url}/patients/:queueId/vitals`} component={Vitals} />
+    <Route path={`${match.url}/patients/:queueId/pregnancy`} component={Pregnancy} />
+    <Route path={`${match.url}/patients/:queueId/screening`} component={Screening} />
+    <Route path={`${match.url}/patients/:queueId/history`} component={MedicalHistory} />
   </Switch>
 )
 

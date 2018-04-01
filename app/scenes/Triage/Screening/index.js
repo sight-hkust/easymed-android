@@ -1,4 +1,6 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import { 
   View,
   KeyboardAvoidingView,
@@ -126,19 +128,20 @@ const Response = ({step, mutate}) => {
   }
 }
 
-const HeaderContainer = ({xOffset}) => (
+const HeaderContainer = ({xOffset, path}) => (
   <View style={styles.headerContainer}>
-    <Header title="Screening" light="true" to="/triage/patients/:paitentId"/>
+    <Header title="Screening" light="true" to={`/triage/patients/${path}`}/>
     <Step allSteps={stepList.length-1} step={xOffset/screenWidth} backgroundColor='#fff' highlightColor='#FAEB9A' />
   </View>
 )
 
-export default class Screening extends Component {
+class Screening extends Component {
   constructor(props) {
     super(props);
     this.handleScroll = this.handleScroll.bind(this);
     this.state = {
       xOffset:0,
+      queueId: props.match.params.queueId,
       screening: {
         tobaccoUse: '',
         alchoholUse: '',
@@ -158,14 +161,12 @@ export default class Screening extends Component {
   }
 
   submit() {
-    console.log(this.state.vitals)
   }
 
   render() {
     return (
       <KeyboardAvoidingView style={styles.parentContainer} behavior="position">
-        <HeaderContainer xOffset={this.state.xOffset}/>
-
+        <HeaderContainer xOffset={this.state.xOffset} path={this.state.queueId}/>
         <ScrollView 
           ref = 'questionScroll'
           horizontal = {true} 
@@ -211,6 +212,12 @@ export default class Screening extends Component {
     )
   }
 }
+
+const mapStateToProps = (state, props) => ({
+  patientId: state.patients.queue[state.patients.queue.findIndex(({queueId}) => props.match.params.queueId)].patient.id
+})
+
+export default connect(mapStateToProps)(Screening)
 
 const styles = StyleSheet.create({
   parentContainer: {

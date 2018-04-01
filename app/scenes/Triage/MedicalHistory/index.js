@@ -1,4 +1,6 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import { 
   View,
   KeyboardAvoidingView,
@@ -184,19 +186,20 @@ const Response = ({step, mutate}) => {
   }
 }
 
-const HeaderContainer = ({xOffset}) => (
+const HeaderContainer = ({xOffset, path}) => (
   <View style={styles.headerContainer}>
-    <Header title="Medical History" light="true" to="/triage/patients/:paitentId"/>
+    <Header title="Medical History" light="true" to={`/triage/patients/${path}`}/>
     <Step allSteps={stepList.length-1} step={xOffset/screenWidth} backgroundColor='#fff' highlightColor='#FAEB9A' />
   </View>
 )
 
-export default class MedicalHistory extends Component {
+class MedicalHistory extends Component {
   constructor(props) {
     super(props);
     this.handleScroll = this.handleScroll.bind(this);
     this.state = {
       xOffset:0,
+      queueId: props.match.params.queueId,
       medicalHistory: {
         hypertension: '',
         diabetes: '',
@@ -208,6 +211,7 @@ export default class MedicalHistory extends Component {
         other: ''
       }
     }
+    console.log(this.state.queueId)
   }
 
    handleScroll({nativeEvent: { contentOffset: { x }}}){
@@ -226,7 +230,7 @@ export default class MedicalHistory extends Component {
   render() {
     return (
       <KeyboardAvoidingView style={styles.parentContainer} behavior="position">
-        <HeaderContainer xOffset={this.state.xOffset}/>
+        <HeaderContainer xOffset={this.state.xOffset} path={this.state.queueId}/>
 
         <ScrollView 
           ref = 'questionScroll'
@@ -273,6 +277,12 @@ export default class MedicalHistory extends Component {
     )
   }
 }
+
+const mapStateToProps = (state, props) => ({
+  patientId: state.patients.queue[state.patients.queue.findIndex(({queueId}) => props.match.params.queueId)].patient.id
+})
+
+export default connect(mapStateToProps)(MedicalHistory)
 
 const styles = StyleSheet.create({
   parentContainer: {

@@ -1,4 +1,6 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import { 
   View,
   KeyboardAvoidingView,
@@ -190,9 +192,9 @@ const Response = ({step, mutate, lmp}) => {
   }
 }
 
-const HeaderContainer = ({xOffset}) => (
+const HeaderContainer = ({xOffset, path}) => (
   <View style={styles.headerContainer}>
-    <Header title="Pregnancy" light="true" to="/triage/patients/:paitentId"/>
+    <Header title="Pregnancy" light="true" to={`/triage/patients/${path}`}/>
     <Step allSteps={stepList.length-1} step={xOffset/screenWidth} backgroundColor='#fff' highlightColor='#FAEB9A' />
   </View>
 )
@@ -203,6 +205,7 @@ export default class Pregnancy extends Component {
     this.handleScroll = this.handleScroll.bind(this);
     this.state = {
       xOffset:0,
+      queueId: props.match.params.queueId,
       pregnancy: {
         lastMenstrualPeriodDate: null,
         gestationalAge: '',
@@ -229,15 +232,10 @@ export default class Pregnancy extends Component {
     console.log(this.state.vitals)
   }
 
-  componentDidUpdate() {
-    console.log(this.state.pregnancy)
-  }
-
   render() {
     return (
       <KeyboardAvoidingView style={styles.parentContainer} behavior="position">
-        <HeaderContainer xOffset={this.state.xOffset}/>
-
+        <HeaderContainer xOffset={this.state.xOffset} path={this.state.queueId}/>
         <ScrollView 
           ref = 'questionScroll'
           horizontal = {true} 
@@ -284,6 +282,8 @@ export default class Pregnancy extends Component {
     )
   }
 }
+
+// export default connect(mapStateToProps)(Pregnancy)
 
 const styles = StyleSheet.create({
   parentContainer: {

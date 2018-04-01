@@ -10,6 +10,12 @@ import { Button } from '../../../components/Button'
 
 const menuItems = [
   {
+    destination: '/vitals',
+    icon: 'heartbeat',
+    color: '#ef798a',
+    title: 'Vitals'
+  },
+  {
     destination: '/history',
     icon: 'procedures',
     color: '#ffcb2f',
@@ -61,10 +67,9 @@ class Menu extends Component {
       <View style={styles.container}>
           <Header title="Add Records" to="/triage"/>
           <ScrollView>
-            <Metric title="Vitals" icon="heartbeat" color="#ef798a" to={`/triage/patients/${this.state.queueId}/vitals`} />
             {menuItems.map(({destination, icon, color, title}, i) => (
               <Metric
-                to={`/triage/patients/${this.state.patient.id}${destination}`}
+                to={`/triage/patients/${this.state.queueId}${destination}`}
                 title={title}
                 icon={icon}
                 color={color}
