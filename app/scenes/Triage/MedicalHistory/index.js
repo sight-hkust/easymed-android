@@ -30,7 +30,7 @@ const gradientLayout = {
   locations: [0, 0.75]
 }
 
-const stepList = ['HTN', 'DM', 'TB', 'asthma', 'hepatitisABC', 'malaria', 'HIV','otherPMH',];
+const stepList = ['HTN', 'DM', 'TB', 'asthma', 'hepatitisABC', 'malaria', 'HIV', 'vaccination', 'otherPMH',];
 
 const Instruction = ({step}) => {
   switch(step) {
@@ -94,6 +94,15 @@ const Instruction = ({step}) => {
           <Text style={styles.instruction}>Identify if the patient</Text>
           <Text style={styles.instruction}>has HIV using</Text>
           <Text style={styles.instruction}>the indicator below</Text>
+        </View>
+      )
+    }
+    case 'vaccination': {
+      return (
+        <View style={styles.textWrapper}>
+          <Text style={styles.instruction}>Enter the </Text>
+          <Text style={styles.instruction}>vaccination details</Text>
+          <Text style={styles.instruction}>of the patient</Text>
         </View>
       )
     }
@@ -174,6 +183,15 @@ const Response = ({step, mutate}) => {
         </View>
       )
     }
+    case 'vaccination': {
+      return(
+        <View style={{alignItems:'center'}}>
+          <TextBox placeholder="Type the vaccination details" width="80%" onChangeText={(vaccination) => mutate(
+            ({medicalHistory}) => ({medicalHistory: {...medicalHistory, vaccination}})
+          )} />
+        </View>
+      )
+    }
     case 'otherPMH': {
       return(
         <View style={{alignItems:'center'}}>
@@ -208,6 +226,7 @@ class MedicalHistory extends Component {
         malaria: '',
         hepatitis: '',
         HIV: '',
+        vaccination: '',
         other: ''
       }
     }
@@ -224,7 +243,7 @@ class MedicalHistory extends Component {
   }
 
   submit() {
-    console.log(this.state.vitals)
+    console.log(this.state.medicalHistory)
   }
 
   render() {
