@@ -7,7 +7,10 @@ import {
   FETCH_PATIENT_QUEUE_ERROR,
   QUEUE_PATIENT_REQUEST,
   QUEUE_PATIENT_SUCCESS,
-  QUEUE_PATIENT_ERROR
+  QUEUE_PATIENT_ERROR,
+  FORWARD_PATIENT_STAGE_REQUEST,
+  FORWARD_PATIENT_STAGE_SUCCESS,
+  FORWARD_PATIENT_STAGE_ERROR
 } from '../actions/constants'
 
 const initialState = {
@@ -45,6 +48,15 @@ const patientsReducer = (state = initialState, {type, payload}) => {
       }
       case QUEUE_PATIENT_ERROR: {
           return {...state, loading: {...state.loading, spinner:false}, error: payload.error}
+      }
+      case FORWARD_PATIENT_STAGE_REQUEST: {
+          return {...state, loading: {...state.loading, spinner: true}}
+      }
+      case FORWARD_PATIENT_STAGE_SUCCESS: {
+          return {...state, loading: {...state.loading, spinner: false}}
+      }
+      case FORWARD_PATIENT_STAGE_ERROR: {
+          return {...state, loading: {...state.loading, spinner: false}, error: payload.error}
       }
       default: return state;
   }

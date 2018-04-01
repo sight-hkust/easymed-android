@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
-import { View, Text, ScrollView, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, StatusBar } from 'react-native';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import { Link } from 'react-router-native';
+import { forwardPatient } from '../../../actions/patient';
 import Header from '../../../components/Header';
 import Icon from 'react-native-fontawesome-pro';
 import { Button } from '../../../components/Button'
@@ -46,6 +49,10 @@ export default class Menu extends Component {
     }
   }
 
+  componentWillMount() {
+    StatusBar.setBarStyle('dark-content', true)
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -71,6 +78,10 @@ export default class Menu extends Component {
     )
   }
 }
+
+const mapDispatchToProps = (dispatch) => ({
+  actions: bindActionCreators({forwardPatient}, dispatch)
+})
 
 const styles = StyleSheet.create({
   container: {

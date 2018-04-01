@@ -163,7 +163,7 @@ export default class Screening extends Component {
 
   render() {
     return (
-      <KeyboardAvoidingView style={styles.parentContainer}>
+      <KeyboardAvoidingView style={styles.parentContainer} behavior="position">
         <HeaderContainer xOffset={this.state.xOffset}/>
 
         <ScrollView 

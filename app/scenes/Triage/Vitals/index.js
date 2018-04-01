@@ -5,6 +5,7 @@ import {
   View,
   KeyboardAvoidingView,
   Image,
+  Keyboard,
   ScrollView,
   StatusBar,
   StyleSheet,
@@ -15,7 +16,7 @@ import {
 } from 'react-native'
 import { createVitals } from '../../../actions/vitals';
 import LinearGradient from 'react-native-linear-gradient';
-import { IconButton, Button } from '../../../components/Button'
+import { IconButton, Button, KeyboardDismissButton } from '../../../components/Button'
 import Icon from 'react-native-fontawesome-pro';
 import TextField from '../../../components/TextField'
 import Step from '../../../components/Step'
@@ -230,6 +231,7 @@ export default class Vitals extends Component {
     this.handleScroll = this.handleScroll.bind(this);
     this.state = {
       xOffset:0,
+      isKeyboardPresent: false,
       vitals: {
         pulseRate: '',
         bloodPressure: '',
@@ -251,6 +253,16 @@ export default class Vitals extends Component {
 
   componentWillMount() {
     StatusBar.setBarStyle('light-content')
+    this.keyboardWillShowListener = Keyboard.addListener('keyboardWillShow', this._keyboardWillShow.bind(this))
+    this.keyboardWillHideListener = Keyboard.addListener('keyboardWillHide', this._keyboardWillHide.bind(this))
+  }
+
+  _keyboardWillShow () {
+    this.setState(previousState => ({isKeyboardPresent: true}))
+  }
+
+  _keyboardWillHide () {
+    this.setState(previousState => ({isKeyboardPresent: false}))
   }
 
   submit() {
@@ -259,9 +271,9 @@ export default class Vitals extends Component {
 
   render() {
     return (
-      <KeyboardAvoidingView style={styles.parentContainer}>
+      <KeyboardAvoidingView style={styles.parentContainer} behavior="position">
         <HeaderContainer xOffset={this.state.xOffset}/>
-        
+        { this.state.isKeyboardPresent && <KeyboardDismissButton />}
         <ScrollView 
           ref = 'questionScroll'
           horizontal = {true} 

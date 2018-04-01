@@ -128,6 +128,17 @@ async function queuePatient(tag, patientId, stage) {
   }
 }
 
+async function forwardPatient(queueId, stage) {
+  try {
+    const Queue = Parse.Object.extend('Queue')
+    const queuingPatient = await new Parse.Query(Queue).get(queueId)
+    queuingPatient.set('stage', stage)
+    await queuingPatient.save()
+  } catch (error) {
+    throw error
+  }
+}
+
 async function findProfile(id) {
   try {
     const Profile = Parse.Object.extend('Profile')

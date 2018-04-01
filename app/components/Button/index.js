@@ -75,7 +75,7 @@ const styles = {
     margin: 8,
     paddingTop: 2,
     position: 'absolute',
-    top: 32,
+    bottom: 24,
     right: 4,
     flexDirection: 'column',
     alignItems: 'center',

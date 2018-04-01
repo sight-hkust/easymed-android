@@ -225,7 +225,7 @@ export default class MedicalHistory extends Component {
 
   render() {
     return (
-      <KeyboardAvoidingView style={styles.parentContainer}>
+      <KeyboardAvoidingView style={styles.parentContainer} behavior="position">
         <HeaderContainer xOffset={this.state.xOffset}/>
 
         <ScrollView 

@@ -226,7 +226,7 @@ export default class Pregnancy extends Component {
 
   render() {
     return (
-      <KeyboardAvoidingView style={styles.parentContainer} behaviro="padding">
+      <KeyboardAvoidingView style={styles.parentContainer} behavior="position">
         <HeaderContainer xOffset={this.state.xOffset}/>
 
         <ScrollView 
