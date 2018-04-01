@@ -1,4 +1,6 @@
 import React, { Component } from 'react'
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 import { 
   View,
   KeyboardAvoidingView,
@@ -11,6 +13,7 @@ import {
   Dimensions, 
   Switch 
 } from 'react-native'
+import { createCase } from '../../../actions/case';
 import LinearGradient from 'react-native-linear-gradient';
 import ImagePicker from 'react-native-image-picker';
 import { IconButton, Button } from '../../../components/Button'
@@ -271,10 +274,6 @@ export default class Session extends Component {
     console.log(this.state.session)
   }
 
-  componentDidUpdate() {
-    console.log(this.state.session)
-  }
-  
   render() {
     return (
       <KeyboardAvoidingView style={styles.parentContainer} behaviro="padding">
@@ -325,6 +324,16 @@ export default class Session extends Component {
     )
   }
 }
+
+// const mapDispatchToProps = (dispatch) => ({
+//   actions: bindActionCreators({createSession}, dispatch)
+// })
+
+// const mapStateToProps = (state) =>({
+//   sessionId: state.session.id
+// })
+
+// export default connect(mapStateToProps, mapDispatchToProps)(Session)
 
 const styles = StyleSheet.create({
   parentContainer: {

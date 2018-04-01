@@ -22,7 +22,7 @@ const menuItems = [
     title: 'Screening'
   },
   {
-    destination: '/vaccination',
+    destination: '/miscellaneous',
     icon: 'allergies',
     color: '#7d82b8',
     title: 'Drug History and Allergies'

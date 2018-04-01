@@ -226,10 +226,6 @@ export default class Pregnancy extends Component {
   }
 
   submit() {
-    console.log(this.state.vitals)
-  }
-
-  componentDidUpdate() {
     console.log(this.state.pregnancy)
   }
 

@@ -6,6 +6,7 @@ import Vitals from './Vitals';
 import Pregnancy from './Pregnancy';
 import Screening from './Screening';
 import MedicalHistory from './MedicalHistory';
+import Miscellaneous from './Miscellaneous';
 import Menu from './Entrypoint/Menu'
 import Admission from './Admission'
 
@@ -18,7 +19,8 @@ const Triage = ({match}) => (
     <Route path={`${match.url}/patients/:patientId/vitals`} component={Vitals} />
     <Route path={`${match.url}/patients/:patientId/pregnancy`} component={Pregnancy} />
     <Route path={`${match.url}/patients/:patientId/screening`} component={Screening} />
-    <Route path={`${match.url}/patients/:patientid/history`} component={MedicalHistory} />
+    <Route path={`${match.url}/patients/:patientId/history`} component={MedicalHistory} />
+    <Route path={`${match.url}/patients/:patientId/miscellaneous`} component={Miscellaneous} />
   </Switch>
 )
 
