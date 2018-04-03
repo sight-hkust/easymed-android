@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { Dimensions, View, Text, StyleSheet, ScrollView, RefreshControl } from 'react-native';
+import { Dimensions, View, Text, StyleSheet, ScrollView, RefreshControl, Image } from 'react-native';
 import Icon from 'react-native-fontawesome-pro';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import Modal from 'react-native-modal';
+import Spinner from 'react-native-spinkit'
 import { fetchPatientList, fetchPatientQueue, resetPatientQueue } from '../../../actions/patient';
 import Header from '../../../components/Header';
 import { Button } from '../../../components/Button';
@@ -20,6 +21,16 @@ const SelectOperation = ({toggle, addPatient, viewRecord}) => (
       }
     }/>
     <Button title="Cancel" titleColor="#fff" bgColor="#d27787" onPress={toggle}/>
+  </View>
+)
+
+const EmptyStub = () => (
+  <View style={{justifyContent: 'space-around', alignItems: 'center', width: '80%', alignSelf: 'center'}}>
+    <Image style={{width: 160, height: 160}} source={require('../../../../assets/images/empty/consultation.png')}/>
+    <View>
+      <Text style={{fontFamily: 'Quicksand-Bold',fontSize: 20, textAlign: 'center', marginBottom: 12}}>{'no patients found'.toUpperCase()}</Text>
+      <Text style={{fontFamily: 'Nunito-Medium', textAlign: 'center', color:'#848c9f'}}>There are currently no patient waiting in line, add a patient to this queue to get started.</Text>
+    </View>
   </View>
 )
 
@@ -41,6 +52,10 @@ class Admission extends Component {
   componentWillMount() {
     this.fetchPatientList()
     this.refreshPatientQueue(true)
+  }
+
+  componentDidUpdate() {
+    console.log(this.props.queue)
   }
 
   refreshPatientQueue(auto) {
@@ -75,6 +90,7 @@ class Admission extends Component {
                 onRefresh={this.refreshPatientQueue.bind(this)}
               />
             }>
+              {this.props.queue.length === 0 && <EmptyStub />}
               {this.props.queue && this.props.queue.map(({patient, queueId}, i) => (
                 <PatientQueueItem patient={patient} key={i} to={`/triage/patients/${queueId}`}/>
               ))}
@@ -94,6 +110,21 @@ class Admission extends Component {
           <SelectOperation
             toggle={this.toggleOperationSelection.bind(this)}
           />
+        </Modal>
+        <Modal
+          isVisible={this.props.loading.queue}
+          animationIn="fadeIn"
+          backdropOpacity={0}
+          style={{justifyContent: 'center'}}
+        >
+          <View style={styles.loading}>
+            <Spinner
+            isVisible={this.props.loading.queue}
+            size={44}
+            style={{alignSelf: 'center'}}
+            type='WanderingCubes' 
+            color='#81e2d9'/>
+          </View>
         </Modal>
       </View>
     )

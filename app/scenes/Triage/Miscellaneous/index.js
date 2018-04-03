@@ -76,9 +76,9 @@ const Response = ({step, mutate}) => {
   }
 }
 
-const HeaderContainer = ({xOffset}) => (
+const HeaderContainer = ({xOffset, path}) => (
   <View style={styles.headerContainer}>
-    <Header title="Miscellaneous" light="true" to="/triage/patients/:paitentId"/>
+    <Header title="Miscellaneous" light="true" to={`/triage/patients/${path}`}/>
     <Step allSteps={stepList.length-1} step={xOffset/screenWidth} backgroundColor='#fff' highlightColor='#FAEB9A' />
   </View>
 )
@@ -89,6 +89,7 @@ export default class Miscellaneous extends Component {
     this.handleScroll = this.handleScroll.bind(this);
     this.state = {
       xOffset:0,
+      queueId: props.match.params.queueId,
       miscellaneous: {
         drugHistory: '',
         allergies: ''
@@ -112,7 +113,7 @@ export default class Miscellaneous extends Component {
   render() {
     return (
       <KeyboardAvoidingView style={styles.parentContainer} behavior="position">
-        <HeaderContainer xOffset={this.state.xOffset}/>
+        <HeaderContainer xOffset={this.state.xOffset} path={this.state.queueId}/>
 
         <ScrollView 
           ref = 'questionScroll'

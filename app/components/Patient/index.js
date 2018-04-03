@@ -62,16 +62,6 @@ const PatientListItem = ({patient: {age, sex, name}, onPress}) => {
 }
 
 
-const PatientProfile = ({patient: {age, gender, name}}) => {
-  const style = {
-
-  }
-  return (
-    <View>
-      
-    </View>
-  )
-}
 
 const styles = StyleSheet.create({
   patient: {

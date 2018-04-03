@@ -5,6 +5,7 @@
 	};
 	objectVersion = 46;
 	objects = {
+
 /* Begin PBXBuildFile section */
 		00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
 		00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302BA1ABCB90400DB3ED1 /* libRCTGeolocation.a */; };
@@ -35,6 +36,7 @@
 		2D02E4C81E0B4AEC006451C7 /* libRCTWebSocket-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DAD3E991DF850E9000B6D8A /* libRCTWebSocket-tvOS.a */; };
 		2D02E4C91E0B4AEC006451C7 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DAD3EA31DF850E9000B6D8A /* libReact.a */; };
 		2DCD954D1E0B4F2C00145EB5 /* IvyTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* IvyTests.m */; };
+		35FD82058909480A96E824A6 /* libRNImagePicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4077E28010FD416FB96CD07C /* libRNImagePicker.a */; };
 		3E88F37ECB8441C7B691474D /* Nunito-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AB232106A1724FE0BFB58628 /* Nunito-Black.ttf */; };
 		40A8118CEF5E4CAAA87B4B3E /* Quicksand-BoldItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 5632C7E6071843B1BBE61845 /* Quicksand-BoldItalic.otf */; };
 		43312406094A4B30B006E60E /* libRNSVG.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DFB0950C9A5B44FD8F232B3A /* libRNSVG.a */; };
@@ -59,7 +61,6 @@
 		D1177DA14AB6492BAED0F2A7 /* Quicksand-Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = 6FBF15BF4FE34219B67662E4 /* Quicksand-Light.otf */; };
 		D18D30B3BFEB4CEC9C74C68F /* Nunito-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 55EB2D3E8EDC407B8AFD01B2 /* Nunito-SemiBold.ttf */; };
 		F06D1DD4059D4C50B0977CEB /* Nunito-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C9C536FA991D4A268EF793EC /* Nunito-ExtraBold.ttf */; };
-		35FD82058909480A96E824A6 /* libRNImagePicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4077E28010FD416FB96CD07C /* libRNImagePicker.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -364,6 +365,13 @@
 			remoteGlobalIDString = 641194871EC9FD4A00D4FC03;
 			remoteInfo = "RNSpinkit-tvOS";
 		};
+		84D4CF1520720D3500BEFAEB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4C456ABAB4964526B94D2A22 /* RNImagePicker.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 014A3B5C1C6CF33500B6D375;
+			remoteInfo = RNImagePicker;
+		};
 		84DC75A2206787E7005D79FD /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 13CE6C5E7DC0428BB196DD80 /* RNSVG.xcodeproj */;
@@ -414,7 +422,9 @@
 		2A63D329720448B2B347B01B /* Nunito-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Nunito-Medium.ttf"; path = "../assets/fonts/Nunito-Medium.ttf"; sourceTree = "<group>"; };
 		2D02E47B1E0B4A5D006451C7 /* Ivy-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Ivy-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D02E4901E0B4A5D006451C7 /* Ivy-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Ivy-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		4077E28010FD416FB96CD07C /* libRNImagePicker.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNImagePicker.a; sourceTree = "<group>"; };
 		48267B698645434790F75EBD /* fa-light-300.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "fa-light-300.ttf"; path = "../assets/fonts/fa-light-300.ttf"; sourceTree = "<group>"; };
+		4C456ABAB4964526B94D2A22 /* RNImagePicker.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNImagePicker.xcodeproj; path = "../node_modules/react-native-image-picker/ios/RNImagePicker.xcodeproj"; sourceTree = "<group>"; };
 		55EB2D3E8EDC407B8AFD01B2 /* Nunito-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Nunito-SemiBold.ttf"; path = "../assets/fonts/Nunito-SemiBold.ttf"; sourceTree = "<group>"; };
 		5632C7E6071843B1BBE61845 /* Quicksand-BoldItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Quicksand-BoldItalic.otf"; path = "../assets/fonts/Quicksand-BoldItalic.otf"; sourceTree = "<group>"; };
 		5A57E063965149D5BCFEA795 /* Font Awesome 5 Brands-Regular-400.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Font Awesome 5 Brands-Regular-400.otf"; path = "../assets/fonts/Font Awesome 5 Brands-Regular-400.otf"; sourceTree = "<group>"; };
@@ -445,8 +455,6 @@
 		E1186258B60C4C4F8C84D293 /* Quicksand-LightItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Quicksand-LightItalic.otf"; path = "../assets/fonts/Quicksand-LightItalic.otf"; sourceTree = "<group>"; };
 		F46AF26C91854CB8864A80B4 /* Quicksand-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Quicksand-Medium.ttf"; path = "../assets/fonts/Quicksand-Medium.ttf"; sourceTree = "<group>"; };
 		F92B1F46BEED4B3C9E3CFBDE /* libRNSpinkit.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNSpinkit.a; sourceTree = "<group>"; };
-		4C456ABAB4964526B94D2A22 /* RNImagePicker.xcodeproj */ = {isa = PBXFileReference; name = "RNImagePicker.xcodeproj"; path = "../node_modules/react-native-image-picker/ios/RNImagePicker.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
-		4077E28010FD416FB96CD07C /* libRNImagePicker.a */ = {isa = PBXFileReference; name = "libRNImagePicker.a"; path = "libRNImagePicker.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -709,6 +717,7 @@
 				F92B1F46BEED4B3C9E3CFBDE /* libRNSpinkit.a */,
 				DFB0950C9A5B44FD8F232B3A /* libRNSVG.a */,
 				9A18F37382194D079918B9EC /* libRNSVG-tvOS.a */,
+				4077E28010FD416FB96CD07C /* libRNImagePicker.a */,
 			);
 			name = "Recovered References";
 			sourceTree = "<group>";
@@ -735,6 +744,14 @@
 			children = (
 				84CB378B205EBDAC00E404D2 /* libRNSpinkit.a */,
 				84CB378D205EBDAC00E404D2 /* libRNSpinkit.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		84D4CF1220720D3500BEFAEB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				84D4CF1620720D3500BEFAEB /* libRNImagePicker.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -952,6 +969,10 @@
 				{
 					ProductGroup = 146834001AC3E56700842450 /* Products */;
 					ProjectRef = 146833FF1AC3E56700842450 /* React.xcodeproj */;
+				},
+				{
+					ProductGroup = 84D4CF1220720D3500BEFAEB /* Products */;
+					ProjectRef = 4C456ABAB4964526B94D2A22 /* RNImagePicker.xcodeproj */;
 				},
 				{
 					ProductGroup = 8483CC7620493D3800861152 /* Products */;
@@ -1262,6 +1283,13 @@
 			fileType = archive.ar;
 			path = libRNSpinkit.a;
 			remoteRef = 84CB378C205EBDAC00E404D2 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		84D4CF1620720D3500BEFAEB /* libRNImagePicker.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNImagePicker.a;
+			remoteRef = 84D4CF1520720D3500BEFAEB /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		84DC75A3206787E7005D79FD /* libRNSVG.a */ = {

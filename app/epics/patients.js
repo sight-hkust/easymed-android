@@ -25,6 +25,7 @@ import 'rxjs/add/operator/catch';
 const createPatientEpic = action$ => 
   action$.ofType(CREATE_PATIENT_REQUEST).concatMap(({payload}) => {
   const { profile, tag } = payload
+  console.log('step3')
   return Observable.fromPromise(createPatient(profile))
   })
   .map(patientId => ({type: CREATE_PATIENT_SUCCESS, payload: {patientId}}))
@@ -50,7 +51,7 @@ const queuePatientEpic = action$ =>
     const { tag, patientId, stage } = payload
     return Observable.fromPromise(queuePatient(tag, patientId, stage))
   })
-  .map(({patient, queueId}) => ({type: QUEUE_PATIENT_SUCCESS, payload: {patient, queueId}}))
+  .map((patient) => ({type: QUEUE_PATIENT_SUCCESS, payload: patient}))
   .catch(error => Observable.of({type: QUEUE_PATIENT_ERROR, payload: {error}}))
 
 const transferPatientEpic = action$ =>

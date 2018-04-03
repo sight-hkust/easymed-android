@@ -222,7 +222,10 @@ const Response = ({step, mutate, dob}) => {
             placeholder="Tag Number"
             width="80%"
             keyboardType="numeric"
-            onChangeText={(tag) => mutate({tag})}
+            onChangeText={(tag) => {
+              mutate({tag})
+              mutate({showSubmit: true})
+            }}
           />
         </View>
       )
@@ -242,6 +245,7 @@ class Profile extends Component {
     this.handleScroll = this.handleScroll.bind(this);
     this.state = {
       xOffset:0,
+      showSubmit: false,
       profile: {
         name: {
           regular: '',
@@ -282,6 +286,7 @@ class Profile extends Component {
 
   submit() {
     const { profile, tag } = this.state
+    console.log('step1')
     this.createPatient(profile, tag)
   }
 
@@ -291,7 +296,7 @@ class Profile extends Component {
     }
     else {
       return (
-        <KeyboardAvoidingView style={styles.parentContainer} behavior="position">
+        <KeyboardAvoidingView style={styles.parentContainer}>
           <HeaderContainer xOffset={this.state.xOffset}/>
           <ScrollView 
             ref = 'questionScroll'
@@ -325,14 +330,14 @@ class Profile extends Component {
           </ScrollView>
 
           <View style={{height:'8%'}}>
-            <Button 
-                title="Submit" 
-                onPress={this.submit.bind(this)} 
-                bgColor="#1d9dff" titleColor="#fff" 
-                icon="chevron-right"
-                width="50%"
-                round
-              />
+            {this.state.showSubmit && <Button 
+                  title="Submit" 
+                  onPress={this.submit.bind(this)} 
+                  bgColor="#1d9dff" titleColor="#fff" 
+                  icon="chevron-right"
+                  width="50%"
+                  round
+                />}
           </View>
             <Modal
               isVisible={this.props.loading}

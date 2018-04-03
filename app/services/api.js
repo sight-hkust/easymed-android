@@ -119,7 +119,6 @@ async function queuePatient(tag, patientId, stage) {
     const profile = await findProfile(_patient.attributes.profile.id)
     return {patient: {...profile, tag, id: patientId}, queueId: enlisting.id}
   } catch (error) {
-    console.log(error)
     throw error
   }
 }
@@ -130,7 +129,7 @@ async function transferPatient(queueId, stage) {
     const queuingPatient = await new Parse.Query(Queue).get(queueId)
     queuingPatient.set('stage', stage)
     await queuingPatient.save()
-    return queuePatient.id
+    return queuingPatient.id
   } catch (error) {
     throw error
   }

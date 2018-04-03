@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, StyleSheet, StatusBar } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { Link } from 'react-router-native';
+import { Link, Redirect } from 'react-router-native';
+import Modal from 'react-native-modal';
+import Spinner from 'react-native-spinkit';
 import { transferPatient } from '../../../actions/patient';
 import Header from '../../../components/Header';
 import Icon from 'react-native-fontawesome-pro';
@@ -49,9 +51,13 @@ class Menu extends Component {
     super(props)
     this.state = {
       queueId: props.match.params.queueId,
-      patient: props.patient
     }
+    console.log(this.props.patient)
+    console.log(this.props.match.params.queueId)
     this.transferPatient = props.actions.transferPatient
+  }
+
+  componentDidUpdate() {
   }
 
   componentWillMount() {
@@ -59,40 +65,60 @@ class Menu extends Component {
   }
 
   transfer() {
-    this.transferPatient(queueId, 'consultation')
+    this.transferPatient(this.state.queueId, 'consultation')
   }
 
   render() {
-    return (
-      <View style={styles.container}>
-          <Header title="Add Records" to="/triage"/>
-          <ScrollView>
-            {menuItems.map(({destination, icon, color, title}, i) => (
-              <Metric
-                to={`/triage/patients/${this.state.queueId}${destination}`}
-                title={title}
-                icon={icon}
-                color={color}
-                key={i}
-              />
-            ))}
-            {this.state.patient.sex === 'Female' && <Metric title="Pregnancy"
-                                                            icon="female"
-                                                            color="#f4649e"
-                                                            to={`/triage/patients/${this.state.queueId}/pregnancy`}
-                                                    />}
-          </ScrollView>
-          <Button 
-                title="Checkout"
-                bgColor="#1d9dff"
-                titleColor="#fff"
-                icon="check"
-                width="50%"
-                onPress={this.transfer.bind(this)}
-                round
-              />
-        </View>
-    )
+    if(this.props.isPatientTransferred) {
+      return <Redirect to="/triage/patients/admission"/>
+    }
+    else {
+      return (
+        <View style={styles.container}>
+            <Header title="Add Records" to="/triage"/>
+            <ScrollView>
+              {menuItems.map(({destination, icon, color, title}, i) => (
+                <Metric
+                  to={`/triage/patients/${this.state.queueId}${destination}`}
+                  title={title}
+                  icon={icon}
+                  color={color}
+                  key={i}
+                />
+              ))}
+              {this.props.patient.sex === 'Female' && <Metric title="Pregnancy"
+                                                              icon="female"
+                                                              color="#f4649e"
+                                                              to={`/triage/patients/${this.state.queueId}/pregnancy`}
+                                                      />}
+            </ScrollView>
+            <Button 
+                  title="Checkout"
+                  bgColor="#1d9dff"
+                  titleColor="#fff"
+                  icon="check"
+                  width="50%"
+                  onPress={this.transfer.bind(this)}
+                  round
+                />
+            <Modal
+              isVisible={this.props.loading.spinner}
+              animationIn="fadeIn"
+              backdropOpacity={0}
+              style={{justifyContent: 'center'}}
+            >
+              <View style={styles.loading}>
+                <Spinner
+                isVisible={this.props.loading.spinner}
+                size={44}
+                style={{alignSelf: 'center'}}
+                type='WanderingCubes' 
+                color='#81e2d9'/>
+              </View>
+            </Modal>
+          </View>
+      )
+    }
   }
 }
 
@@ -101,7 +127,14 @@ const mapDispatchToProps = (dispatch) => ({
 })
 
 const mapStateToProps = (state, props) => ({
-  patient: state.patients.queue[state.patients.queue.findIndex(({queueId}) => props.match.params.queueId)].patient
+  loading: state.patients.loading,
+  queue: state.patients.queue,
+  isPatientTransferred: state.patients.queue.findIndex(({queueId}) => props.match.params.queueId) === -1,
+  patient: state.patients.queue[state.patients.queue.findIndex(({queueId}) => {
+    console.log(queueId)
+    console.log(props.match.params.queueId)
+    return props.match.params.queueId === queueId
+  })]
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Menu)

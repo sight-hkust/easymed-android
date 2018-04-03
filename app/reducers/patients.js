@@ -45,7 +45,8 @@ const patientsReducer = (state = initialState, {type, payload}) => {
           return {...state, loading: {...state.loading, spinner: true}}
       }
       case QUEUE_PATIENT_SUCCESS: {
-          return {...state, loading: {...state.loading, spinner:false}, queue: [...state.queue, payload.patient]}
+          const queue = [...state.queue, payload]
+          return {...state, loading: {...state.loading, spinner:false}, queue: queue}
       }
       case QUEUE_PATIENT_ERROR: {
           return {...state, loading: {...state.loading, spinner:false}, error: payload.error}
@@ -54,10 +55,13 @@ const patientsReducer = (state = initialState, {type, payload}) => {
           return {...state, loading: {...state.loading, spinner: true}}
       }
       case TRANSFER_PATIENT_SUCCESS: {
-          return {...state, loading: {...state.loading, spinner: false}, queue: state.queue.filter(({queueId}) => queueId!==payload.queueId)}
+        const index = state.queue.findIndex(({queueId}) => queueId === payload.queueId)
+        let queue = state.queue
+        queue.splice(index, 1)
+        return {...state, loading: {...state.loading, spinner: false}, queue: queue}
       }
       case TRANSFER_PATIENT_ERROR: {
-          return {...state, loading: {...state.loading, spinner: false}, error: payload.error}
+        return {...state, loading: {...state.loading, spinner: false}, error: payload.error}
       }
       case RESET_PATIENT_QUEUE: {
           return {...state, queue: []}

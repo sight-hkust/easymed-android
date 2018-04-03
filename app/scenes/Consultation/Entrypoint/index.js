@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { View, Image, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
+import Modal from 'react-native-modal';
+import Spinner from 'react-native-spinkit';
 import { bindActionCreators } from 'redux';
 import { fetchPatientQueue, resetPatientQueue } from '../../../actions/patient';
 import { IconButton } from '../../../components/Button'
@@ -28,7 +30,7 @@ const EmptyStub = () => (
 const ServiceQueue = ({queue}) => {
   return (
     <ScrollView>
-      {/* <EmptyStub /> */}
+      {queue.length === 0 && <EmptyStub />}
       {queue.map(({patient, queueId}) => (
         <Patient 
           patient={patient}
@@ -72,6 +74,21 @@ class Entrypoint extends Component {
         <Header title="Consultation" />
         <Toolbar />
         <ServiceQueue queue={this.props.queue}/>
+        <Modal
+          isVisible={this.props.loading.queue}
+          animationIn="fadeIn"
+          backdropOpacity={0}
+          style={{justifyContent: 'center'}}
+        >
+          <View style={styles.loading}>
+            <Spinner
+            isVisible={this.props.loading.queue}
+            size={44}
+            style={{alignSelf: 'center'}}
+            type='WanderingCubes' 
+            color='#81e2d9'/>
+          </View>
+        </Modal>
       </View>
     )
   }
