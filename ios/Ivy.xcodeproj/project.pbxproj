@@ -44,10 +44,12 @@
 		5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */; };
 		63F77594BA254985AAD5B3A4 /* Nunito-ExtraLight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AB849EBD58174C07A98E6E46 /* Nunito-ExtraLight.ttf */; };
 		64D8A5CDD65E42E5910F468D /* libRNSensitiveInfo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 63336B1398CB4B499AA7EB68 /* libRNSensitiveInfo.a */; };
+		651B8A0E12A94CBBB6B1AF36 /* libRNSketchView.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F8AA613E55524DFCAB5D0F74 /* libRNSketchView.a */; };
 		6DA213D9168641D8A0328D8B /* Quicksand_Dash.otf in Resources */ = {isa = PBXBuildFile; fileRef = AF1C5F557F0345C1AEE98844 /* Quicksand_Dash.otf */; };
 		74E6BA59709F4853A24918A5 /* Quicksand-LightItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = E1186258B60C4C4F8C84D293 /* Quicksand-LightItalic.otf */; };
 		7BF4493B4CBA45DE87F61B85 /* Quicksand-Italic.otf in Resources */ = {isa = PBXBuildFile; fileRef = D8B9865B48B84C3CA6A4E568 /* Quicksand-Italic.otf */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
+		8402B938207CBFCD0021211A /* SketchViewContainer.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8402B917207CBFA80021211A /* SketchViewContainer.xib */; };
 		880EAFD154C147B79F509E61 /* fa-regular-400.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D5A0FA20F9D34956B6DC0DCE /* fa-regular-400.ttf */; };
 		8EB4160041874474A3522809 /* fa-light-300.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 48267B698645434790F75EBD /* fa-light-300.ttf */; };
 		94B4BC67833A43A595E57120 /* Quicksand-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 0EEB8967BC44405DAE5D83CE /* Quicksand-Bold.otf */; };
@@ -253,6 +255,13 @@
 			remoteGlobalIDString = 58B5119B1A9E6C1200147676;
 			remoteInfo = RCTText;
 		};
+		8402B915207CBF820021211A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E423F52504724A0785783FCE /* RNSketchView.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 134814201AA4EA6300B7C361;
+			remoteInfo = RNSketchView;
+		};
 		8483CC5E20493D3800861152 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = ADBDB91F1DFEBF0600ED6528 /* RCTBlob.xcodeproj */;
@@ -435,6 +444,7 @@
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
 		80052CE1874B4080814D157E /* libBVLinearGradient.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libBVLinearGradient.a; sourceTree = "<group>"; };
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
+		8402B917207CBFA80021211A /* SketchViewContainer.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SketchViewContainer.xib; sourceTree = "<group>"; };
 		9A18F37382194D079918B9EC /* libRNSVG-tvOS.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = "libRNSVG-tvOS.a"; sourceTree = "<group>"; };
 		9BE73A4CE80E4120A23A013C /* Font Awesome 5 Pro-Solid-900.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Font Awesome 5 Pro-Solid-900.otf"; path = "../assets/fonts/Font Awesome 5 Pro-Solid-900.otf"; sourceTree = "<group>"; };
 		AB232106A1724FE0BFB58628 /* Nunito-Black.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Nunito-Black.ttf"; path = "../assets/fonts/Nunito-Black.ttf"; sourceTree = "<group>"; };
@@ -453,7 +463,9 @@
 		D8B9865B48B84C3CA6A4E568 /* Quicksand-Italic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Quicksand-Italic.otf"; path = "../assets/fonts/Quicksand-Italic.otf"; sourceTree = "<group>"; };
 		DFB0950C9A5B44FD8F232B3A /* libRNSVG.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNSVG.a; sourceTree = "<group>"; };
 		E1186258B60C4C4F8C84D293 /* Quicksand-LightItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Quicksand-LightItalic.otf"; path = "../assets/fonts/Quicksand-LightItalic.otf"; sourceTree = "<group>"; };
+		E423F52504724A0785783FCE /* RNSketchView.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNSketchView.xcodeproj; path = "../node_modules/react-native-sketch-draw/ios/RNSketchView.xcodeproj"; sourceTree = "<group>"; };
 		F46AF26C91854CB8864A80B4 /* Quicksand-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Quicksand-Medium.ttf"; path = "../assets/fonts/Quicksand-Medium.ttf"; sourceTree = "<group>"; };
+		F8AA613E55524DFCAB5D0F74 /* libRNSketchView.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNSketchView.a; sourceTree = "<group>"; };
 		F92B1F46BEED4B3C9E3CFBDE /* libRNSpinkit.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNSpinkit.a; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -488,6 +500,7 @@
 				A5C580FDF8AF46AF946E77A7 /* libRNSpinkit.a in Frameworks */,
 				43312406094A4B30B006E60E /* libRNSVG.a in Frameworks */,
 				35FD82058909480A96E824A6 /* libRNImagePicker.a in Frameworks */,
+				651B8A0E12A94CBBB6B1AF36 /* libRNSketchView.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -603,6 +616,7 @@
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
+				8402B917207CBFA80021211A /* SketchViewContainer.xib */,
 				13B07FB11A68108700A75B9A /* LaunchScreen.xib */,
 				13B07FB71A68108700A75B9A /* main.m */,
 			);
@@ -670,6 +684,7 @@
 				B7058DED06D94DE8B7CBBC28 /* RNSpinkit.xcodeproj */,
 				13CE6C5E7DC0428BB196DD80 /* RNSVG.xcodeproj */,
 				4C456ABAB4964526B94D2A22 /* RNImagePicker.xcodeproj */,
+				E423F52504724A0785783FCE /* RNSketchView.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -709,6 +724,14 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		8402B912207CBF820021211A /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8402B916207CBF820021211A /* libRNSketchView.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		8483CC5820493D3400861152 /* Recovered References */ = {
 			isa = PBXGroup;
 			children = (
@@ -718,6 +741,7 @@
 				DFB0950C9A5B44FD8F232B3A /* libRNSVG.a */,
 				9A18F37382194D079918B9EC /* libRNSVG-tvOS.a */,
 				4077E28010FD416FB96CD07C /* libRNImagePicker.a */,
+				F8AA613E55524DFCAB5D0F74 /* libRNSketchView.a */,
 			);
 			name = "Recovered References";
 			sourceTree = "<group>";
@@ -979,6 +1003,10 @@
 					ProjectRef = 6043BF50BBDF4EEABBBBB289 /* RNSensitiveInfo.xcodeproj */;
 				},
 				{
+					ProductGroup = 8402B912207CBF820021211A /* Products */;
+					ProjectRef = E423F52504724A0785783FCE /* RNSketchView.xcodeproj */;
+				},
+				{
 					ProductGroup = 84CB3786205EBDAA00E404D2 /* Products */;
 					ProjectRef = B7058DED06D94DE8B7CBBC28 /* RNSpinkit.xcodeproj */;
 				},
@@ -1173,6 +1201,13 @@
 			remoteRef = 832341B41AAA6A8300B99B32 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		8402B916207CBF820021211A /* libRNSketchView.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNSketchView.a;
+			remoteRef = 8402B915207CBF820021211A /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		8483CC5F20493D3800861152 /* libRCTBlob-tvOS.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -1327,6 +1362,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8402B938207CBFCD0021211A /* SketchViewContainer.xib in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
 				3E88F37ECB8441C7B691474D /* Nunito-Black.ttf in Resources */,
@@ -1478,12 +1514,14 @@
 					"$(SRCROOT)/../node_modules/react-native-spinkit/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-image-picker/ios",
+					"$(SRCROOT)/../node_modules/react-native-sketch-draw/ios/**",
 				);
 				INFOPLIST_FILE = IvyTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -1514,12 +1552,14 @@
 					"$(SRCROOT)/../node_modules/react-native-spinkit/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-image-picker/ios",
+					"$(SRCROOT)/../node_modules/react-native-sketch-draw/ios/**",
 				);
 				INFOPLIST_FILE = IvyTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -1553,6 +1593,7 @@
 					"$(SRCROOT)/../node_modules/react-native-spinkit/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-image-picker/ios",
+					"$(SRCROOT)/../node_modules/react-native-sketch-draw/ios/**",
 				);
 				INFOPLIST_FILE = Ivy/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1582,6 +1623,7 @@
 					"$(SRCROOT)/../node_modules/react-native-spinkit/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-image-picker/ios",
+					"$(SRCROOT)/../node_modules/react-native-sketch-draw/ios/**",
 				);
 				INFOPLIST_FILE = Ivy/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1616,11 +1658,13 @@
 					"$(SRCROOT)/../node_modules/react-native-spinkit/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-image-picker/ios",
+					"$(SRCROOT)/../node_modules/react-native-sketch-draw/ios/**",
 				);
 				INFOPLIST_FILE = "Ivy-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -1661,11 +1705,13 @@
 					"$(SRCROOT)/../node_modules/react-native-spinkit/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-image-picker/ios",
+					"$(SRCROOT)/../node_modules/react-native-sketch-draw/ios/**",
 				);
 				INFOPLIST_FILE = "Ivy-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -1708,6 +1754,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.REACT.Ivy-tvOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1732,6 +1779,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",

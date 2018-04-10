@@ -139,6 +139,7 @@ android {
 dependencies {
     compile project(':react-native-svg')
     compile project(':react-native-spinkit')
+    compile project(':react-native-sketch-draw')
     compile project(':react-native-sensitive-info')
     compile project(':react-native-linear-gradient')
     compile project(':react-native-image-picker')
