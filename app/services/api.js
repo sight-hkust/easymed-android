@@ -4,6 +4,7 @@ async function register(username, password){
   const user = new Parse.User()
   user.set('username', username)
   user.set('password', password)
+  console.log('registering')
   try {
     await user.signUp()
     return user.authenticated()
@@ -92,6 +93,7 @@ async function fetchPatients() {
 async function fetchPatientQueue(stage) {
   const Queue = Parse.Object.extend('Queue')
   const query = new Parse.Query(Queue)
+  console.log('stop4')
   query.equalTo('stage', stage)
   try {
     const result = await query.find()
@@ -102,9 +104,39 @@ async function fetchPatientQueue(stage) {
     })])
     return patients
   } catch (error) {
-    
+    throw error
   }
 }
+
+async function updatePatientMedicalHistory(patientId, history) {
+  try {
+    const MedicalHistory = Parse.Object.extend('MedicalHistory')
+    const Patient = Parse.Object.extend('Patient')
+    const _patient = await findPatient(patientId)
+    const previousMedicalHistory = _patient.get('pmh')
+    if(previousMedicalHistory) {
+      Object.keys(history).forEach(attribute => previousMedicalHistory.set(attribute, history[attribute]))
+      await previousMedicalHistory.save()
+      return previousMedicalHistory.id
+    }
+    else {
+      const medicalHistory = new MedicalHistory()
+      Object.keys(history).forEach(attribute => medicalHistory.set(attribute, history[attribute]))
+      await medicalHistory.save()
+      return medicalHistory.id
+    }
+  } catch (error) {
+    throw error
+  }
+}
+
+// async function updatePatientPregnancy(patientId, survey) {
+//   try {
+//     const 
+//   } catch (error) {
+//     throw error
+//   }
+// }
 
 async function queuePatient(tag, patientId, stage) {
   try {

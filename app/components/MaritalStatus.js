@@ -38,7 +38,7 @@ export default class MaritalStatus extends Component {
       borderStyle: 'solid',
       paddingRight: 4
     }
-    const options = ['married', 'divorced', 'widowed', 'single']
+    const options = ['single', 'married', 'divorced']
     return (
       <View style={{justifyContent: 'space-between', alignItems: 'center', height: '100%'}}>
         {options.map((status, i) => (

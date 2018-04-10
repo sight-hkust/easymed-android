@@ -230,7 +230,6 @@ class MedicalHistory extends Component {
         other: ''
       }
     }
-    console.log(this.state.queueId)
   }
 
    handleScroll({nativeEvent: { contentOffset: { x }}}){
@@ -243,7 +242,7 @@ class MedicalHistory extends Component {
   }
 
   submit() {
-    console.log(this.state.medicalHistory)
+    
   }
 
   render() {

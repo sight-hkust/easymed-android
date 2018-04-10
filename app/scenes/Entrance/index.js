@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {
+  Dimensions,
   StyleSheet,
   Text,
   View,
@@ -14,6 +15,8 @@ import LinearGradient from 'react-native-linear-gradient';
 import { Redirect, Link } from 'react-router-native';
 import Icon from 'react-native-fontawesome-pro';
 import { IconButton } from '../../components/Button'
+
+const { width, height } = Dimensions.get('window')
 
 const destinations = [
   {
@@ -51,14 +54,56 @@ const destinations = [
   }
 ];
 
-const Entry = ({layout, title, image, to}) => (
-  <Link style={styles.card} to={to} component={TouchableOpacity} activeOpacity={0.25}>
-    <LinearGradient {...layout} style={styles.linearGradient}>
-      <Image style={styles.image} source={image}/>
-      <Text style={styles.title}>{title}</Text>
-    </LinearGradient>
-  </Link>
-)
+const Entry = ({layout, title, image, to}) => {
+  const style = StyleSheet.create({
+    card:{
+      height: height*.22,
+      backgroundColor: 'transparent',
+      justifyContent: 'center',
+      marginLeft: 16,
+      marginRight: 16,
+      marginBottom: 16,
+      shadowColor: '#e4e4e4',
+      shadowOpacity: 0.5,
+      shadowOffset: { width: 1, height: 3 },
+      shadowRadius: 5,
+      elevation: 1
+    },
+    title: {
+      fontSize: 30,
+      fontFamily: 'Quicksand-Medium',
+      textAlign: 'center',
+      color: '#FFF',
+      paddingBottom:16,
+    },
+  
+    image: {
+      height: height*.16,
+      width: height*.16,
+      resizeMode: 'contain',
+      marginTop: 20,
+    },
+  
+    linearGradient: {
+      flexDirection: 'row',
+      flex: 3,
+      alignItems: 'baseline',
+      justifyContent: 'space-between',
+      borderRadius: 8,
+      paddingHorizontal: 16
+    }
+
+  })
+
+  return (
+    <Link style={style.card} to={to} component={TouchableOpacity} activeOpacity={0.25}>
+      <LinearGradient {...layout} style={style.linearGradient}>
+        <Image style={style.image} source={image}/>
+        <Text style={style.title}>{title}</Text>
+      </LinearGradient>
+    </Link>
+  )
+}
 
 const Toolbar = () => (
   <View style={styles.toolbar}>
@@ -79,15 +124,11 @@ const Header = () => (
 
 const Navigations = () => {
   return (
-    <View style={styles.container}>
-      <Toolbar />
-      <Header />
-      <ScrollView>
-        {destinations.map(({to, layout, title, image}, i) => (
-          <Entry key={i} to={to} layout={layout} title={title} image={image} />
-        ))}
-      </ScrollView>
-    </View>
+    <ScrollView>
+      {destinations.map(({to, layout, title, image}, i) => (
+        <Entry key={i} to={to} layout={layout} title={title} image={image} />
+      ))}
+    </ScrollView>
   )
 };
 
@@ -105,7 +146,13 @@ class Entrance extends Component {
 
   render() {
     if(this.state.authenticated) {
-      return <Navigations />
+      return (
+        <View style={styles.container}>
+          <Toolbar />
+          <Header />
+          <Navigations />
+        </View>
+      )
     }
     else {
       return <Redirect to="/login" />
@@ -135,7 +182,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row-reverse',
     justifyContent: 'space-between',
     paddingHorizontal: 16,
-    // backgroundColor: 'yellow'
   },
 
   header: {
@@ -158,44 +204,5 @@ const styles = StyleSheet.create({
     fontFamily: 'Quicksand-Medium',
     color: '#3c4859',
     marginLeft: 4
-  },
-
-  card:{
-    height: 160,
-    backgroundColor: 'transparent',
-    justifyContent: 'center',
-    marginLeft: 16,
-    marginRight: 16,
-    marginBottom: 16,
-    shadowColor: '#e4e4e4',
-    shadowOpacity: 0.5,
-    shadowOffset: { width: 1, height: 3 },
-    shadowRadius: 5,
-    elevation: 1
-  },
-  
-  title: {
-    fontSize: 30,
-    fontFamily: 'Quicksand-Medium',
-    textAlign: 'center',
-    color: '#FFF',
-    paddingBottom:16,
-    paddingRight:20,
-  },
-
-  image: {
-    height: 120,
-    width: 120,
-    resizeMode: 'contain',
-    marginTop: 20,
-    marginLeft: 20,
-  },
-
-  linearGradient: {
-    flexDirection: 'row',
-    flex: 3,
-    alignItems: 'baseline',
-    justifyContent: 'space-between',
-    borderRadius: 8,
   },
 });

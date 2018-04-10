@@ -61,7 +61,6 @@ class Entrypoint extends Component {
   }
 
   refreshPatientQueue(auto) {
-    console.log('stop1')
     if (!auto) {
       this.setState({loading: this.props.loading})
     }

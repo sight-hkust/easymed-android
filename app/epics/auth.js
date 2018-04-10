@@ -19,6 +19,7 @@ import 'rxjs/add/operator/timeout'
 
 const registerEpic = action$ => 
   action$.ofType(AUTH_REGISTER_REQUEST).concatMap(({payload}) => {
+    console.log('calling api')
     const {username, password} = payload
     return Observable.fromPromise(register(username, password))
   })

@@ -40,6 +40,7 @@ const fetchPatientListEpic = action$ =>
 
 const fetchPatientQueueEpic = action$ => 
   action$.ofType(FETCH_PATIENT_QUEUE_REQUEST).concatMap(({payload}) => {
+    console.log('stop3')
     const { stage } = payload
     return Observable.fromPromise(fetchPatientQueue(stage))
   })

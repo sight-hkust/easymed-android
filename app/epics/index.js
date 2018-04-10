@@ -7,13 +7,11 @@ import {
     fetchPatientListEpic,
     fetchPatientQueueEpic
 } from './patients'
-import { vitalsEpic } from './vitals'
 
 export const epics = combineEpics (
     registerEpic,
     loginEpic,
     logoutEpic,
-    vitalsEpic,
     createPatientEpic,
     queuePatientEpic,
     transferPatientEpic,

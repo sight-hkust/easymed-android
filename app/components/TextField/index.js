@@ -12,7 +12,7 @@ const TextField = ({value, unit, width, keyboardType, placeholder, onChangeText,
     <View style={{...StyleSheet.flatten(styles.container), width}}>
       <TextInput
         underlineColorAndroid='transparent'
-        style={[styles.input, {height: Platform.OS == 'android' ? 40 : 20}]}
+        style={[styles.input, {height: Platform.OS == 'android' ? 40 : '90%'}]}
         value={value}
         placeholder={placeholder}
         keyboardType={keyboardType}
@@ -30,7 +30,7 @@ const TextBox = ({value, width, placeholder, onChangeText, onSubmitEditing}) => 
   <View style={styles.textbox}>
     <TextInput
         underlineColorAndroid='transparent'
-        style={[styles.inputBox, {height: Platform.OS == 'android' ? 40 : 20}]}
+        style={[styles.inputBox, {height: Platform.OS == 'android' ? 40 : '100%'}]}
         value={value}
         placeholder={placeholder}
         underlineColorAndroid='transparent'
@@ -55,6 +55,7 @@ const styles = StyleSheet.create({
     height: 56,
     backgroundColor: '#fff',
     borderRadius: 5,
+    elevation: 3,
     shadowColor: '#e4e4e4',
     shadowOpacity: 0.5,
     shadowOffset: { width: 1, height: 3 },
@@ -81,11 +82,11 @@ const styles = StyleSheet.create({
 
   input: {
     flex: 12,
-    height: 52, 
+    height: '100%', 
     fontSize: 18,
     fontFamily: 'Quicksand-Medium',
     color: '#3c4859',
-    paddingHorizontal: 20,
+    paddingHorizontal: 16,
   },
 
   inputBox: {

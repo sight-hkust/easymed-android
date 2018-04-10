@@ -4,7 +4,6 @@ import Icon from 'react-native-fontawesome-pro';
 import Header from '../../../components/Header';
 import { IconButton, Button } from '../../../components/Button';
 import Modal from 'react-native-modal';
-import { faChevronDoubleLeft } from '@fortawesome/fontawesome-pro-light';
 
 const Gender = ({sex}) => {
   const style = {
@@ -20,12 +19,26 @@ const Gender = ({sex}) => {
   )
 }
 
-const PatientName = ({name, alternate}) => (
-  <View style={styles.name}>
-    <Text style={styles.nameText}>{name.toUpperCase()}</Text>
-    <Text style={styles.nameText}>{`(${alternate.toUpperCase()})`}</Text>
-  </View>
-)
+const PatientName = ({name}) => {
+  const style = {
+    name: {
+      marginVertical: 12,
+      justifyContent: 'center'
+    },
+    nameText: {
+      fontFamily: 'Nunito-Bold',
+      color: '#3c4859',
+      fontSize: 20,
+      textAlign: 'center'
+    }
+  }
+
+  return (
+    <View style={style.name}>
+      <Text style={style.nameText}>{name.toUpperCase()}</Text>
+    </View>
+  )
+}
 
 const vitalsDemo = [
   { 
@@ -163,11 +176,11 @@ export default class Record extends Component {
         <View style={styles.toolbar}>
           <IconButton name="plus" onPress={this.toggleNewSessionDialog.bind(this)} color="#3c4859" />
           <IconButton name="edit" color="#3c4859" />
-          <IconButton name="search" color="#3c4859"/>
+          <IconButton name="history" color="#3c4859"/>
         </View>
         <ScrollView>
           <Gender sex="male"/>
-          <PatientName name="Preah R" alternate="Bopha"/>
+          <PatientName name="Preah R"/>
           <Vitals/>
           <Cases />
         </ScrollView>
@@ -199,16 +212,6 @@ const styles = StyleSheet.create({
     height: 56,
     alignItems: 'center',
     alignSelf: 'flex-end'
-  },
-  name: {
-    marginVertical: 12,
-    justifyContent: 'center'
-  },
-  nameText: {
-    fontFamily: 'Nunito-Bold',
-    color: '#3c4859',
-    fontSize: 20,
-    textAlign: 'center'
   },
   gender: {
     height: 80,

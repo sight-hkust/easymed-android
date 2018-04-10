@@ -41,6 +41,7 @@ class Registration extends Component {
 
   signUp() {
     const { username, password } = this.state
+    console.log('signing up')
     this.register(username, password)
   }
 

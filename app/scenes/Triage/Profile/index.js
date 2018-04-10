@@ -18,10 +18,12 @@ import { createPatient, instantiate, queuePatient } from '../../../actions/patie
 import LinearGradient from 'react-native-linear-gradient';
 import Modal from 'react-native-modal';
 import Spinner from 'react-native-spinkit';
-import { IconButton, Button } from '../../../components/Button'
 import Icon from 'react-native-fontawesome-pro';
+import ImagePicker from 'react-native-image-picker';
 import Header from '../../../components/Header';
+import { IconButton, Button } from '../../../components/Button'
 import TextField from '../../../components/TextField'
+import InfantSelect from '../../../components/InfantSelect';
 import Step from '../../../components/Step'
 import Segment from '../../../components/Segment'
 import Sex from '../../../components/Sex';
@@ -38,52 +40,62 @@ const gradientLayout = {
   locations: [0, 0.75]
 }
 
-const stepList = ['name','gender','dob','married','nationalityOccupation','tag'];
-
 const Instruction = ({step}) => {
   switch(step) {
+    case 'photo': {
+      return (
+        <View style={styles.textWrapper}>
+          <Text style={styles.instruction}>Take a picture of patient</Text>
+        </View>
+      )
+    }
     case 'name': {
       return (
         <View style={styles.textWrapper}>
-          <Text style={styles.instruction}>Enter both the</Text>
-          <Text style={styles.instruction}>NAME and KHMER variant</Text>
-          <Text style={styles.instruction}>of patient</Text>
+          <Text style={styles.instruction}>Patient Name</Text>
         </View>
       )
     }
     case 'gender': {
       return (
         <View style={styles.textWrapper}>
-          <Text style={styles.instruction}>Identify the patient's</Text>
-          <Text style={styles.instruction}>sex using the indicator</Text>
-          <Text style={styles.instruction}>below</Text>
+          <Text style={styles.instruction}>Sex</Text>
         </View>
       )
     }
-    case 'dob': {
+    case 'infant': {
       return (
         <View style={styles.textWrapper}>
-          <Text style={styles.instruction}>Enter the date of</Text>
-          <Text style={styles.instruction}>birth for the patient</Text>
-          <Text style={styles.instruction}>AGE</Text>
+          <Text style={styles.instruction}>Is patient an infant?</Text>
+          <Text style={styles.instruction}>{'(< 24 months old)'}</Text>
+        </View>
+      )
+    }
+    case 'doba': {
+      return (
+        <View style={styles.textWrapper}>
+          <Text style={styles.instruction}>Age</Text>
+        </View>
+      )
+    }
+    case 'dobi': {
+      return (
+        <View style={styles.textWrapper}>
+          <Text style={styles.instruction}>Age</Text>
         </View>
       )
     }
     case 'married': {
       return (
         <View style={styles.textWrapper}>
-          <Text style={styles.instruction}>Choose the indicator</Text>
-          <Text style={styles.instruction}>to represents patient's</Text>
           <Text style={styles.instruction}>Marital Status</Text>
         </View>
       )
     }
-    case 'nationalityOccupation': {
+    case 'nationality': {
       return (
         <View style={styles.textWrapper}>
-          <Text style={styles.instruction}>Indicate the nationality</Text>
-          <Text style={styles.instruction}>of the patient</Text>
-          <Text style={styles.instruction}>below</Text>
+          <Text style={styles.instruction}>Nationality</Text>
         </View>
       )
     }
@@ -108,17 +120,34 @@ const Instruction = ({step}) => {
     case 'tag': {
       return (
         <View style={styles.textWrapper}>
-          <Text style={styles.instruction}>Enter a tag number</Text>
-          <Text style={styles.instruction}>for identifying</Text>
-          <Text style={styles.instruction}>the patient</Text>
+          <Text style={styles.instruction}>Tag number</Text>
         </View>
       )
     }
   }
 }
 
-const Response = ({step, mutate, dob}) => {
+const Response = ({step, mutate, handleCameraPress, pictureSource}) => {
   switch(step) {
+    case 'photo': {
+      return (
+        <View style={{width:screenWidth, justifyContent:'flex-start'}}>
+          <View style={{width:screenWidth, justifyContent:'flex-start', alignItems:'center', zIndex:0}}>
+            <Button 
+                title='From camera' 
+                bgColor='#19AEFA' titleColor='#fff' 
+                icon='camera'
+                width='64%'
+                onPress= {handleCameraPress}
+              />
+            <Image
+                source={pictureSource?pictureSource:require('../../../../assets/images/imagePlaceHolder.png')}
+                style={{marginTop:'6%', height:height*.25, width:height*.25, borderRadius:(height*.25)/2, borderColor: '#f5f5f5', borderWidth: 3}}
+              />
+          </View>
+        </View>
+      )
+    }
     case 'name': {
       return (
         <View style={styles.response}>
@@ -150,48 +179,55 @@ const Response = ({step, mutate, dob}) => {
         </View>
       )
     }
-    case 'dob': {
+    case 'infant': {
+      return (
+        <View style={styles.response}>
+          <InfantSelect onSelect={(answer) => mutate({questions: answer==='Infant'?
+          ['photo','tag','name','gender','infant','dobi','nationality']:
+          ['photo','tag','name','gender','infant','doba','married','nationality']
+          })} />
+        </View>
+      )
+    }
+    case 'dobi': {
+      return (
+        <View style={{...StyleSheet.flatten(styles.response), height: '36%'}}>
+          <TextField placeholder="Days" width="80%"/>
+          <TextField placeholder="Weeks" width="80%"/>
+          <TextField placeholder="Months" width="80%"/>
+        </View>
+      )
+    }
+    case 'doba': {
       return (
         <View style={{height:'48%', justifyContent: 'space-between'}}>
           <Birthday onSelect={(dob) =>
             mutate( ({profile}) => ({ profile: { ...profile, dob }}) )
           }/>
-          <View style={{backgroundColor:'#fff', marginTop:24, borderRadius:5, height:52, width:'80%', alignSelf:'center', alignItems:'center', justifyContent:'center', shadowColor: '#e4e4e4', shadowOpacity: 0.5, shadowOffset: { width: 1, height: 3 }, shadowRadius: 5}}>
-            <Text style={{fontFamily:'Quicksand-Medium', color:dob?'#3c4859':'#A8B0CE', fontSize:18}}>
-              {dob?dob.toDateString():'Date of Birth'}
-            </Text>
-          </View>
         </View>
       )
     }
     case 'married': {
       return (
-        <View style={{height: '92%'}}>
+        <View style={{height: height*.28}}>
           <MaritalStatus onSelect={(status) => mutate(
             ({profile}) => ({ profile: { ...profile, status }})
           )} />
         </View>
       )
     }
-    case 'nationalityOccupation': {
+    case 'nationality': {
       return (
         <View style={styles.response}>
           <TextField
             placeholder="Nationality"
             width="80%"
+            value="Khmer"
             onChangeText={(nationality) =>
               mutate(
                 ({profile}) => ({ profile: { ...profile, nationality }})
               )
           }/>
-          {/* <TextField
-            placeholder="Occupation"
-            width="80%"
-            onChangeText={(occupation) =>
-              mutate(
-                ({profile}) => ({ profile: { ...profile, occupation }})
-              )
-          }/> */}
         </View>
       )
     }
@@ -233,10 +269,10 @@ const Response = ({step, mutate, dob}) => {
   }
 }
 
-const HeaderContainer = ({xOffset}) => (
+const HeaderContainer = ({xOffset, stepsLength}) => (
   <View style={styles.headerContainer}>
     <Header title="Profile" light="true" to="/triage"/>
-    <Step allSteps={stepList.length-1} step={xOffset/screenWidth} backgroundColor='#fff' highlightColor='#FAEB9A' />
+    <Step allSteps={stepsLength} step={xOffset/screenWidth} backgroundColor='#fff' highlightColor='#FAEB9A' />
   </View>
 )
 class Profile extends Component {
@@ -244,6 +280,7 @@ class Profile extends Component {
     super(props);
     this.handleScroll = this.handleScroll.bind(this);
     this.state = {
+      questions: ['photo','tag','name','gender','infant','doba','married','nationality'],
       xOffset:0,
       showSubmit: false,
       profile: {
@@ -253,8 +290,8 @@ class Profile extends Component {
         },
         sex: '',
         dob: null,
-        status: '',
-        nationality: ''
+        status: 'inapplicable',
+        nationality: 'Khmer'
       },
       tag: '',
       queueStatus: false
@@ -284,9 +321,28 @@ class Profile extends Component {
     StatusBar.setBarStyle('light-content', true)
   }
 
+  handleCameraPress(){
+    ImagePicker.showImagePicker(this.state.options, (response) => {
+      console.log('Response = ', response)
+    
+      if (response.didCancel) {
+        console.log('User cancelled image picker')
+      }
+      else if (response.error) {
+        console.log('ImagePicker Error: ', response.error)
+      }
+      else if (response.customButton) {
+        console.log('User tapped custom button: ', response.customButton)
+      }
+      else {
+        let source = { uri: response.uri }
+        this.setState({pictureSource: source})
+      }
+    })
+  }
+
   submit() {
     const { profile, tag } = this.state
-    console.log('step1')
     this.createPatient(profile, tag)
   }
 
@@ -297,7 +353,7 @@ class Profile extends Component {
     else {
       return (
         <KeyboardAvoidingView style={styles.parentContainer}>
-          <HeaderContainer xOffset={this.state.xOffset}/>
+          <HeaderContainer xOffset={this.state.xOffset} stepsLength={this.state.questions.length-1}/>
           <ScrollView 
             ref = 'questionScroll'
             horizontal
@@ -307,7 +363,7 @@ class Profile extends Component {
             showsHorizontalScrollIndicator = {false}
             style={styles.questionContainer}
             >
-            {stepList.map((step, i) => (
+            {this.state.questions.map((step, i) => (
               <View style={{width: screenWidth}} key={i}>
                 <Instruction step={step}/>
               </View>
@@ -322,7 +378,7 @@ class Profile extends Component {
             showsHorizontalScrollIndicator = {false}
             style={styles.responseContainer}
             >
-            {stepList.map((step, i) => (
+            {this.state.questions.map((step, i) => (
               <View style={{width: screenWidth, justifyContent:'flex-start'}} key={i}>
                 <Response step={step} mutate={this.setState.bind(this)} dob={this.state.profile.dob}/>
               </View>

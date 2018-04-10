@@ -51,9 +51,9 @@ class Menu extends Component {
     super(props)
     this.state = {
       queueId: props.match.params.queueId,
+      patient: this.props.patient.patient
     }
-    console.log(this.props.patient)
-    console.log(this.props.match.params.queueId)
+
     this.transferPatient = props.actions.transferPatient
   }
 
@@ -86,7 +86,7 @@ class Menu extends Component {
                   key={i}
                 />
               ))}
-              {this.props.patient.sex === 'Female' && <Metric title="Pregnancy"
+              {this.state.patient.sex === 'Female' && <Metric title="Pregnancy"
                                                               icon="female"
                                                               color="#f4649e"
                                                               to={`/triage/patients/${this.state.queueId}/pregnancy`}
@@ -130,11 +130,7 @@ const mapStateToProps = (state, props) => ({
   loading: state.patients.loading,
   queue: state.patients.queue,
   isPatientTransferred: state.patients.queue.findIndex(({queueId}) => props.match.params.queueId) === -1,
-  patient: state.patients.queue[state.patients.queue.findIndex(({queueId}) => {
-    console.log(queueId)
-    console.log(props.match.params.queueId)
-    return props.match.params.queueId === queueId
-  })]
+  patient: state.patients.queue[state.patients.queue.findIndex(({queueId}) => props.match.params.queueId === queueId)]
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Menu)

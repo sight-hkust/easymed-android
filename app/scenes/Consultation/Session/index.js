@@ -13,7 +13,7 @@ import {
   Dimensions, 
   Switch 
 } from 'react-native'
-import { createCase } from '../../../actions/case';
+// import { createCase } from '../../../actions/case';
 import LinearGradient from 'react-native-linear-gradient';
 import ImagePicker from 'react-native-image-picker';
 import { IconButton, Button } from '../../../components/Button'
@@ -41,7 +41,7 @@ const Instruction = ({step}) => {
       return (
         <View style={styles.textWrapper}>
           <Text style={styles.instruction}>Write down patient's</Text>
-          <Text style={styles.instruction}>chief complaints</Text>
+          <Text style={styles.instruction}>HPI</Text>
           <Text style={styles.instruction}>below</Text>
         </View>
       )
@@ -108,7 +108,7 @@ const Response = ({step, mutate, handleCameraPress, pictureSource}) => {
     case 'chiefComplaints': {
       return (
         <View style={styles.response}>
-          <TextBox placeholder='Type the chief complanints here' 
+          <TextBox placeholder='Type the HPI here' 
                    onChangeText={(chiefComplaints) => mutate(({session}) => 
                     ({session: {...session, chiefComplaints}}))}/>
         </View>

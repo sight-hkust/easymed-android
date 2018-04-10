@@ -33,9 +33,11 @@ const patientsReducer = (state = initialState, {type, payload}) => {
           return {...state, loading: {...state.loading, all:false}, error: payload.error};
       }
       case FETCH_PATIENT_QUEUE_REQUEST: {
+          console.log('stop2')
           return {...state, loading: {...state.loading, queue:true} };
       }
       case FETCH_PATIENT_QUEUE_SUCCESS: {
+          console.log('final stop')
           return {...state, loading: {...state.loading, queue:false}, queue: payload.patients}
       }
       case FETCH_PATIENT_QUEUE_ERROR: {

@@ -14,9 +14,9 @@ import {
   Dimensions,
   Switch
 } from 'react-native'
-import { createVitals } from '../../../actions/vitals';
 import LinearGradient from 'react-native-linear-gradient';
 import { IconButton, Button, KeyboardDismissButton } from '../../../components/Button'
+import { attachMetadata } from '../../../actions/record';
 import Icon from 'react-native-fontawesome-pro';
 import TextField from '../../../components/TextField'
 import Step from '../../../components/Step'
@@ -230,7 +230,7 @@ const HeaderContainer = ({xOffset, path}) => (
   </View>
 )
 
-export default class Vitals extends Component {
+class Vitals extends Component {
   constructor(props) {
     super(props);
     this.handleScroll = this.handleScroll.bind(this);
@@ -250,6 +250,7 @@ export default class Vitals extends Component {
         lastDewormingDate: null
       }
     }
+    this.attachMetadata = props.actions.attachMetadata
   }
 
   handleScroll({nativeEvent: { contentOffset: { x }}}){
@@ -272,7 +273,7 @@ export default class Vitals extends Component {
   }
 
   submit() {
-    console.log(this.state.vitals)
+    this.attachMetadata(this.state.vitals, this.state.queueId)
   }
 
   render() {
@@ -325,11 +326,11 @@ export default class Vitals extends Component {
   }
 }
 
-// const mapDispatchToProps = (dispatch) => ({
-//   actions: bindActionCreators({createVitals}, dispatch)
-// })
+const mapDispatchToProps = (dispatch) => ({
+  actions: bindActionCreators({attachMetadata}, dispatch)
+})
 
-// export default connect(mapStateToProps)(Vitals)
+export default connect(null, mapDispatchToProps)(Vitals)
 
 const styles = StyleSheet.create({
   parentContainer: {
