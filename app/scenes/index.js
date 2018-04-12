@@ -9,6 +9,7 @@ import Consultation from './Consultation'
 import Pharmacy from './Pharmacy'
 import Settings from './Settings'
 import Record from './Consultation/Record'
+import UIFix from './UIFix'
 
 const Storyboard = () => (
   <NativeRouter>
