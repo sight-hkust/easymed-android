@@ -441,7 +441,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#1D9DFF',
   },
   questionContainer:{
-    height: '20%',
+    height: '10%',
     backgroundColor: '#1D9DFF',
   },
   responseContainer:{
