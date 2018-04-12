@@ -3,10 +3,16 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import Icon from 'react-native-fontawesome-pro';
 
 const styles = StyleSheet.create({
+  container: {
+    alignSelf: 'stretch',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    paddingHorizontal: 24
+  },
   type: {
-    width: 112,
-    height: 112,
-    borderRadius: 5,
+    width: 106,
+    height: 106,
+    borderRadius: 8,
     backgroundColor: '#fff',
     shadowColor: '#3a4252',
     shadowOffset: { width: 0, height: 6 },
@@ -17,7 +23,7 @@ const styles = StyleSheet.create({
     paddingVertical: 16
   },
   typeText: {
-    fontSize: 20,
+    fontSize: 18,
     fontFamily: 'Nunito-Bold',
     color: '#3c4859'
   }
@@ -37,15 +43,15 @@ export default class InfantSelect extends Component {
       borderBottomWidth: 4,
       borderColor: '#1d9dff',
       borderStyle: 'solid',
-      paddingTop: 20
+      paddingBottom: 12
     }
     const options = [
-      {type: 'Infant', icon: 'child'},
-      {type: 'Adult', icon: 'male'}
+      {type: 'Infant', icon: 'child', color: '#73ffc2'},
+      {type: 'Adult', icon: 'male', color: '#ffc473'}
     ]
     return (
-      <View style={{width: '70%', flexDirection: 'row', justifyContent: 'space-around'}}>
-        {options.map(({type, icon}, i) => (
+      <View style={styles.container}>
+        {options.map(({type, icon, color}, i) => (
           <TouchableOpacity
             key = {i}
             style={this.state.selected===type?highlighted:styles.type}
@@ -54,7 +60,7 @@ export default class InfantSelect extends Component {
               this.props.onSelect(type)
             }}
           >
-          <Icon name={icon} size={44} color="#3c4859"/>
+          <Icon name={icon} size={44} color={color}/>
           <Text style={styles.typeText}>{type}</Text>
         </TouchableOpacity>
         ))}

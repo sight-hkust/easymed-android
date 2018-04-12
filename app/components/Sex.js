@@ -3,10 +3,16 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import Icon from 'react-native-fontawesome-pro';
 
 const styles = StyleSheet.create({
+  container: {
+    alignSelf: 'stretch',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    paddingHorizontal: 24
+  },
   gender: {
-    width: 112,
-    height: 112,
-    borderRadius: 5,
+    width: 106,
+    height: 106,
+    borderRadius: 8,
     backgroundColor: '#fff',
     shadowColor: '#3a4252',
     shadowOffset: { width: 0, height: 6 },
@@ -17,7 +23,7 @@ const styles = StyleSheet.create({
     paddingVertical: 16
   },
   genderText: {
-    fontSize: 20,
+    fontSize: 18,
     fontFamily: 'Nunito-Bold',
     color: '#3c4859'
   }
@@ -37,14 +43,14 @@ export default class Sex extends Component {
       borderBottomWidth: 4,
       borderColor: '#1d9dff',
       borderStyle: 'solid',
-      paddingTop: 20
+      paddingBottom: 12
     }
     const options = [
       {gender: 'Male', color: '#4c79fc', icon: 'mars'},
       {gender: 'Female', color:'#ff5273', icon: 'venus'}
     ]
     return (
-      <View style={{width: '70%', flexDirection: 'row', justifyContent: 'space-around'}}>
+      <View style={styles.container}>
         {options.map(({gender, color, icon}, i) => (
           <TouchableOpacity
             key = {i}

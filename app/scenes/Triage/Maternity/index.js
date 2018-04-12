@@ -192,15 +192,14 @@ const Response = ({step, mutate, lmp}) => {
 
 const HeaderContainer = ({xOffset}) => (
   <View style={styles.headerContainer}>
-    <Header title="Pregnancy" light="true" to="/triage/patients/:paitentId"/>
+    <Header title="Maternity" light="true" to="/triage/patients/:paitentId"/>
     <Step allSteps={stepList.length-1} step={xOffset/screenWidth} backgroundColor='#fff' highlightColor='#FAEB9A' />
   </View>
 )
 
-export default class Pregnancy extends Component {
+export default class Maternity extends Component {
   constructor(props) {
     super(props);
-    this.handleScroll = this.handleScroll.bind(this);
     this.state = {
       xOffset:0,
       pregnancy: {
@@ -214,6 +213,7 @@ export default class Pregnancy extends Component {
         stillBorn: ''
       }
     }
+    this.handleScroll = this.handleScroll.bind(this);
   }
 
   handleScroll({nativeEvent: { contentOffset: { x }}}){

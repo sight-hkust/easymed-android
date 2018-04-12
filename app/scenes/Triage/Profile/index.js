@@ -25,7 +25,6 @@ import { IconButton, Button } from '../../../components/Button'
 import TextField from '../../../components/TextField'
 import InfantSelect from '../../../components/InfantSelect';
 import Step from '../../../components/Step'
-import Segment from '../../../components/Segment'
 import Sex from '../../../components/Sex';
 import MaritalStatus from '../../../components/MaritalStatus';
 import Birthday from '../../../components/Birthday';
@@ -131,20 +130,18 @@ const Response = ({step, mutate, handleCameraPress, pictureSource}) => {
   switch(step) {
     case 'photo': {
       return (
-        <View style={{width:screenWidth, justifyContent:'flex-start'}}>
-          <View style={{width:screenWidth, justifyContent:'flex-start', alignItems:'center', zIndex:0}}>
-            <Button 
-                title='From camera' 
-                bgColor='#19AEFA' titleColor='#fff' 
-                icon='camera'
-                width='64%'
-                onPress= {handleCameraPress}
-              />
-            <Image
-                source={pictureSource?pictureSource:require('../../../../assets/images/imagePlaceHolder.png')}
-                style={{marginTop:'6%', height:height*.25, width:height*.25, borderRadius:(height*.25)/2, borderColor: '#f5f5f5', borderWidth: 3}}
-              />
-          </View>
+        <View style={{justifyContent:'flex-start', alignItems:'center', zIndex:0}}>
+          <Button 
+              title='From camera' 
+              bgColor='#19AEFA' titleColor='#fff' 
+              icon='camera'
+              width='64%'
+              onPress= {handleCameraPress}
+            />
+          <Image
+              source={pictureSource?pictureSource:require('../../../../assets/images/imagePlaceHolder.png')}
+              style={{marginTop:'6%', height:height*.25, width:height*.25, borderRadius:(height*.25)/2, borderColor: '#f5f5f5', borderWidth: 3}}
+            />
         </View>
       )
     }
@@ -191,19 +188,33 @@ const Response = ({step, mutate, handleCameraPress, pictureSource}) => {
     }
     case 'dobi': {
       return (
-        <View style={{...StyleSheet.flatten(styles.response), height: '36%'}}>
-          <TextField placeholder="Days" width="80%"/>
-          <TextField placeholder="Weeks" width="80%"/>
-          <TextField placeholder="Months" width="80%"/>
+        <View style={styles.response}>
+          <TextField 
+            placeholder="Days"
+            width="80%"
+            keyboardType="numeric"/>
+          <TextField 
+            placeholder="Weeks"
+            width="80%"
+            keyboardType="numeric"/>
+          <TextField 
+            placeholder="Months"
+            width="80%"
+            keyboardType="numeric"/>
         </View>
       )
     }
     case 'doba': {
       return (
-        <View style={{height:'48%', justifyContent: 'space-between'}}>
-          <Birthday onSelect={(dob) =>
-            mutate( ({profile}) => ({ profile: { ...profile, dob }}) )
-          }/>
+        <View style={styles.response}>
+          <TextField 
+            placeholder="Age"
+            width="80%"
+            keyboardType="numeric"
+            onChangeText={(age) => {
+              mutate( ({profile}) => ({ profile: { ...profile, dob: new Date(`${new Date().getFullYear() - age}-01-01`) }}) )
+            }}
+          />
         </View>
       )
     }
@@ -260,7 +271,6 @@ const Response = ({step, mutate, handleCameraPress, pictureSource}) => {
             keyboardType="numeric"
             onChangeText={(tag) => {
               mutate({tag})
-              mutate({showSubmit: true})
             }}
           />
         </View>
@@ -297,20 +307,12 @@ class Profile extends Component {
       queueStatus: false
     }
     this.createPatient = props.actions.createPatient
-    this.queuePatient = props.actions.queuePatient
     this.reset = props.actions.instantiate
   }
 
   handleScroll({nativeEvent: { contentOffset: { x }}}){
     this.setState({ xOffset: x})
     this.refs.responseScroll.scrollTo({x: x, animated:false})
-  }
-
-  componentDidUpdate() {
-    if(this.props.patientId && !this.state.queueStatus) {
-      this.setState({queueStatus: true})
-      this.queuePatient(this.state.tag, this.props.patientId, 'triage')
-    }
   }
 
   componentWillUnmount() {
@@ -379,37 +381,37 @@ class Profile extends Component {
             style={styles.responseContainer}
             >
             {this.state.questions.map((step, i) => (
-              <View style={{width: screenWidth, justifyContent:'flex-start'}} key={i}>
+              <View style={{width: screenWidth, justifyContent:'flex-start', paddingHorizontal: 24}} key={i}>
                 <Response step={step} mutate={this.setState.bind(this)} dob={this.state.profile.dob}/>
               </View>
             ))}
           </ScrollView>
 
           <View style={{height:'8%'}}>
-            {this.state.showSubmit && <Button 
+            <Button 
                   title="Submit" 
                   onPress={this.submit.bind(this)} 
                   bgColor="#1d9dff" titleColor="#fff" 
                   icon="chevron-right"
                   width="50%"
                   round
-                />}
+            />
           </View>
-            <Modal
+          <Modal
+            isVisible={this.props.loading}
+            animationIn="fadeIn"
+            backdropOpacity={0}
+            style={{justifyContent: 'center'}}
+          >
+            <View style={styles.loading}>
+              <Spinner
               isVisible={this.props.loading}
-              animationIn="fadeIn"
-              backdropOpacity={0}
-              style={{justifyContent: 'center'}}
-            >
-              <View style={styles.loading}>
-                <Spinner
-                isVisible={this.props.loading}
-                size={44}
-                style={{alignSelf: 'center'}}
-                type='Bounce' 
-                color='#81e2d9'/>
-              </View>
-            </Modal>
+              size={44}
+              style={{alignSelf: 'center'}}
+              type='Bounce' 
+              color='#81e2d9'/>
+            </View>
+          </Modal>
         </KeyboardAvoidingView>
       )
     }
@@ -462,8 +464,7 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   response: {
-    height: '52%',
-    width: '100%',
+    alignSelf: 'stretch',
     alignItems: 'center',
     justifyContent: 'space-between'
   },
