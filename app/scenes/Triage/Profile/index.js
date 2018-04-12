@@ -441,7 +441,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#1D9DFF',
   },
   questionContainer:{
-    height: '24%',
+    height: '10%',
     backgroundColor: '#1D9DFF',
   },
   responseContainer:{
@@ -465,7 +465,6 @@ const styles = StyleSheet.create({
     height: '52%',
     width: '100%',
     alignItems: 'center',
-    justifyContent: 'space-between'
   },
   loading: {
     alignSelf: 'center',

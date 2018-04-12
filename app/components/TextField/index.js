@@ -60,6 +60,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.5,
     shadowOffset: { width: 1, height: 3 },
     shadowRadius: 5,
+    margin: 10
   },
   textbox: {
     backgroundColor: '#fff',
