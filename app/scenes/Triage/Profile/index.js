@@ -2,15 +2,16 @@ import React, { Component } from 'react'
 import { 
   View,
   Image,
-  KeyboardAvoidingView,
   ScrollView,
   StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
   Dimensions,
-  Switch 
+  Switch,
+  KeyboardAvoidingView 
 } from 'react-native'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { Redirect } from 'react-router-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -352,7 +353,7 @@ class Profile extends Component {
     }
     else {
       return (
-        <KeyboardAvoidingView style={styles.parentContainer}>
+        <KeyboardAvoidingView style={styles.parentContainer} behavior={'position'}>
           <HeaderContainer xOffset={this.state.xOffset} stepsLength={this.state.questions.length-1}/>
           <ScrollView 
             ref = 'questionScroll'
@@ -385,7 +386,7 @@ class Profile extends Component {
             ))}
           </ScrollView>
 
-          <View style={{height:'8%'}}>
+          <View>
             {this.state.showSubmit && <Button 
                   title="Submit" 
                   onPress={this.submit.bind(this)} 
@@ -433,7 +434,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-start',
     backgroundColor: '#f5f6fb',
-    paddingBottom: 16
   },
   headerContainer: {
     height: '20%',
@@ -441,19 +441,17 @@ const styles = StyleSheet.create({
     backgroundColor: '#1D9DFF',
   },
   questionContainer:{
-    height: '24%',
+    height: '20%',
     backgroundColor: '#1D9DFF',
   },
   responseContainer:{
-    height: '48%',
+    height: '60%',
     backgroundColor: '#f5f6fb',
     paddingTop: 40,
   },
   textWrapper: {
-    marginTop: 20,
     paddingHorizontal: 18,
     backgroundColor: 'transparent',
-    paddingBottom: '12%'
   },
   instruction: {
     fontSize: 26,
@@ -465,7 +463,6 @@ const styles = StyleSheet.create({
     height: '52%',
     width: '100%',
     alignItems: 'center',
-    justifyContent: 'space-between'
   },
   loading: {
     alignSelf: 'center',

@@ -12,7 +12,7 @@ const TextField = ({value, unit, width, keyboardType, placeholder, onChangeText,
     <View style={{...StyleSheet.flatten(styles.container), width}}>
       <TextInput
         underlineColorAndroid='transparent'
-        style={[styles.input, {height: Platform.OS == 'android' ? 40 : '90%'}]}
+        style={styles.input}
         value={value}
         placeholder={placeholder}
         keyboardType={keyboardType}
@@ -60,6 +60,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.5,
     shadowOffset: { width: 1, height: 3 },
     shadowRadius: 5,
+    margin: 10
   },
   textbox: {
     backgroundColor: '#fff',

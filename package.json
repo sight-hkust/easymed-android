@@ -18,6 +18,7 @@
     "react-native": "^0.53.3",
     "react-native-fontawesome-pro": "^1.0.12",
     "react-native-image-picker": "^0.26.7",
+    "react-native-keyboard-aware-scroll-view": "^0.5.0",
     "react-native-linear-gradient": "^2.4.0",
     "react-native-modal": "^5.3.0",
     "react-native-sensitive-info": "^5.1.0",
