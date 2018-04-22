@@ -3,7 +3,8 @@ import { Route, Switch } from 'react-router-native';
 import Entrypoint from './Entrypoint';
 import Profile from './Profile';
 import Vitals from './Vitals';
-import Maternity from './Maternity';
+import ChiefComplaints from './ChiefComplaints'
+import Maternal from './Maternal';
 import Screening from './Screening';
 import MedicalHistory from './MedicalHistory';
 import Miscellaneous from './Miscellaneous';
@@ -17,7 +18,8 @@ const Triage = ({match}) => (
     <Route path={`${match.url}/patients/admission`} component={Admission} />
     <Route exact path={`${match.url}/patients/:queueId`} component={Menu} />
     <Route path={`${match.url}/patients/:queueId/vitals`} component={Vitals} />
-    <Route path={`${match.url}/patients/:queueId/maternity`} component={Maternity} />
+    <Route path={`${match.url}/patients/:queueId/cheifcomplaints`} component={ChiefComplaints} />
+    <Route path={`${match.url}/patients/:queueId/maternal`} component={Maternal} />
     <Route path={`${match.url}/patients/:queueId/screening`} component={Screening} />
     <Route path={`${match.url}/patients/:queueId/history`} component={MedicalHistory} />
     <Route path={`${match.url}/patients/:queueId/miscellaneous`} component={Miscellaneous} />

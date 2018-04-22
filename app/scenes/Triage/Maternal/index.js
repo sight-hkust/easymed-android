@@ -197,7 +197,7 @@ const HeaderContainer = ({xOffset}) => (
   </View>
 )
 
-export default class Maternity extends Component {
+export default class Maternal extends Component {
   constructor(props) {
     super(props);
     this.state = {

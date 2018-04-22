@@ -35,7 +35,12 @@ async function createPatient(profile){
   const Patient = Parse.Object.extend('Patient')
   const Profile = Parse.Object.extend('Profile')
   let _profile = new Profile()
-  Object.keys(profile).forEach(attribute => _profile.set(attribute, profile[attribute]))
+  const picture = await new Parse.File(`${profile.name.regular}.JPG`, { base64: profile.picture }).save()
+  Object.keys(profile).forEach(attribute => 
+    attribute==='picture'?
+    _profile.set(attribute, picture):
+    _profile.set(attribute, profile[attribute])
+  )
   let _patient = new Patient()
   _patient.set('profile', _profile)
   try {
@@ -144,6 +149,7 @@ async function queuePatient(tag, patientId, stage) {
     const Patient = Parse.Object.extend('Patient')
     const _patient = await new Parse.Query(Patient).get(patientId)
     const enlisting = new Queue()
+    console.log("why this suddenly broke?")
     enlisting.set('stage', stage)
     enlisting.set('patient', _patient)
     enlisting.set('tag', Math.abs(tag))

@@ -5,16 +5,18 @@ import Header from '../../../components/Header';
 import { IconButton, Button } from '../../../components/Button';
 import Modal from 'react-native-modal';
 
-const Gender = ({sex}) => {
+const Appearance = ({sex}) => {
   const style = {
-    backgroundColor: sex==='female'?'#ff5273':'#4c79fc',
-    borderColor: sex==='female'?'#ff718c':'#7c9dfc',
-    shadowColor: sex==='female'?'#ff718c':'#7c9dfc',
-    ...StyleSheet.flatten(styles.gender)
+    borderColor: '#fff',
+    shadowColor: '#f5f5f5',
+    ...StyleSheet.flatten(styles.appearance)
   }
   return (
     <View style={style}>
-      <Icon name={sex==='female'?'venus':'mars'} color="white" size={38}/>
+      <Image 
+        source={require('../../../../assets/images/test.jpg')}
+        style={{resizeMode: 'cover', height:72, width:72, borderRadius:36}}
+      />
     </View>
   )
 }
@@ -179,7 +181,7 @@ export default class Record extends Component {
           <IconButton name="history" color="#3c4859"/>
         </View>
         <ScrollView>
-          <Gender sex="male"/>
+          <Appearance tag="31" picture=""/>
           <PatientName name="Preah R"/>
           <Vitals/>
           <Cases />
@@ -213,7 +215,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     alignSelf: 'flex-end'
   },
-  gender: {
+  appearance: {
     height: 80,
     width: 80,
     borderRadius: 48,

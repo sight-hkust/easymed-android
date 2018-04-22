@@ -18,29 +18,37 @@ import {
 import { createPatient, fetchPatients, fetchPatientQueue, queuePatient, transferPatient } from '../services/api'
 import { ActionsObservable } from 'redux-observable'
 import { Observable } from 'rxjs';
-import 'rxjs/add/operator/concatMap';
+import 'rxjs/add/operator/switchMap';
+import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
+import { queuePatient as queuePatientRequest } from '../actions/patient'
+const createPatientSuccess = (patientId) => ({
+  type: CREATE_PATIENT_SUCCESS,
+  payload: { patientId }
+})
 
-const createPatientEpic = action$ => 
-  action$.ofType(CREATE_PATIENT_REQUEST).concatMap(({payload}) => {
-  const { profile, tag } = payload
-  console.log('step3')
-  return Observable.fromPromise(createPatient(profile))
+const createPatientEpic = action$ =>
+  action$.ofType(CREATE_PATIENT_REQUEST)
+  .switchMap(({payload}) => {
+    const { profile, tag } = payload
+    return Observable.fromPromise(createPatient(profile))
+    .mergeMap(patientId => ([createPatientSuccess(patientId), queuePatientRequest(tag, patientId, 'triage')]))
+    .catch(error => Observable.of({type: CREATE_PATIENT_ERROR, payload: {error}}))
   })
-  .map(patientId => ({type: CREATE_PATIENT_SUCCESS, payload: {patientId}}))
-  .catch(error => Observable.of({type: CREATE_PATIENT_ERROR, payload: {error}}))
+  
 
-const fetchPatientListEpic = action$ => 
-  action$.ofType(FETCH_PATIENT_LIST_REQUEST).concatMap(() => {
+const fetchPatientListEpic = action$ =>
+  action$.ofType(FETCH_PATIENT_LIST_REQUEST)
+  .switchMap(() => {
     return Observable.fromPromise(fetchPatients())
   })
-  .map(patients => ({type: FETCH_PATIENT_LIST_SUCCESS, payload: {patients} }))
+  .map(patients => ({type: FETCH_PATIENT_LIST_SUCCESS, payload: {patients}}))
   .catch(error => Observable.of({type: FETCH_PATIENT_LIST_ERROR, payload: {error}}))
 
-const fetchPatientQueueEpic = action$ => 
-  action$.ofType(FETCH_PATIENT_QUEUE_REQUEST).concatMap(({payload}) => {
-    console.log('stop3')
+const fetchPatientQueueEpic = action$ =>
+  action$.ofType(FETCH_PATIENT_QUEUE_REQUEST)
+  .switchMap(({payload}) => {
     const { stage } = payload
     return Observable.fromPromise(fetchPatientQueue(stage))
   })
@@ -48,7 +56,8 @@ const fetchPatientQueueEpic = action$ =>
   .catch(error => Observable.of({type: FETCH_PATIENT_QUEUE_ERROR, payload: {error}}))
 
 const queuePatientEpic = action$ =>
-  action$.ofType(QUEUE_PATIENT_REQUEST).concatMap(({payload}) => {
+  action$.ofType(QUEUE_PATIENT_REQUEST)
+  .switchMap(({payload}) => {
     const { tag, patientId, stage } = payload
     return Observable.fromPromise(queuePatient(tag, patientId, stage))
   })
@@ -56,7 +65,8 @@ const queuePatientEpic = action$ =>
   .catch(error => Observable.of({type: QUEUE_PATIENT_ERROR, payload: {error}}))
 
 const transferPatientEpic = action$ =>
-  action$.ofType(TRANSFER_PATIENT_REQUEST).concatMap(({payload}) => {
+  action$.ofType(TRANSFER_PATIENT_REQUEST)
+  .switchMap(({payload}) => {
     const { stage, queueId } = payload
     return Observable.fromPromise(transferPatient(queueId, stage))
   })

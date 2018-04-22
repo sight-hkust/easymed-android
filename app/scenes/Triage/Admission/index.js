@@ -54,10 +54,6 @@ class Admission extends Component {
     this.refreshPatientQueue(true)
   }
 
-  componentDidUpdate() {
-    console.log(this.props.queue)
-  }
-
   refreshPatientQueue(auto) {
     if (!auto) {
       this.setState({loading: this.props.loading})
@@ -91,9 +87,7 @@ class Admission extends Component {
               />
             }>
               {this.props.queue.length === 0 && <EmptyStub />}
-              {this.props.queue && this.props.queue.map(({patient, queueId}, i) => (
-                <PatientQueueItem patient={patient} key={i} to={`/triage/patients/${queueId}`}/>
-              ))}
+              {this.props.queue && this.props.queue.map(({patient, queueId}, i) => <PatientQueueItem patient={patient} key={i} to={`/triage/patients/${queueId}`}/> )}
             </ScrollView>
           </View>
           <View style={{width: Dimensions.get('window').width}}>

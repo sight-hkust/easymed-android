@@ -33,12 +33,10 @@ const patientsReducer = (state = initialState, {type, payload}) => {
           return {...state, loading: {...state.loading, all:false}, error: payload.error};
       }
       case FETCH_PATIENT_QUEUE_REQUEST: {
-          console.log('stop2')
           return {...state, loading: {...state.loading, queue:true} };
       }
       case FETCH_PATIENT_QUEUE_SUCCESS: {
-          console.log('final stop')
-          return {...state, loading: {...state.loading, queue:false}, queue: payload.patients}
+          return {...state, loading: {...state.loading, queue:false}, queue: payload.patients.sort((p, s) => parseInt(p.patient.tag) - parseInt(s.patient.tag))}
       }
       case FETCH_PATIENT_QUEUE_ERROR: {
           return {...state, loading: {...state.loading, queue:false}, error: payload.error}

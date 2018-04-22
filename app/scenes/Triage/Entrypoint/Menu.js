@@ -18,6 +18,12 @@ const menuItems = [
     title: 'Vitals'
   },
   {
+    destination: '/cheifcomplaints',
+    icon: 'clipboard-list',
+    color: '#f99945',
+    title: 'Chief Complaints'
+  },
+  {
     destination: '/history',
     icon: 'procedures',
     color: '#ffcb2f',
@@ -33,7 +39,7 @@ const menuItems = [
     destination: '/miscellaneous',
     icon: 'allergies',
     color: '#7d82b8',
-    title: 'Drug History and Allergies'
+    title: 'Miscellaneous'
   }
 ]
 
@@ -53,11 +59,7 @@ class Menu extends Component {
       queueId: props.match.params.queueId,
       patient: this.props.patient.patient
     }
-
     this.transferPatient = props.actions.transferPatient
-  }
-
-  componentDidUpdate() {
   }
 
   componentWillMount() {
@@ -86,11 +88,11 @@ class Menu extends Component {
                   key={i}
                 />
               ))}
-              {this.state.patient.sex === 'Female' && <Metric title="Pregnancy"
+              {this.state.patient.sex === 'Female' && <Metric title="Maternal"
                                                               icon="female"
                                                               color="#f4649e"
-                                                              to={`/triage/patients/${this.state.queueId}/pregnancy`}
-                                                      />}
+                                                              to={`/triage/patients/${this.state.queueId}/maternal`}
+              />}
             </ScrollView>
             <Button 
                   title="Checkout"

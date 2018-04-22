@@ -28,76 +28,27 @@ const gradientLayout = {
   locations: [0, 0.75]
 }
 
-const stepList = ['drugHistory', 'familyHistory', 'allergies', 'ROS'];
+const stepList = ['cheifComplaints'];
 
 const Instruction = ({step}) => {
   switch(step) {
-    case 'drugHistory': {
+    case 'cheifComplaints': {
       return (
         <View style={styles.textWrapper}>
-          <Text style={styles.instruction}>Drug History</Text>
+          <Text style={styles.instruction}>Cheif Complaints</Text>
         </View>
       )
     }
-    case 'familyHistory': {
-      return (
-        <View style={styles.textWrapper}>
-          <Text style={styles.instruction}>Family History</Text>
-        </View>
-      )
-    }
-    case 'allergies': {
-      return (
-        <View style={styles.textWrapper}>
-          <Text style={styles.instruction}>Allergies</Text>
-        </View>
-      )
-    }
-    case 'ROS': {
-      return (
-        <View style={styles.textWrapper}>
-          <Text style={styles.instruction}>ROS</Text>
-        </View>
-      )
-    }
-
   } 
 }
 
 const Response = ({step, mutate}) => {
   switch(step) {
-    case 'drugHistory': {
+    case 'cheifComplaints': {
       return(
         <View style={{alignItems:'center'}}>
-          <TextBox placeholder="Type the drug history details" width="80%" onChangeText={(drugHistory) => mutate(
-            ({miscellaneous}) => ({miscellaneous: {...miscellaneous, drugHistory}})
-          )} />
-        </View>
-      )
-    }
-    case 'familyHistory': {
-      return(
-        <View style={{alignItems:'center'}}>
-          <TextBox placeholder="Type the family history details" width="80%" onChangeText={(familyHistory) => mutate(
-            ({miscellaneous}) => ({miscellaneous: {...miscellaneous, familyHistory}})
-          )} />
-        </View>
-      )
-    }
-    case 'allergies': {
-      return(
-        <View style={{alignItems:'center'}}>
-          <TextBox placeholder="Type the allergies details" width="80%" onChangeText={(allergies) => mutate(
-            ({miscellaneous}) => ({miscellaneous: {...miscellaneous, allergies}})
-          )} />
-        </View>
-      )
-    }
-    case 'ROS': {
-      return(
-        <View style={{alignItems:'center'}}>
-          <TextBox placeholder="Type the review of system details" width="80%" onChangeText={(ROS) => mutate(
-            ({miscellaneous}) => ({miscellaneous: {...miscellaneous, ROS}})
+          <TextBox placeholder="Type the chief complaints details" width="80%" onChangeText={(cheifComplaints) => mutate(
+            ({miscellaneous}) => ({miscellaneous: {...miscellaneous, cheifComplaints}})
           )} />
         </View>
       )
@@ -107,12 +58,12 @@ const Response = ({step, mutate}) => {
 
 const HeaderContainer = ({xOffset, path}) => (
   <View style={styles.headerContainer}>
-    <Header title="Miscellaneous" light="true" to={`/triage/patients/${path}`}/>
+    <Header title="Cheif Complaints" light="true" to={`/triage/patients/${path}`}/>
     <Step allSteps={stepList.length-1} step={xOffset/screenWidth} backgroundColor='#fff' highlightColor='#FAEB9A' />
   </View>
 )
 
-export default class Miscellaneous extends Component {
+export default class ChiefComplaints extends Component {
   constructor(props) {
     super(props);
     this.handleScroll = this.handleScroll.bind(this);
@@ -120,10 +71,7 @@ export default class Miscellaneous extends Component {
       xOffset:0,
       queueId: props.match.params.queueId,
       miscellaneous: {
-        drugHistory: '',
-        familyHistory: '',
-        allergies: '',
-        ROS: ''
+        cheifComplaints: '',
       }
     }
   }

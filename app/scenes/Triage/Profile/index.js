@@ -111,9 +111,7 @@ const Instruction = ({step}) => {
     case 'contact': {
       return (
         <View style={styles.textWrapper}>
-          <Text style={styles.instruction}>Enter the</Text>
-          <Text style={styles.instruction}>Contact number</Text>
-          <Text style={styles.instruction}>of the patient</Text>
+          <Text style={styles.instruction}>Phone</Text>
         </View>
       )
     }
@@ -141,7 +139,7 @@ const Response = ({step, mutate, handleCameraPress, pictureSource}) => {
             />
           <Image
               source={pictureSource?pictureSource:require('../../../../assets/images/imagePlaceHolder.png')}
-              style={{marginTop:'6%', height:height*.25, width:height*.25, borderRadius:(height*.25)/2, borderColor: '#f5f5f5', borderWidth: 3}}
+              style={{resizeMode: 'cover', marginTop:'6%', height:height*.25, width:height*.25, borderRadius:(height*.25)/2, borderColor: '#f5f5f5', borderWidth: 3}}
             />
         </View>
       )
@@ -188,20 +186,33 @@ const Response = ({step, mutate, handleCameraPress, pictureSource}) => {
       )
     }
     case 'dobi': {
+      const now = new Date();
       return (
         <View style={styles.response}>
           <TextField 
             placeholder="Days"
             width="80%"
-            keyboardType="numeric"/>
+            keyboardType="numeric"
+            onChangeText={(day) => {
+              mutate( ({profile}) => ({ profile: {...profile, dob: profile.dob ? profile.setDate(profile.dob.getDate()-day):new Date(now.getFullYear(), now.getMonth(), now.getDate()-day)}}))
+            }}
+          />
           <TextField 
             placeholder="Weeks"
             width="80%"
-            keyboardType="numeric"/>
+            keyboardType="numeric"
+            onChangeText={(week) => {
+              mutate( ({profile}) => ({ profile: {...profile, dob: profile.dob ? profile.setDate(profile.dob.getDate()-week*7):new Date(now.getFullYear(), now.getMonth(), now.getDate()-week*7)}}))
+            }}
+          />
           <TextField 
             placeholder="Months"
             width="80%"
-            keyboardType="numeric"/>
+            keyboardType="numeric"
+            onChangeText={(month) => {
+              mutate( ({profile}) => ({ profile: {...profile, dob: profile.dob ? profile.setMonth(profile.dob.getMonth()+month):new Date(now.getFullYear(), now.getMonth()-month, now.getDate())}}))
+            }}
+            />
         </View>
       )
     }
@@ -295,6 +306,7 @@ class Profile extends Component {
       xOffset:0,
       showSubmit: false,
       profile: {
+        picture: null,
         name: {
           regular: '',
           khmer: ''
@@ -302,9 +314,19 @@ class Profile extends Component {
         sex: '',
         dob: null,
         status: 'inapplicable',
-        nationality: 'Khmer'
+        nationality: 'Khmer',
       },
       tag: '',
+      picturePath: null,
+      options: {
+        title: 'Select Picture',
+        quality: 0,
+        mediaType: 'photo',
+        storageOptions: {
+          skipBackup: true,
+          path: 'images'
+        }
+      },
       queueStatus: false
     }
     this.createPatient = props.actions.createPatient
@@ -325,21 +347,10 @@ class Profile extends Component {
   }
 
   handleCameraPress(){
-    ImagePicker.showImagePicker(this.state.options, (response) => {
-      console.log('Response = ', response)
-    
-      if (response.didCancel) {
-        console.log('User cancelled image picker')
-      }
-      else if (response.error) {
-        console.log('ImagePicker Error: ', response.error)
-      }
-      else if (response.customButton) {
-        console.log('User tapped custom button: ', response.customButton)
-      }
-      else {
-        let source = { uri: response.uri }
-        this.setState({pictureSource: source})
+    ImagePicker.showImagePicker(this.state.options, (response) => {    
+      if (!response.didCancel && !response.error) {
+        const {data, uri} = response
+        this.setState(({profile, picturePath}) => ({ profile: { ...profile, picture: data }, picturePath: { uri }}))
       }
     })
   }
@@ -383,7 +394,7 @@ class Profile extends Component {
             >
             {this.state.questions.map((step, i) => (
               <View style={{width: screenWidth, justifyContent:'flex-start', paddingHorizontal: 24}} key={i}>
-                <Response step={step} mutate={this.setState.bind(this)} dob={this.state.profile.dob}/>
+                <Response step={step} mutate={this.setState.bind(this)} pictureSource={this.state.picturePath} handleCameraPress={this.handleCameraPress.bind(this)}/>
               </View>
             ))}
           </ScrollView>
