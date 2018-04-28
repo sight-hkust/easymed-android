@@ -135,21 +135,12 @@ async function updatePatientMedicalHistory(patientId, history) {
   }
 }
 
-// async function updatePatientPregnancy(patientId, survey) {
-//   try {
-//     const 
-//   } catch (error) {
-//     throw error
-//   }
-// }
-
 async function queuePatient(tag, patientId, stage) {
   try {
     const Queue = Parse.Object.extend('Queue')
     const Patient = Parse.Object.extend('Patient')
     const _patient = await new Parse.Query(Patient).get(patientId)
     const enlisting = new Queue()
-    console.log("why this suddenly broke?")
     enlisting.set('stage', stage)
     enlisting.set('patient', _patient)
     enlisting.set('tag', Math.abs(tag))

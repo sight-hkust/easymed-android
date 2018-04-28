@@ -9,10 +9,12 @@ import {
   StatusBar, 
   StyleSheet, 
   Text, 
-  TouchableOpacity, 
+  TouchableOpacity,
   Dimensions, 
-  Switch 
+  Switch
 } from 'react-native'
+import Modal from 'react-native-modal'
+import SketchDraw from 'react-native-sketch-draw'
 // import { createCase } from '../../../actions/case';
 import LinearGradient from 'react-native-linear-gradient';
 import ImagePicker from 'react-native-image-picker';
@@ -25,6 +27,21 @@ import DatePicker from '../../../components/DatePicker';
 import BooleanSelect from '../../../components/BooleanSelect';
 
 const screenWidth = Dimensions.get('window').width
+
+const SketchDrawConstants = SketchDraw.constants;
+
+const tools = {};
+ 
+tools[SketchDrawConstants.toolType.pen.id] = {
+    id: SketchDrawConstants.toolType.pen.id,
+    name: SketchDrawConstants.toolType.pen.name,
+    nextId: SketchDrawConstants.toolType.eraser.id
+};
+tools[SketchDrawConstants.toolType.eraser.id] = {
+    id: SketchDrawConstants.toolType.eraser.id,
+    name: SketchDrawConstants.toolType.eraser.name,
+    nextId: SketchDrawConstants.toolType.pen.id
+};
 
 const gradientLayout = {
   colors: ['#00C8A0','#00DBAF'],
@@ -124,12 +141,12 @@ const Response = ({step, mutate, handleCameraPress, pictureSource}) => {
             <View style={{width:screenWidth, justifyContent:'flex-start'}}>
               <View style={{width:screenWidth, justifyContent:'flex-start', alignItems:'center', zIndex:0}}>
                 <Button 
-                    title='From camera' 
+                    title='Markup' 
                     bgColor='#91D2CC' titleColor='#fff' 
-                    icon='camera'
+                    icon='edit'
                     width='64%'
                     onPress= {handleCameraPress}
-                  />
+                />
                 <Image
                     source={pictureSource?pictureSource:require('../../../../assets/images/imagePlaceHolder.png')}
                     style={{marginTop:'6%', height:'60%', width:'64%', borderRadius:5 }}
@@ -219,8 +236,10 @@ export default class Session extends Component {
     this.handleCameraPress = this.handleCameraPress.bind(this);
     this.state = {
       pathPrefix: props.match.url,
+      toolSelected: SketchDrawConstants.toolType.pen.id,
       xOffset:0,
       pictureSource: null,
+      isCurrentlyDrawing: false,
       session: {
         chiefComplaints: '',
         physicalExaminations: '',
@@ -230,6 +249,7 @@ export default class Session extends Component {
         advise: '',
         followUp: ''
       },
+      drawingColor: '#f00',
       options: {
         title: 'Select Picture',
         storageOptions: {
@@ -240,30 +260,33 @@ export default class Session extends Component {
     }
   }
 
+  isEraserToolSelected() {
+    return this.state.toolSelected === SketchDrawConstants.toolType.eraser.id;
+  }
+
+  toolChangeClick() {
+    this.setState({toolSelected: tools[this.state.toolSelected].nextId});
+  }
+
+  getToolName() {
+    return tools[this.state.toolSelected].name;
+  }
+
+  onSketchSave(saveEvent) {
+    this.props.onSave && this.props.onSave(saveEvent);
+  }
+
   handleScroll({nativeEvent: { contentOffset: { x }}}){
      this.setState({ xOffset: x})
      this.refs.responseScroll.scrollTo({x: x, animated:false})
    }
 
+  toggleMarkerColor() {
+    this.setState({drawingColor: this.state.drawingColor==='#f00'?'#000':'#f00'})
+  }
 
   handleCameraPress(){
-    ImagePicker.showImagePicker(this.state.options, (response) => {
-      console.log('Response = ', response)
-    
-      if (response.didCancel) {
-        console.log('User cancelled image picker')
-      }
-      else if (response.error) {
-        console.log('ImagePicker Error: ', response.error)
-      }
-      else if (response.customButton) {
-        console.log('User tapped custom button: ', response.customButton)
-      }
-      else {
-        let source = { uri: response.uri }
-        this.setState({pictureSource: source})
-      }
-    })
+    this.setState({isCurrentlyDrawing: !this.state.isCurrentlyDrawing})
   }
 
   componentWillMount() {
@@ -309,6 +332,35 @@ export default class Session extends Component {
             </View>
           ))}
         </ScrollView>
+
+        <Modal isVisible={this.state.isCurrentlyDrawing}>
+          <View style={{flex: 1, flexDirection: 'column'}}>
+            <SketchDraw style={{flex: 1, backgroundColor: '#fff'}} ref="sketchRef"
+              selectedTool={this.state.toolSelected} 
+              toolColor={this.state.drawingColor}
+              onSaveSketch={this.onSketchSave.bind(this)}
+              localSourceImagePath={this.props.localSourceImagePath}
+            />
+ 
+            <View style={{ flexDirection: 'row', justifyContent: 'space-around', backgroundColor: '#fff', borderBottomLeftRadius: 8, borderBottomRightRadius: 8, paddingVertical: 12}}>
+              <TouchableOpacity style={styles.drawingButtons} onPress={() => { this.refs.sketchRef.clearSketch() }} >
+                <Icon name="redo-alt" color="#fff" size={22}/>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.drawingButtons} onPress={() => { this.refs.sketchRef.saveSketch() }}>
+                <Icon name="save" color="#fff" size={22}/>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.drawingButtons} onPress={this.toolChangeClick.bind(this)}>
+                <Icon name={this.isEraserToolSelected()?'eraser':'pen'} color="#fff" size={22}/>
+              </TouchableOpacity>
+              <TouchableOpacity style={{...StyleSheet.flatten(styles.drawingButtons), backgroundColor: this.state.drawingColor}} onPress={this.toggleMarkerColor.bind(this)}>
+                <Icon name="paint-brush" type="solid" color="#fff" size={22}/>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.drawingButtons} onPress={this.handleCameraPress}>
+                <Icon name="times" color="#fff" size={22}/>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
 
         <View style={{height:'8%'}}>
           <Button 
@@ -372,5 +424,13 @@ const styles = StyleSheet.create({
     height: '100%',
     justifyContent: 'space-between',
     alignItems: 'center',
+  },
+  drawingButtons: {
+    width: 40,
+    height: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius:20,
+    backgroundColor: '#93D0FE'
   }
 })

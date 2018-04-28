@@ -29,79 +29,54 @@ const gradientLayout = {
   locations: [0, 0.75]
 }
 
-const stepList = ['lmp', 'gestation', 'breastFeeding', 'contraceptiveUse', 'liveBirth', 'miscarriage', 'abortion', 'stillBorn'];
-
 const Instruction = ({step}) => {
   switch(step) {
+    case 'pregnant': {
+      return (
+        <View style={styles.textWrapper}>
+          <Text style={styles.instruction}>Is patient pregnant?</Text>
+        </View>
+      )
+    }
     case 'lmp': {
       return (
         <View style={styles.textWrapper}>
-          <Text style={styles.instruction}>Please indicate patient's</Text>
-          <Text style={styles.instruction}>Last Menstrual Period</Text>
-          <Text style={styles.instruction}>date</Text>
+          <Text style={styles.instruction}>LMP Date</Text>
         </View>
       )
     }
     case 'gestation': {
       return (
         <View style={styles.textWrapper}>
-          <Text style={styles.instruction}>Please indicate the</Text>
-          <Text style={styles.instruction}>gestational age</Text>
-          <Text style={styles.instruction}>of the patient</Text>
+          <Text style={styles.instruction}>Gestational age</Text>
         </View>
       )
     }
     case 'breastFeeding': {
       return (
         <View style={styles.textWrapper}>
-          <Text style={styles.instruction}>Please indicate whether</Text>
-          <Text style={styles.instruction}>patient is breastfeeding</Text>
-          <Text style={styles.instruction}>below</Text>
+          <Text style={styles.instruction}>Breast Feeding?</Text>
         </View>
       )
     }
     case 'contraceptiveUse': {
       return (
         <View style={styles.textWrapper}>
-          <Text style={styles.instruction}>Please indicate whether</Text>
-          <Text style={styles.instruction}>patient uses contraceptive</Text>
-          <Text style={styles.instruction}>below</Text>
-        </View>
-      )
-    }
-    case 'liveBirth': {
-      return (
-        <View style={styles.textWrapper}>
-          <Text style={styles.instruction}>Enter the number of</Text>
-          <Text style={styles.instruction}>live birth of</Text>
-          <Text style={styles.instruction}>the patient</Text>
-        </View>
-      )
-    }
-    case 'miscarriage': {
-      return (
-        <View style={styles.textWrapper}>
-          <Text style={styles.instruction}>Enter the number of</Text>
-          <Text style={styles.instruction}>miscarriage of</Text>
-          <Text style={styles.instruction}>the patient</Text>
+          <Text style={styles.instruction}>Contraceptive Use</Text>
         </View>
       )
     }
     case 'abortion': {
       return (
         <View style={styles.textWrapper}>
-          <Text style={styles.instruction}>Enter the number of</Text>
-          <Text style={styles.instruction}>abortion the</Text>
-          <Text style={styles.instruction}>patient had</Text>
+          <Text style={styles.instruction}>Abortion</Text>
         </View>
       )
     }
     case 'stillBorn': {
       return (
         <View style={styles.textWrapper}>
-          <Text style={styles.instruction}>Enter the number of</Text>
-          <Text style={styles.instruction}>still born</Text>
-          <Text style={styles.instruction}>of the patient</Text>
+          <Text style={styles.instruction}>Still Born</Text>
         </View>
       )
     }
@@ -110,11 +85,20 @@ const Instruction = ({step}) => {
 
 const Response = ({step, mutate, lmp}) => {
   switch(step) {
+    case 'pregnant': {
+      return (
+        <View style={styles.response}>
+          <BooleanSelect onSelect={(isPatientPregnant) =>
+            mutate({questions: isPatientPregnant?['pregnant' ,'lmp', 'gestation', 'abortion', 'stillBorn']:['pregnant', 'lmp', 'breastFeeding', 'contraceptiveUse']})
+          }/>
+        </View>
+      )
+    }
     case 'lmp': {
       return (
         <View style={{height:'48%', justifyContent: 'space-between', marginTop:8}}>
           <DatePicker onSelect={(lastMenstrualPeriodDate) =>
-          mutate( ({pregnancy}) => ({ pregnancy: { ...pregnancy, lastMenstrualPeriodDate }}) )
+          mutate( ({gynaecology}) => ({ gynaecology: { ...gynaecology, lastMenstrualPeriodDate }}) )
           }/>
           <View style={{backgroundColor:'#fff', borderRadius:5, height:52, width:'80%', alignSelf:'center' ,alignItems:'center', justifyContent:'center', shadowColor: '#e4e4e4', shadowOpacity: 0.5, shadowOffset: { width: 1, height: 3 }, shadowRadius: 5}}>
             <Text style={{fontFamily:'Quicksand-Medium', color:lmp?'#3c4859':'#A8B0CE', fontSize:18}}>
@@ -128,7 +112,7 @@ const Response = ({step, mutate, lmp}) => {
       return (
         <View style={styles.response}>
           <TextField placeholder="Weeks" width="80%" onChangeText={(gestationalAge) => mutate(
-            ({pregnancy}) => ({pregnancy: {...pregnancy, gestationalAge}})
+            ({gynaecology}) => ({gynaecology: {...gynaecology, gestationalAge}})
           )}/>
         </View>
       )
@@ -137,7 +121,7 @@ const Response = ({step, mutate, lmp}) => {
       return(
         <View style={{height:'56%'}}>
           <BooleanSelect onSelect={(breastFeeding) =>
-            mutate( ({pregnancy}) => ({ pregnancy: { ...pregnancy, breastFeeding }}) )
+            mutate( ({gynaecology}) => ({ gynaecology: { ...gynaecology, breastFeeding }}) )
           }/>
         </View>
       )
@@ -146,26 +130,8 @@ const Response = ({step, mutate, lmp}) => {
       return(
         <View style={{height:'56%'}}>
           <BooleanSelect  onSelect={(contraceptiveUse) =>
-            mutate( ({pregnancy}) => ({ pregnancy: { ...pregnancy, contraceptiveUse }}) )
+            mutate( ({gynaecology}) => ({ gynaecology: { ...gynaecology, contraceptiveUse }}) )
           }/>
-        </View>
-      )
-    }
-    case 'liveBirth': {
-      return (
-        <View style={styles.response}>
-          <TextField placeholder="Live Birth" width="80%" onChangeText={(liveBirth) => mutate(
-            ({pregnancy}) => ({pregnancy: {...pregnancy, liveBirth}})
-          )}/>
-        </View>
-      )
-    }
-    case 'miscarriage': {
-      return (
-        <View style={styles.response}>
-          <TextField placeholder="Miscarriage" width="80%" onChangeText={(miscarriage) => mutate(
-            ({pregnancy}) => ({pregnancy: {...pregnancy, miscarriage}})
-          )}/>
         </View>
       )
     }
@@ -173,7 +139,7 @@ const Response = ({step, mutate, lmp}) => {
       return (
         <View style={styles.response}>
           <TextField placeholder="Abortion" width="80%" onChangeText={(abortion) => mutate(
-            ({pregnancy}) => ({pregnancy: {...pregnancy, abortion}})
+            ({gynaecology}) => ({gynaecology: {...gynaecology, abortion}})
           )}/>
         </View>
       )
@@ -182,7 +148,7 @@ const Response = ({step, mutate, lmp}) => {
       return (
         <View style={styles.response}>
           <TextField placeholder="Still Born" width="80%" onChangeText={(stillBorn) => mutate(
-            ({pregnancy}) => ({pregnancy: {...pregnancy, stillBorn}})
+            ({gynaecology}) => ({gynaecology: {...gynaecology, stillBorn}})
           )}/>
         </View>
       )
@@ -190,10 +156,10 @@ const Response = ({step, mutate, lmp}) => {
   }
 }
 
-const HeaderContainer = ({xOffset}) => (
+const HeaderContainer = ({xOffset, path, stepsLength}) => (
   <View style={styles.headerContainer}>
-    <Header title="Maternity" light="true" to="/triage/patients/:paitentId"/>
-    <Step allSteps={stepList.length-1} step={xOffset/screenWidth} backgroundColor='#fff' highlightColor='#FAEB9A' />
+    <Header title="Maternal" light="true" to={`/triage/patients/${path}`}/>
+    <Step allSteps={stepsLength} step={xOffset/screenWidth} backgroundColor='#fff' highlightColor='#FAEB9A' />
   </View>
 )
 
@@ -202,13 +168,12 @@ export default class Maternal extends Component {
     super(props);
     this.state = {
       xOffset:0,
-      pregnancy: {
+      questions: ['pregnant' ,'lmp', 'breastFeeding', 'contraceptiveUse'],
+      gynaecology: {
         lastMenstrualPeriodDate: null,
         gestationalAge: '',
         breastFeeding: '',
         contraceptiveUse: '',
-        liveBirth: '',
-        miscarriage: '',
         abortion: '',
         stillBorn: ''
       }
@@ -226,13 +191,13 @@ export default class Maternal extends Component {
   }
 
   submit() {
-    console.log(this.state.pregnancy)
+    console.log(this.state.gynaecology)
   }
 
   render() {
     return (
       <KeyboardAvoidingView style={styles.parentContainer} behavior="position">
-        <HeaderContainer xOffset={this.state.xOffset}/>
+        <HeaderContainer xOffset={this.state.xOffset} path={this.props.match.params.queueId} stepsLength={this.state.questions.length-1}/>
 
         <ScrollView 
           ref = 'questionScroll'
@@ -243,7 +208,7 @@ export default class Maternal extends Component {
           showsHorizontalScrollIndicator = {false}
           style={styles.questionContainer}
           >
-          {stepList.map((step, i) => (
+          {this.state.questions.map((step, i) => (
             <View style={{width: screenWidth}} key={i}>
               <Instruction step={step}/>
             </View>
@@ -258,9 +223,9 @@ export default class Maternal extends Component {
           showsHorizontalScrollIndicator = {false}
           style={styles.responseContainer}
           >
-          {stepList.map((step, i) => (
-            <View style={{width: screenWidth, justifyContent:'flex-start'}} key={i}>
-              <Response step={step} mutate={this.setState.bind(this)} lmp={this.state.pregnancy.lastMenstrualPeriodDate}/>
+          {this.state.questions.map((step, i) => (
+            <View style={{width: screenWidth, justifyContent:'flex-start', paddingHorizontal: 24}} key={i}>
+              <Response step={step} mutate={this.setState.bind(this)} lmp={this.state.gynaecology.lastMenstrualPeriodDate}/>
             </View>
           ))}
         </ScrollView>

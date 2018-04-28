@@ -20,7 +20,7 @@ const PatientQueueItem = ({patient: {age, sex, name, tag=0}, to}) => (
     <View style={styles.patientInfoContainer}>
       <Text style={styles.patientName}>{nameFormatter(name)}</Text>
       <View style={styles.patientPhysicalRemarks}>
-        <Text style={styles.patientPhysicalAttributeText}>AGE: {age}</Text>
+        <Text style={styles.patientPhysicalAttributeText}>AGE: {age<1?'<1':age}</Text>
         <View style={styles.patientGender}>
           <Text style={styles.patientPhysicalAttributeText}>SEX: </Text>
           <Icon name={sex==='Female'?'venus':'mars'} color={sex==='Female'?'#ff5273':'#4c79fc'} size={18}/>
@@ -53,7 +53,7 @@ const PatientListItem = ({patient: {age, sex, name}, onPress}) => {
       <View style={styles.patientInfoContainer}>
         <Text style={styles.patientName}>{nameFormatter(name)}</Text>
         <View style={styles.patientPhysicalRemarks}>
-          <Text style={styles.patientPhysicalAttributeText}>AGE: {age}</Text>
+          <Text style={styles.patientPhysicalAttributeText}>AGE: {age<1?'<1':age}</Text>
         </View>
       </View>
       <IconButton name="chevron-circle-right" type="solid" color="#3c4859" size={24}/>

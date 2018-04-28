@@ -33,6 +33,7 @@ import Birthday from '../../../components/Birthday';
 const { width, height } = Dimensions.get('window')
 const screenWidth = Dimensions.get('window').width
 
+
 const gradientLayout = {
   colors: ['#19AEFA','#1D9DFF'],
   start: {x: 0.0, y: 1.0},
@@ -186,7 +187,6 @@ const Response = ({step, mutate, handleCameraPress, pictureSource}) => {
       )
     }
     case 'dobi': {
-      const now = new Date();
       return (
         <View style={styles.response}>
           <TextField 
@@ -194,7 +194,7 @@ const Response = ({step, mutate, handleCameraPress, pictureSource}) => {
             width="80%"
             keyboardType="numeric"
             onChangeText={(day) => {
-              mutate( ({profile}) => ({ profile: {...profile, dob: profile.dob ? profile.setDate(profile.dob.getDate()-day):new Date(now.getFullYear(), now.getMonth(), now.getDate()-day)}}))
+              mutate(({idob}) => ({idob: {...idob, day}}))
             }}
           />
           <TextField 
@@ -202,7 +202,7 @@ const Response = ({step, mutate, handleCameraPress, pictureSource}) => {
             width="80%"
             keyboardType="numeric"
             onChangeText={(week) => {
-              mutate( ({profile}) => ({ profile: {...profile, dob: profile.dob ? profile.setDate(profile.dob.getDate()-week*7):new Date(now.getFullYear(), now.getMonth(), now.getDate()-week*7)}}))
+              mutate(({idob}) => ({idob: {...idob, week:week*7}}))
             }}
           />
           <TextField 
@@ -210,7 +210,7 @@ const Response = ({step, mutate, handleCameraPress, pictureSource}) => {
             width="80%"
             keyboardType="numeric"
             onChangeText={(month) => {
-              mutate( ({profile}) => ({ profile: {...profile, dob: profile.dob ? profile.setMonth(profile.dob.getMonth()+month):new Date(now.getFullYear(), now.getMonth()-month, now.getDate())}}))
+              mutate(({idob}) => ({idob: {...idob, month}}))
             }}
             />
         </View>
@@ -304,6 +304,7 @@ class Profile extends Component {
     this.state = {
       questions: ['photo','tag','name','gender','infant','doba','married','nationality'],
       xOffset:0,
+      idob: { day: 0, week: 0, month: 0 },
       showSubmit: false,
       profile: {
         picture: null,
@@ -335,6 +336,13 @@ class Profile extends Component {
 
   handleScroll({nativeEvent: { contentOffset: { x }}}){
     this.setState({ xOffset: x})
+    if(x === screenWidth*6 && (this.state.idob.day || this.state.idob.week || this.state.idob.month)){
+      let birthday = new Date()
+      birthday.setDate(birthday.getDate()-this.state.idob.day?this.state.idob.day:0)
+      birthday.setDate(birthday.getDate()-this.state.idob.week?this.state.idob.week:0)
+      birthday.setMonth(birthday.getMonth()-this.state.idob.month?this.state.idob.month:0)
+      this.setState( ({profile}) => ({ profile: {...profile, dob: birthday} }))
+    }
     this.refs.responseScroll.scrollTo({x: x, animated:false})
   }
 

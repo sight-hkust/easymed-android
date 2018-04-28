@@ -25,7 +25,7 @@ const authReducer = (state = initialState, {type, payload}) => {
       return {...state, loading: false, authenticated: payload.authenticated};
     }
     case AUTH_LOGIN_ERROR: {
-      return {...state, error: payload.error};
+      return {...state, loading: false, error: payload.error};
     }
     case AUTH_REGISTER_REQUEST: {
       return {...state, loading: true};
@@ -34,7 +34,7 @@ const authReducer = (state = initialState, {type, payload}) => {
       return {...state, loading: false, authenticated: payload.authenticated};
     }
     case AUTH_REGISTER_ERROR: {
-      return {...state, error: payload.error};
+      return {...state, loading: false, error: payload.error};
     }
     case AUTH_LOGOUT_REQUEST: {
       return {...state, loading: true};

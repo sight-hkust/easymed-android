@@ -32,8 +32,6 @@ const gradientLayout = {
   locations: [0, 0.75]
 }
 
-const stepList = ['pulseRateRespirationRate', 'bloodPressure', 'SpO2bloodSugar', 'temperature', 'weightHeight', 'deworming'];
-
 const Instruction = ({step}) => {
   switch(step) {
     case 'deworming': {
@@ -223,10 +221,10 @@ const Response = ({step, mutate, ldw}) => {
   }
 }
 
-const HeaderContainer = ({xOffset, path}) => (
+const HeaderContainer = ({xOffset, path, stepsLength}) => (
   <View style={styles.headerContainer}>
     <Header title="Vitals" light="true" to={`/triage/patients/${path}`}/>
-    <Step allSteps={stepList.length-1} step={xOffset/screenWidth} backgroundColor='#fff' highlightColor='#FAEB9A' />
+    <Step allSteps={stepsLength} step={xOffset/screenWidth} backgroundColor='#fff' highlightColor='#FAEB9A' />
   </View>
 )
 
@@ -235,6 +233,7 @@ class Vitals extends Component {
     super(props);
     this.handleScroll = this.handleScroll.bind(this);
     this.state = {
+      questions: props.patient.age < 2 ? ['weightHeight', 'temperature', 'bloodPressure', 'pulseRateRespirationRate', 'SpO2bloodSugar']: ['weightHeight', 'temperature', 'bloodPressure', 'pulseRateRespirationRate', 'SpO2bloodSugar', 'deworming'],
       xOffset:0,
       isKeyboardPresent: false,
       queueId: props.match.params.queueId,
@@ -250,6 +249,7 @@ class Vitals extends Component {
         lastDewormingDate: null
       }
     }
+    console.log(props)
     this.attachMetadata = props.actions.attachMetadata
   }
 
@@ -259,6 +259,8 @@ class Vitals extends Component {
   }
 
   componentWillMount() {
+    const adult = ['weightHeight', 'temperature', 'bloodPressure', 'pulseRateRespirationRate', 'SpO2bloodSugar', 'deworming'];
+    const child = ['weightHeight', 'temperature', 'bloodPressure', 'pulseRateRespirationRate', 'SpO2bloodSugar'];
     StatusBar.setBarStyle('light-content')
     this.keyboardWillShowListener = Keyboard.addListener('keyboardWillShow', this._keyboardWillShow.bind(this))
     this.keyboardWillHideListener = Keyboard.addListener('keyboardWillHide', this._keyboardWillHide.bind(this))
@@ -279,7 +281,7 @@ class Vitals extends Component {
   render() {
     return (
       <KeyboardAvoidingView style={styles.parentContainer} behavior="position">
-        <HeaderContainer xOffset={this.state.xOffset} path={this.state.queueId}/>
+        <HeaderContainer xOffset={this.state.xOffset} path={this.state.queueId} stepsLength={this.state.questions.length-1}/>
         <ScrollView 
           ref = 'questionScroll'
           horizontal = {true} 
@@ -289,7 +291,7 @@ class Vitals extends Component {
           showsHorizontalScrollIndicator = {false}
           style={styles.questionContainer}
           >
-          {stepList.map((step, i) => (
+          {this.state.questions.map((step, i) => (
             <View style={{width: screenWidth}} key={i}>
               <Instruction step={step}/>
             </View>
@@ -304,7 +306,7 @@ class Vitals extends Component {
           showsHorizontalScrollIndicator = {false}
           style={styles.responseContainer}
           >
-          {stepList.map((step, i) => (
+          {this.state.questions.map((step, i) => (
             <View style={{width: screenWidth, justifyContent:'flex-start'}} key={i}>
               <Response step={step} mutate={this.setState.bind(this)} ldw={this.state.vitals.lastDewormingDate}/>
             </View>
@@ -330,7 +332,11 @@ const mapDispatchToProps = (dispatch) => ({
   actions: bindActionCreators({attachMetadata}, dispatch)
 })
 
-export default connect(null, mapDispatchToProps)(Vitals)
+const mapStateToProps = (state, props) => ({
+  patient: state.patients.queue[state.patients.queue.findIndex(({queueId}) => props.match.params.queueId === queueId)].patient
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(Vitals)
 
 const styles = StyleSheet.create({
   parentContainer: {

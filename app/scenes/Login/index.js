@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Image, Keyboard, Dimensions, View, Text, TextInput, StyleSheet, StatusBar, Platform } from 'react-native';
+import { Alert, Image, Keyboard, Dimensions, View, Text, TextInput, StyleSheet, StatusBar, Platform } from 'react-native';
 import Spinner from 'react-native-spinkit';
 import Modal from 'react-native-modal';
 import { connect } from 'react-redux';
@@ -55,6 +55,17 @@ class Login extends Component {
     this.logIn(username, password)
   }
 
+  componentDidUpdate() {
+    if(this.props.error){
+      Alert.alert(
+        'Authentication Error',
+        this.props.error.message,
+        [{text: 'OK', onPress: () => console.log('OK Pressed')}],
+        { cancelable: false }
+      )
+    }
+  }
+
   _keyboardWillShow () {
     this.setState(previousState => ({isKeyboardPresent: true}))
   }
@@ -108,7 +119,8 @@ const mapDispatchToProps = (dispatch) => ({
 
 const mapStateToProps = (state) => ({
   loading: state.auth.loading,
-  authenticated: state.auth.authenticated
+  authenticated: state.auth.authenticated,
+  error: state.auth.error
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login)

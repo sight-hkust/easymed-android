@@ -13,7 +13,7 @@ const storage = createSensitiveStorage({
 const authPersistConfig = {
   key: 'auth',
   storage: storage,
-  blacklist: ['loading']
+  blacklist: ['loading', 'error']
 }
 
 const profilePersisConfig = {
@@ -25,7 +25,7 @@ const profilePersisConfig = {
 const patientsPersistConfig = {
   key: 'patients',
   storage,
-  blacklist: ['all', 'queue', 'loading']
+  blacklist: ['all', 'queue', 'loading', 'error']
 }
 
 const config = {

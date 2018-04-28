@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Image, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { View, Image, ScrollView, StatusBar, StyleSheet, RefreshControl, Text, TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
 import Modal from 'react-native-modal';
 import Spinner from 'react-native-spinkit';
@@ -12,7 +12,6 @@ import { PatientQueueItem as Patient } from '../../../components/Patient'
 
 const Toolbar = () => (
   <View style={styles.toolbar}>
-    <IconButton name="sort" color="#3c4859" />
     <IconButton name="search" color="#3c4859" size={22}/>
   </View>
 )
@@ -27,9 +26,9 @@ const EmptyStub = () => (
   </View>
 )
 
-const ServiceQueue = ({queue}) => {
+const ServiceQueue = ({queue, isLoading, onRefresh}) => {
   return (
-    <ScrollView>
+    <ScrollView refreshControl={<RefreshControl refreshing={isLoading} onRefresh={onRefresh}/>}>
       {queue.length === 0 && <EmptyStub />}
       {queue.map(({patient, queueId}) => (
         <Patient 
@@ -72,7 +71,7 @@ class Entrypoint extends Component {
       <View style={styles.container}>
         <Header title="Consultation" />
         <Toolbar />
-        <ServiceQueue queue={this.props.queue}/>
+        <ServiceQueue queue={this.props.queue} isLoading={this.state.loading.queue} onRefresh={this.refreshPatientQueue.bind(this)} />
         <Modal
           isVisible={this.props.loading.queue}
           animationIn="fadeIn"
@@ -122,4 +121,13 @@ const styles = StyleSheet.create({
   queue: {
     alignItems: 'center'
   },
+  loading: {
+    alignSelf: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    height: 88,
+    width: 88,
+    justifyContent: 'center',
+    alignItems:'center',
+    borderRadius: 8
+  }
 })

@@ -77,7 +77,7 @@ class Menu extends Component {
     else {
       return (
         <View style={styles.container}>
-            <Header title="Add Records" to="/triage"/>
+            <Header title="Add Records" to="/triage/patients/admission"/>
             <ScrollView>
               {menuItems.map(({destination, icon, color, title}, i) => (
                 <Metric
