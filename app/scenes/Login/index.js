@@ -55,17 +55,6 @@ class Login extends Component {
     this.logIn(username, password)
   }
 
-  componentDidUpdate() {
-    if(this.props.error){
-      Alert.alert(
-        'Authentication Error',
-        this.props.error.message,
-        [{text: 'OK', onPress: () => console.log('OK Pressed')}],
-        { cancelable: false }
-      )
-    }
-  }
-
   _keyboardWillShow () {
     this.setState(previousState => ({isKeyboardPresent: true}))
   }

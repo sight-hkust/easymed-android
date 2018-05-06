@@ -19,28 +19,23 @@ import 'rxjs/add/operator/timeout'
 
 const registerEpic = action$ => 
   action$.ofType(AUTH_REGISTER_REQUEST)
-  .switchMap(({payload}) => {
-    const {username, password} = payload
-    return Observable.fromPromise(register(username, password))
-                     .map(authenticated => ({type: AUTH_REGISTER_SUCCESS, payload: {authenticated}}))
-                     .catch(error => Observable.of({type: AUTH_REGISTER_ERROR, payload: {error}}))
-  })
+  .switchMap(({payload: {username, password}}) => Observable.fromPromise(register(username, password))
+  .map(authenticated => ({type: AUTH_REGISTER_SUCCESS, payload: {authenticated}}))
+  .catch(error => Observable.of({type: AUTH_REGISTER_ERROR, payload: {error}}))
+  )
 
 const loginEpic = action$ => 
   action$.ofType(AUTH_LOGIN_REQUEST)
-  .switchMap(({payload}) => {
-    const {username, password} = payload
-    return Observable.fromPromise(authenticate(username, password))
-                     .map(authenticated => ({type: AUTH_LOGIN_SUCCESS, payload: {authenticated} }))
-                     .catch(error => Observable.of({type: AUTH_LOGIN_ERROR, payload: {error}}))
-  })
+  .switchMap(({payload: {username, password}}) => Observable.fromPromise(authenticate(username, password))
+  .map(authenticated => ({type: AUTH_LOGIN_SUCCESS, payload: {authenticated} }))
+  .catch(error => Observable.of({type: AUTH_LOGIN_ERROR, payload: {error}}))
+  )
 
 const logoutEpic = action$ =>
   action$.ofType(AUTH_LOGOUT_REQUEST)
-  .switchMap(() => {
-    return Observable.fromPromise(deauthenticate())
-                     .map(authenticated => ({type: AUTH_LOGOUT_SUCCESS, payload: {authenticated}}))
-                     .catch(error => Observable.of({type: AUTH_LOGOUT_ERROR, payload: {error}}))
-  })
+  .switchMap(() => Observable.fromPromise(deauthenticate())
+  .map(authenticated => ({type: AUTH_LOGOUT_SUCCESS, payload: {authenticated}}))
+  .catch(error => Observable.of({type: AUTH_LOGOUT_ERROR, payload: {error}}))
+  )
 
 export {loginEpic, logoutEpic, registerEpic}

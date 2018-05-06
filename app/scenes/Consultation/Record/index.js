@@ -199,6 +199,14 @@ export default class Record extends Component {
   }
 }
 
+const mapStateToProps = (state, props) => ({
+  patient: state.record.patients[props.match.params]
+})
+
+const mapDispatchToProps = (dispatch) => ({
+
+})
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,

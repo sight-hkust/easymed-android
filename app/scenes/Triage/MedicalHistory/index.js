@@ -17,6 +17,7 @@ import { IconButton, Button } from '../../../components/Button'
 import Icon from 'react-native-fontawesome-pro';
 import { TextField, TextBox } from '../../../components/TextField'
 import Header from '../../../components/Header';
+import {updateMedicalHistory} from '../../../actions/record'
 
 const { width, height } = Dimensions.get('window')
 
@@ -43,6 +44,7 @@ class Survey extends Component {
                                         style={this.state.selected === answer.value?highlighted:{}}
                                         onPress={() => {
                                           this.setState({selected: answer.value})
+                                          this.props.onSelect(answer.value)
                                         }}
                                         key={i}
                                        >
@@ -60,10 +62,20 @@ class Survey extends Component {
 class MedicalHistory extends Component {
   constructor(props) {
     super(props);
+    this.updateMedicalHistory = this.props.actions.updateMedicalHistory.bind(this)
     this.state = {
       queueId: props.match.params.queueId,
       medicalHistory: {
-        diseases: ['HTN', 'Diabetes', 'TB', 'Asthma', 'HEP-A', 'HEP-B', 'malaria', 'HIV'],
+        diseases: {
+          HTN: '',
+          Diabetes: '', 
+          TB: '',
+          Asthma: '',
+          HEPA: '',
+          HEPB: '',
+          malaria: '',
+          HIV: ''
+        },
         remarks: ''
       }
     }
@@ -71,6 +83,11 @@ class MedicalHistory extends Component {
 
   componentWillMount() {
     StatusBar.setBarStyle('dark-content')
+  }
+
+  submit() {
+    // console.log(this.state.medicalHistory, this.props.patientId)
+    this.updateMedicalHistory(this.state.medicalHistory,this.props.patientId)
   }
 
   render() {
@@ -83,25 +100,43 @@ class MedicalHistory extends Component {
             showsHorizontalScrollIndicator = {false}
             scrollEventThrottle = {1}
           >
-          <View style={{width: Dimensions.get('window').width}}>
-            <ScrollView>
-              {this.state.medicalHistory.diseases.map((title, i) => <Survey key={i} title={title}/>)}
-            </ScrollView>
-          </View>
-          <View style={{width: Dimensions.get('window').width, alignItems: 'center'}}>
-            <TextBox placeholder="Remarks" width="90%"/>
-          </View>
+            <View style={{width: Dimensions.get('window').width}}>
+              <ScrollView>
+                {Object.keys(this.state.medicalHistory.diseases).map((title, i) => <Survey key={i} onSelect={(answer) => {
+                  this.setState(({medicalHistory}) => ({medicalHistory: {...medicalHistory, diseases: {...medicalHistory.diseases, [title]: answer}}}))
+                }} title={title}/>)}
+              </ScrollView>
+            </View>
+            <View style={{width: Dimensions.get('window').width, alignItems: 'center'}}>
+              <TextBox placeholder="Remarks" width="90%" onChangeText={(remarks) => {
+                this.setState(({medicalHistory}) => ({medicalHistory: {...medicalHistory, remarks}}))
+              }}/>
+            </View>
           </ScrollView>
+          <View style={{height:'8%'}}>
+            <Button 
+                title="Submit" 
+                onPress={this.submit.bind(this)} 
+                bgColor="#1d9dff" titleColor="#fff" 
+                icon="chevron-right"
+                width="50%"
+                round
+              />
+          </View>
       </View>
     )
   }
 }
 
+const mapDispatchToProps = (dispatch) => ({
+  actions: bindActionCreators({updateMedicalHistory}, dispatch)
+})
+
 const mapStateToProps = (state, props) => ({
   patientId: state.patients.queue[state.patients.queue.findIndex(({queueId}) => props.match.params.queueId)].patient.id
 })
 
-export default connect(mapStateToProps)(MedicalHistory)
+export default connect(mapStateToProps, mapDispatchToProps)(MedicalHistory)
 
 const styles = StyleSheet.create({
   container: {

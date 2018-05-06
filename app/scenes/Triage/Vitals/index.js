@@ -16,7 +16,7 @@ import {
 } from 'react-native'
 import LinearGradient from 'react-native-linear-gradient';
 import { IconButton, Button, KeyboardDismissButton } from '../../../components/Button'
-import { attachMetadata } from '../../../actions/record';
+import { addVitalsRecord } from '../../../actions/record';
 import Icon from 'react-native-fontawesome-pro';
 import TextField from '../../../components/TextField'
 import Step from '../../../components/Step'
@@ -249,8 +249,7 @@ class Vitals extends Component {
         lastDewormingDate: null
       }
     }
-    console.log(props)
-    this.attachMetadata = props.actions.attachMetadata
+    this.addVitalsRecord = this.props.actions.addVitalsRecord.bind(this)
   }
 
   handleScroll({nativeEvent: { contentOffset: { x }}}){
@@ -275,7 +274,7 @@ class Vitals extends Component {
   }
 
   submit() {
-    this.attachMetadata(this.state.vitals, this.state.queueId)
+    this.addVitalsRecord(this.state.vitals, this.state.queueId)
   }
 
   render() {
@@ -329,7 +328,7 @@ class Vitals extends Component {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-  actions: bindActionCreators({attachMetadata}, dispatch)
+  actions: bindActionCreators({addVitalsRecord}, dispatch)
 })
 
 const mapStateToProps = (state, props) => ({

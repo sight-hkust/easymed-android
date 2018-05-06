@@ -11,7 +11,8 @@ import {
   TRANSFER_PATIENT_REQUEST,
   TRANSFER_PATIENT_SUCCESS,
   TRANSFER_PATIENT_ERROR,
-  RESET_PATIENT_QUEUE
+  RESET_PATIENT_QUEUE,
+  DISMISS_ERROR
 } from '../actions/constants'
 
 const initialState = {
@@ -65,6 +66,9 @@ const patientsReducer = (state = initialState, {type, payload}) => {
       }
       case RESET_PATIENT_QUEUE: {
           return {...state, queue: []}
+      }
+      case DISMISS_ERROR: {
+          return {...state, error: null}
       }
       default: return state;
   }

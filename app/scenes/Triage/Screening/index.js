@@ -20,6 +20,7 @@ import {TextField, TextBox} from '../../../components/TextField'
 import Step from '../../../components/Step'
 import BooleanSelect from '../../../components/BooleanSelect';
 import Header from '../../../components/Header';
+import { updateScreeningStatus } from '../../../actions/record'
 
 const screenWidth = Dimensions.get('window').width
 
@@ -37,36 +38,28 @@ const Instruction = ({step}) => {
     case 'tobacco': {
       return(
         <View style={styles.textWrapper}>
-          <Text style={styles.instruction}>Identify if the patient</Text>
-          <Text style={styles.instruction}>uses tobacco using</Text>
-          <Text style={styles.instruction}>the indicator below</Text>
+          <Text style={styles.instruction}>Tobacco Use?</Text>
         </View>      
       )
     }
     case 'ETOH': {
       return(
         <View style={styles.textWrapper}>
-          <Text style={styles.instruction}>Identify if the patient shows</Text>
-          <Text style={styles.instruction}>effects of alcohol usage</Text>
-          <Text style={styles.instruction}>using the indicator below</Text>
+          <Text style={styles.instruction}>Alchohol Use?</Text>
         </View>      
       )
     }
     case 'drugUse': {
       return(
         <View style={styles.textWrapper}>
-          <Text style={styles.instruction}>Identify if the patient</Text>
-          <Text style={styles.instruction}>uses drug using</Text>
-          <Text style={styles.instruction}>the indicator below</Text>
+          <Text style={styles.instruction}>Drug Use?</Text>
         </View>      
       )
     }
     case 'otherSH': {
       return(
         <View style={styles.textWrapper}>
-          <Text style={styles.instruction}>Enter the other</Text>
-          <Text style={styles.instruction}>social history</Text>
-          <Text style={styles.instruction}>of the patient</Text>
+          <Text style={styles.instruction}>Social History?</Text>
         </View>      
       )
     }
@@ -139,6 +132,7 @@ class Screening extends Component {
   constructor(props) {
     super(props);
     this.handleScroll = this.handleScroll.bind(this);
+    this.updateScreeningStatus = this.props.actions.updateScreeningStatus.bind(this)
     this.state = {
       xOffset:0,
       queueId: props.match.params.queueId,
@@ -161,6 +155,8 @@ class Screening extends Component {
   }
 
   submit() {
+    // console.log(this.state.screening, this.props.patientId)
+    this.updateScreeningStatus(this.state.screening, this.props.patientId)
   }
 
   render() {
@@ -213,11 +209,15 @@ class Screening extends Component {
   }
 }
 
+const mapDispatchToProps = (dispatch) => ({
+  actions: bindActionCreators({updateScreeningStatus}, dispatch)
+})
+
 const mapStateToProps = (state, props) => ({
   patientId: state.patients.queue[state.patients.queue.findIndex(({queueId}) => props.match.params.queueId)].patient.id
 })
 
-export default connect(mapStateToProps)(Screening)
+export default connect(mapStateToProps, mapDispatchToProps)(Screening)
 
 const styles = StyleSheet.create({
   parentContainer: {

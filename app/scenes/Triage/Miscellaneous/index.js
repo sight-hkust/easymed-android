@@ -11,6 +11,8 @@ import {
   Dimensions,
   Switch
 } from 'react-native'
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import LinearGradient from 'react-native-linear-gradient';
 import { IconButton, Button } from '../../../components/Button'
 import Icon from 'react-native-fontawesome-pro';
@@ -18,6 +20,7 @@ import { TextField, TextBox } from '../../../components/TextField'
 import Step from '../../../components/Step'
 import BooleanSelect from '../../../components/BooleanSelect';
 import Header from '../../../components/Header';
+import {updateMedicalCondition} from '../../../actions/record'
 
 const screenWidth = Dimensions.get('window').width
 
@@ -112,10 +115,11 @@ const HeaderContainer = ({xOffset, path}) => (
   </View>
 )
 
-export default class Miscellaneous extends Component {
+class Miscellaneous extends Component {
   constructor(props) {
     super(props);
     this.handleScroll = this.handleScroll.bind(this);
+    this.updateMedicalCondition = this.props.actions.updateMedicalCondition.bind(this)
     this.state = {
       xOffset:0,
       queueId: props.match.params.queueId,
@@ -138,7 +142,7 @@ export default class Miscellaneous extends Component {
   }
 
   submit() {
-    console.log(this.state.miscellaneous)
+    this.updateMedicalCondition(this.state.miscellaneous, this.props.patientId)
   }
 
   render() {
@@ -191,6 +195,16 @@ export default class Miscellaneous extends Component {
     )
   }
 }
+
+const mapStateToProps = (state, props) => ({
+  patientId: state.patients.queue[state.patients.queue.findIndex(({queueId}) => props.match.params.queueId)].patient.id
+})
+
+const mapDispatchToProps = (dispatch) => ({
+  actions: bindActionCreators({updateMedicalCondition}, dispatch)
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(Miscellaneous)
 
 const styles = StyleSheet.create({
   parentContainer: {

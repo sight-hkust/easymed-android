@@ -11,6 +11,8 @@ import {
   Dimensions, 
   Switch 
 } from 'react-native'
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import LinearGradient from 'react-native-linear-gradient';
 import { IconButton, Button } from '../../../components/Button'
 import Icon from 'react-native-fontawesome-pro';
@@ -19,6 +21,7 @@ import TextField from '../../../components/TextField';
 import Step from '../../../components/Step';
 import DatePicker from '../../../components/DatePicker';
 import BooleanSelect from '../../../components/BooleanSelect';
+import { addGynaecologyInfo } from '../../../actions/record';
 
 const screenWidth = Dimensions.get('window').width
 
@@ -89,7 +92,7 @@ const Response = ({step, mutate, lmp}) => {
       return (
         <View style={styles.response}>
           <BooleanSelect onSelect={(isPatientPregnant) =>
-            mutate({questions: isPatientPregnant?['pregnant' ,'lmp', 'gestation', 'abortion', 'stillBorn']:['pregnant', 'lmp', 'breastFeeding', 'contraceptiveUse']})
+            mutate({questions: isPatientPregnant=='yes'?['pregnant' ,'lmp', 'gestation', 'abortion', 'stillBorn']:['pregnant', 'lmp', 'breastFeeding', 'contraceptiveUse']})
           }/>
         </View>
       )
@@ -163,10 +166,11 @@ const HeaderContainer = ({xOffset, path, stepsLength}) => (
   </View>
 )
 
-export default class Maternal extends Component {
+class Maternal extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      queueId: props.match.params.queueId,
       xOffset:0,
       questions: ['pregnant' ,'lmp', 'breastFeeding', 'contraceptiveUse'],
       gynaecology: {
@@ -178,6 +182,7 @@ export default class Maternal extends Component {
         stillBorn: ''
       }
     }
+    this.addGynaecologyInfo = this.props.actions.addGynaecologyInfo.bind(this)
     this.handleScroll = this.handleScroll.bind(this);
   }
 
@@ -191,7 +196,8 @@ export default class Maternal extends Component {
   }
 
   submit() {
-    console.log(this.state.gynaecology)
+    console.log(this.state.queueId)
+    this.addGynaecologyInfo(this.state.gynaecology, this.state.queueId)
   }
 
   render() {
@@ -245,6 +251,12 @@ export default class Maternal extends Component {
     )
   }
 }
+
+const mapDispatchToProps = (dispatch) => ({
+  actions: bindActionCreators({addGynaecologyInfo}, dispatch)
+})
+
+export default connect(null, mapDispatchToProps)(Maternal)
 
 const styles = StyleSheet.create({
   parentContainer: {

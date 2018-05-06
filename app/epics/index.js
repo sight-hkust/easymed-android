@@ -7,6 +7,15 @@ import {
     fetchPatientListEpic,
     fetchPatientQueueEpic
 } from './patients'
+import {
+    attachMetadataEpic,
+    addVitalsRecordEpic,
+    addChiefComplaintsEpic,
+    addGynaecologyRecordEpic,
+    updateMedicalHistoryEpic,
+    updateScreeningResultEpic,
+    updateMedicalConditionEpic
+} from './records'
 
 export const epics = combineEpics (
     registerEpic,
@@ -16,7 +25,14 @@ export const epics = combineEpics (
     queuePatientEpic,
     transferPatientEpic,
     fetchPatientListEpic,
-    fetchPatientQueueEpic
+    fetchPatientQueueEpic,
+    attachMetadataEpic,
+    addVitalsRecordEpic,
+    addChiefComplaintsEpic,
+    addGynaecologyRecordEpic,
+    updateMedicalHistoryEpic,
+    updateScreeningResultEpic,
+    updateMedicalConditionEpic
 )
 
 export default epics

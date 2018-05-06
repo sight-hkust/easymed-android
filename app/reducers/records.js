@@ -1,36 +1,106 @@
-import { 
+import {
+  ADD_VITALS_REQUEST,
+  ADD_VITALS_SUCCESS,
+  ADD_VITALS_ERROR,
+  ADD_CHIEF_COMPLAINTS_REQUEST,
+  ADD_CHIEF_COMPLAINTS_SUCCESS,
+  ADD_CHIEF_COMPLAINTS_ERROR,
+  ADD_GYNAECOLOGY_INFO_REQUEST,
+  ADD_GYNAECOLOGY_INFO_SUCCESS,
+  ADD_GYNAECOLOGY_INFO_ERROR,
   UPDATE_MEDICAL_HISTORY_REQUEST,
   UPDATE_MEDICAL_HISTORY_SUCCESS,
   UPDATE_MEDICAL_HISTORY_ERROR,
-  UPDATE_PREGNANCY_STATUS_REQUEST,
-  UPDATE_PREGNANCY_STATUS_SUCCESS,
-  UPDATE_PREGNANCY_STATUS_ERROR,
-  INSERT_VITALS_REQUEST,
-  INSERT_VITALS_SUCCESS,
-  INSERT_VITALS_ERROR,
+  UPDATE_SCREENING_RESULT_REQUEST,
+  UPDATE_SCREENING_RESULT_SUCCESS,
+  UPDATE_SCREENING_RESULT_ERROR,
+  UPDATE_MEDICAL_CONDITION_REQUEST,
+  UPDATE_MEDICAL_CONDITION_SUCCESS,
+  UPDATE_MEDICAL_CONDITION_ERROR,
   ATTACH_METADATA_REQUEST,
   ATTACH_METADATA_SUCCESS,
-  ATTACH_METADATA_ERROR
+  ATTACH_METADATA_ERROR,
+  DISMISS_ERROR
 } from '../actions/constants';
 
 const initialState = {
   loading: {
     spinner: false
   },
+  patients: {},
   error: null
 }
 
 const medicalRecordReducer = (state = initialState, {payload, type}) => {
   switch(type) {
+    case ATTACH_METADATA_REQUEST: {
+      return {...state, loading: {spinner: true}}
+    }
+    case ATTACH_METADATA_SUCCESS: {
+      return {...state, loading: {spinner: false}}
+    }
+    case ATTACH_METADATA_ERROR: {
+      return {...state, loading: {spinner: false}, error: payload.error}
+    }
+    case ADD_VITALS_REQUEST: {
+      return {...state, loading: {spinner: true}}
+    }
+    case ADD_VITALS_SUCCESS: {
+      return {...state, loading: {spinner: false}}
+    }
+    case ADD_VITALS_ERROR: {
+      return {...state, loading: {spinner: false}, error: payload.error}
+    }
+    case ADD_CHIEF_COMPLAINTS_REQUEST: {
+      return {...state, loading: {spinner: true}}
+    }
+    case ADD_CHIEF_COMPLAINTS_SUCCESS: {
+      return {...state, loading: {spinner: false}}
+    }
+    case ADD_CHIEF_COMPLAINTS_ERROR: {
+      return {...state, loading: {spinner: false}, error: payload.error}
+    }
+    case ADD_GYNAECOLOGY_INFO_REQUEST: {
+      return {...state, loading: {spinner: true}}
+    }
+    case ADD_GYNAECOLOGY_INFO_SUCCESS: {
+      return {...state, loading: {spinner: false}}
+    }
+    case ADD_GYNAECOLOGY_INFO_ERROR: {
+      return {...state, loading: {spinner: false}, error: payload.error}
+    }
     case UPDATE_MEDICAL_HISTORY_REQUEST: {
-      return {...state, loading: {...state.loading, spinner: true}}
+      return {...state, loading: {spinner: true}}
     }
     case UPDATE_MEDICAL_HISTORY_SUCCESS: {
-      return {...state, loading: {...state.loading, spinner: false}}
+      return {...state, loading: {spinner: false}}
     }
     case UPDATE_MEDICAL_HISTORY_ERROR: {
-      return {...state, loading:{...state.loading, spinner: false}, error: payload.error}
+      return {...state, loading: {spinner: false}, error: payload.error}
     }
-
+    case UPDATE_SCREENING_RESULT_REQUEST: {
+      return {...state, loading: {spinner: true}}
+    }
+    case UPDATE_SCREENING_RESULT_SUCCESS: {
+      return {...state, loading: {spinner: false}}
+    }
+    case UPDATE_SCREENING_RESULT_ERROR: {
+      return {...state, loading: {spinner: false}, error: payload.error}
+    }
+    case UPDATE_MEDICAL_CONDITION_REQUEST: {
+      return {...state, loading: {spinner: true}}
+    }
+    case UPDATE_MEDICAL_CONDITION_SUCCESS: {
+      return {...state, loading: {spinner: false}}
+    }
+    case UPDATE_MEDICAL_CONDITION_ERROR: {
+      return {...state, loading: {spinner: false}, error: payload.error}
+    }
+    case DISMISS_ERROR: {
+      return {...state, error: null}
+    }
+    default: return state
   }
 }
+
+export default medicalRecordReducer
