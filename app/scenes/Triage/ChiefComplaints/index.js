@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { 
   View,
   KeyboardAvoidingView,
+  Keyboard,
   Image,
   ScrollView,
   StatusBar,
@@ -14,8 +15,10 @@ import {
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import LinearGradient from 'react-native-linear-gradient';
-import { IconButton, Button } from '../../../components/Button'
+import { IconButton, Button, KeyboardDismissButton } from '../../../components/Button'
 import Icon from 'react-native-fontawesome-pro';
+import Modal from 'react-native-modal';
+import Spinner from 'react-native-spinkit';
 import { TextField, TextBox } from '../../../components/TextField';
 import Step from '../../../components/Step';
 import BooleanSelect from '../../../components/BooleanSelect';
@@ -73,9 +76,18 @@ class ChiefComplaints extends Component {
     this.addChiefComplaints = this.props.actions.addChiefComplaints.bind(this)
     this.state = {
       xOffset:0,
+      isKeyboardPresent: false,
       queueId: props.match.params.queueId,
       cheifComplaints: ''
     }
+  }
+
+  _keyboardWillShow () {
+    this.setState(previousState => ({isKeyboardPresent: true}))
+  }
+
+  _keyboardWillHide () {
+    this.setState(previousState => ({isKeyboardPresent: false}))
   }
 
    handleScroll({nativeEvent: { contentOffset: { x }}}){
@@ -85,6 +97,8 @@ class ChiefComplaints extends Component {
 
   componentWillMount() {
     StatusBar.setBarStyle('light-content')
+    this.keyboardWillShowListener = Keyboard.addListener('keyboardWillShow', this._keyboardWillShow.bind(this))
+    this.keyboardWillHideListener = Keyboard.addListener('keyboardWillHide', this._keyboardWillHide.bind(this))
   }
 
   submit() {
@@ -95,7 +109,6 @@ class ChiefComplaints extends Component {
     return (
       <KeyboardAvoidingView style={styles.parentContainer} behavior="position">
         <HeaderContainer xOffset={this.state.xOffset} path={this.state.queueId}/>
-
         <ScrollView 
           ref = 'questionScroll'
           horizontal = {true} 
@@ -123,12 +136,15 @@ class ChiefComplaints extends Component {
           {stepList.map((step, i) => (
             <View style={{width: screenWidth, justifyContent:'flex-start'}} key={i}>
               <Response step={step} mutate={this.setState.bind(this)}/>
+              {this.state.isKeyboardPresent && <KeyboardDismissButton top={-42} left={8}/>}
             </View>
           ))}
         </ScrollView>
 
         <View style={{height:'8%'}}>
-          <Button 
+          {
+            this.state.cheifComplaints.length > 0 &&
+            <Button 
               title="Submit" 
               onPress={this.submit.bind(this)} 
               bgColor="#1d9dff" titleColor="#fff" 
@@ -136,7 +152,23 @@ class ChiefComplaints extends Component {
               width="50%"
               round
             />
+          }
         </View>
+        <Modal
+          isVisible={this.props.loading}
+          animationIn="fadeIn"
+          backdropOpacity={0}
+          style={{justifyContent: 'center'}}
+        >
+          <View style={styles.loading}>
+            <Spinner
+            isVisible={this.props.loading}
+            size={44}
+            style={{alignSelf: 'center'}}
+            type='Bounce' 
+            color='#81e2d9'/>
+          </View>
+        </Modal>
       </KeyboardAvoidingView>
     )
   }
@@ -146,7 +178,11 @@ const mapDispatchToProps = (dispatch) => ({
   actions: bindActionCreators({ addChiefComplaints }, dispatch)
 })
 
-export default connect(null,mapDispatchToProps)(ChiefComplaints)
+const mapStateToProps = (state) => ({
+  loading: state.records.loading.spinner
+})
+
+export default connect(mapStateToProps,mapDispatchToProps)(ChiefComplaints)
 
 const styles = StyleSheet.create({
   parentContainer: {
@@ -184,5 +220,14 @@ const styles = StyleSheet.create({
   response: {
     height: '56%',
     width: '100%',
+  },
+  loading: {
+    alignSelf: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    height: 88,
+    width: 88,
+    justifyContent: 'center',
+    alignItems:'center',
+    borderRadius: 8
   }
 })

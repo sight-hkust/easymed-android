@@ -7,7 +7,8 @@ import {
   UPDATE_MEDICAL_HISTORY_REQUEST,
   UPDATE_SCREENING_RESULT_REQUEST,
   UPDATE_MEDICAL_CONDITION_REQUEST,
-  ATTACH_METADATA_REQUEST
+  ATTACH_METADATA_REQUEST,
+  FETCH_MEDICAL_RECORDS_REQUEST
 } from './constants'
 
 export const createCase = (session) => ({
@@ -53,4 +54,9 @@ export const updateScreeningStatus = (screeningResult, patientId) => ({
 export const updateMedicalCondition = (conditions, patientId) => ({
   type: UPDATE_MEDICAL_CONDITION_REQUEST,
   payload: {conditions, patientId}
+})
+
+export const fetchMedicalRecords = (patientId) => ({
+  type: FETCH_MEDICAL_RECORDS_REQUEST,
+  payload: {patientId}
 })

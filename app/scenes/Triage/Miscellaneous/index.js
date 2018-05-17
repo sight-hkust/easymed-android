@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { 
   View,
   KeyboardAvoidingView,
+  Keyboard,
   Image,
   ScrollView,
   StatusBar,
@@ -14,8 +15,10 @@ import {
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import LinearGradient from 'react-native-linear-gradient';
-import { IconButton, Button } from '../../../components/Button'
+import { IconButton, Button, KeyboardDismissButton } from '../../../components/Button'
 import Icon from 'react-native-fontawesome-pro';
+import Modal from 'react-native-modal';
+import Spinner from 'react-native-spinkit';
 import { TextField, TextBox } from '../../../components/TextField'
 import Step from '../../../components/Step'
 import BooleanSelect from '../../../components/BooleanSelect';
@@ -123,6 +126,7 @@ class Miscellaneous extends Component {
     this.state = {
       xOffset:0,
       queueId: props.match.params.queueId,
+      isKeyboardPresent: false,
       miscellaneous: {
         drugHistory: '',
         familyHistory: '',
@@ -137,8 +141,19 @@ class Miscellaneous extends Component {
      this.refs.responseScroll.scrollTo({x: x, animated:false})
    }
 
+   _keyboardWillShow () {
+    this.setState(previousState => ({isKeyboardPresent: true}))
+  }
+
+  _keyboardWillHide () {
+    this.setState(previousState => ({isKeyboardPresent: false}))
+  }
+
   componentWillMount() {
     StatusBar.setBarStyle('light-content')
+    this.keyboardWillShowListener = Keyboard.addListener('keyboardWillShow', this._keyboardWillShow.bind(this))
+    this.keyboardWillHideListener = Keyboard.addListener('keyboardWillHide', this._keyboardWillHide.bind(this))
+
   }
 
   submit() {
@@ -177,12 +192,18 @@ class Miscellaneous extends Component {
           {stepList.map((step, i) => (
             <View style={{width: screenWidth, justifyContent:'flex-start'}} key={i}>
               <Response step={step} mutate={this.setState.bind(this)}/>
+              {this.state.isKeyboardPresent && <KeyboardDismissButton top={-42} left={8}/>}
             </View>
           ))}
         </ScrollView>
 
         <View style={{height:'8%'}}>
-          <Button 
+          {
+            this.state.miscellaneous.drugHistory.length > 0 &&
+            this.state.miscellaneous.familyHistory.length > 0 &&
+            this.state.miscellaneous.allergies.length > 0 &&
+            this.state.miscellaneous['ROS'].length > 0 &&
+            <Button 
               title="Submit" 
               onPress={this.submit.bind(this)} 
               bgColor="#1d9dff" titleColor="#fff" 
@@ -190,13 +211,30 @@ class Miscellaneous extends Component {
               width="50%"
               round
             />
+          }
         </View>
+        <Modal
+          isVisible={this.props.loading}
+          animationIn="fadeIn"
+          backdropOpacity={0}
+          style={{justifyContent: 'center'}}
+        >
+          <View style={styles.loading}>
+            <Spinner
+            isVisible={this.props.loading}
+            size={44}
+            style={{alignSelf: 'center'}}
+            type='Bounce' 
+            color='#81e2d9'/>
+          </View>
+        </Modal>
       </KeyboardAvoidingView>
     )
   }
 }
 
 const mapStateToProps = (state, props) => ({
+  loading: state.records.loading.spinner,
   patientId: state.patients.queue[state.patients.queue.findIndex(({queueId}) => props.match.params.queueId)].patient.id
 })
 
@@ -242,5 +280,14 @@ const styles = StyleSheet.create({
   response: {
     height: '56%',
     width: '100%',
+  },
+  loading: {
+    alignSelf: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    height: 88,
+    width: 88,
+    justifyContent: 'center',
+    alignItems:'center',
+    borderRadius: 8
   }
 })

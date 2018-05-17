@@ -192,14 +192,15 @@ const updateMedicalConditions = async (conditions, patientId) => {
   }
 }
 
-// const fetchMedicalRecords = async (patientId) => {
-//   try {
-//     const _patient = findPatient(patientId)
-//     const 
-//   } catch (error) {
-//     throw error
-//   }
-// }
+const fetchMedicalRecords = async (patientId) => {
+  try {
+    const _patient = await findPatient(patientId)
+    let result = { id: _patient.id }
+  
+  } catch (error) {
+    throw error
+  }
+}
 
 const queuePatient = async (tag, patientId, stage) => {
   try {
@@ -359,5 +360,6 @@ export {
   fetchPatients,
   fetchPatientQueue,
   fetchDiagnosis,
-  fetchMedicines
+  fetchMedicines,
+  fetchMedicalRecords
 }

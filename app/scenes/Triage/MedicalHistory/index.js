@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { 
   View,
+  Keyboard,
   KeyboardAvoidingView,
   Image,
   ScrollView,
@@ -13,8 +14,10 @@ import {
   Dimensions,
   Switch
 } from 'react-native'
-import { IconButton, Button } from '../../../components/Button'
+import { IconButton, Button, KeyboardDismissButton } from '../../../components/Button'
 import Icon from 'react-native-fontawesome-pro';
+import Modal from 'react-native-modal';
+import Spinner from 'react-native-spinkit';
 import { TextField, TextBox } from '../../../components/TextField'
 import Header from '../../../components/Header';
 import {updateMedicalHistory} from '../../../actions/record'
@@ -65,6 +68,7 @@ class MedicalHistory extends Component {
     this.updateMedicalHistory = this.props.actions.updateMedicalHistory.bind(this)
     this.state = {
       queueId: props.match.params.queueId,
+      isKeyboardPresent: false,
       medicalHistory: {
         diseases: {
           HTN: '',
@@ -81,8 +85,18 @@ class MedicalHistory extends Component {
     }
   }
 
+  _keyboardWillShow () {
+    this.setState(previousState => ({isKeyboardPresent: true}))
+  }
+
+  _keyboardWillHide () {
+    this.setState(previousState => ({isKeyboardPresent: false}))
+  }
+
   componentWillMount() {
     StatusBar.setBarStyle('dark-content')
+    this.keyboardWillShowListener = Keyboard.addListener('keyboardWillShow', this._keyboardWillShow.bind(this))
+    this.keyboardWillHideListener = Keyboard.addListener('keyboardWillHide', this._keyboardWillHide.bind(this))
   }
 
   submit() {
@@ -111,10 +125,20 @@ class MedicalHistory extends Component {
               <TextBox placeholder="Remarks" width="90%" onChangeText={(remarks) => {
                 this.setState(({medicalHistory}) => ({medicalHistory: {...medicalHistory, remarks}}))
               }}/>
+              {this.state.isKeyboardPresent && <KeyboardDismissButton />}
             </View>
           </ScrollView>
           <View style={{height:'8%'}}>
-            <Button 
+            {
+              this.state.medicalHistory.diseases.HTN.length > 0 &&
+              this.state.medicalHistory.diseases.Diabetes.length > 0 &&
+              this.state.medicalHistory.diseases.TB.length > 0 &&
+              this.state.medicalHistory.diseases.Asthma.length > 0 && 
+              this.state.medicalHistory.diseases.HEPA.length > 0 &&
+              this.state.medicalHistory.diseases.HEPB.length > 0 &&
+              this.state.medicalHistory.diseases.malaria.length > 0 &&
+              this.state.medicalHistory.diseases.HIV.length > 0 &&
+              <Button 
                 title="Submit" 
                 onPress={this.submit.bind(this)} 
                 bgColor="#1d9dff" titleColor="#fff" 
@@ -122,7 +146,23 @@ class MedicalHistory extends Component {
                 width="50%"
                 round
               />
+            }
           </View>
+          <Modal
+            isVisible={this.props.loading}
+            animationIn="fadeIn"
+            backdropOpacity={0}
+            style={{justifyContent: 'center'}}
+          >
+          <View style={styles.loading}>
+            <Spinner
+            isVisible={this.props.loading}
+            size={44}
+            style={{alignSelf: 'center'}}
+            type='Bounce' 
+            color='#81e2d9'/>
+          </View>
+        </Modal>
       </View>
     )
   }
@@ -133,6 +173,7 @@ const mapDispatchToProps = (dispatch) => ({
 })
 
 const mapStateToProps = (state, props) => ({
+  loading: state.records.loading.spinner,
   patientId: state.patients.queue[state.patients.queue.findIndex(({queueId}) => props.match.params.queueId)].patient.id
 })
 
@@ -160,5 +201,14 @@ const styles = StyleSheet.create({
     shadowRadius: 5,
     alignSelf: 'center',
     alignItems: 'center'
+  },
+  loading: {
+    alignSelf: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    height: 88,
+    width: 88,
+    justifyContent: 'center',
+    alignItems:'center',
+    borderRadius: 8
   }
 })

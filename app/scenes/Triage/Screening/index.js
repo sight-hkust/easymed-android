@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux';
 import { 
   View,
   KeyboardAvoidingView,
+  Keyboard,
   Image,
   ScrollView,
   StatusBar,
@@ -14,8 +15,10 @@ import {
   Switch
 } from 'react-native'
 import LinearGradient from 'react-native-linear-gradient';
-import { IconButton, Button } from '../../../components/Button'
+import { IconButton, Button, KeyboardDismissButton } from '../../../components/Button'
 import Icon from 'react-native-fontawesome-pro';
+import Modal from 'react-native-modal';
+import Spinner from 'react-native-spinkit';
 import {TextField, TextBox} from '../../../components/TextField'
 import Step from '../../../components/Step'
 import BooleanSelect from '../../../components/BooleanSelect';
@@ -133,6 +136,7 @@ class Screening extends Component {
     super(props);
     this.handleScroll = this.handleScroll.bind(this);
     this.updateScreeningStatus = this.props.actions.updateScreeningStatus.bind(this)
+    isKeyboardPresent: false,
     this.state = {
       xOffset:0,
       queueId: props.match.params.queueId,
@@ -152,10 +156,19 @@ class Screening extends Component {
 
   componentWillMount() {
     StatusBar.setBarStyle('light-content')
+    this.keyboardWillShowListener = Keyboard.addListener('keyboardWillShow', this._keyboardWillShow.bind(this))
+    this.keyboardWillHideListener = Keyboard.addListener('keyboardWillHide', this._keyboardWillHide.bind(this))
+  }
+
+  _keyboardWillShow () {
+    this.setState(previousState => ({isKeyboardPresent: true}))
+  }
+
+  _keyboardWillHide () {
+    this.setState(previousState => ({isKeyboardPresent: false}))
   }
 
   submit() {
-    // console.log(this.state.screening, this.props.patientId)
     this.updateScreeningStatus(this.state.screening, this.props.patientId)
   }
 
@@ -190,6 +203,7 @@ class Screening extends Component {
           {stepList.map((step, i) => (
             <View style={{width: screenWidth, justifyContent:'flex-start'}} key={i}>
               <Response step={step} mutate={this.setState.bind(this)}/>
+              {this.state.isKeyboardPresent && <KeyboardDismissButton top={-42} left={8}/>}
             </View>
           ))}
         </ScrollView>
@@ -204,6 +218,21 @@ class Screening extends Component {
               round
             />
         </View>
+        <Modal
+          isVisible={this.props.loading}
+          animationIn="fadeIn"
+          backdropOpacity={0}
+          style={{justifyContent: 'center'}}
+        >
+          <View style={styles.loading}>
+            <Spinner
+            isVisible={this.props.loading}
+            size={44}
+            style={{alignSelf: 'center'}}
+            type='Bounce' 
+            color='#81e2d9'/>
+          </View>
+        </Modal>
       </KeyboardAvoidingView>
     )
   }
@@ -214,6 +243,7 @@ const mapDispatchToProps = (dispatch) => ({
 })
 
 const mapStateToProps = (state, props) => ({
+  loading: state.records.loading.spinner,
   patientId: state.patients.queue[state.patients.queue.findIndex(({queueId}) => props.match.params.queueId)].patient.id
 })
 
@@ -255,5 +285,14 @@ const styles = StyleSheet.create({
   response: {
     height: '56%',
     width: '100%',
+  },
+  loading: {
+    alignSelf: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    height: 88,
+    width: 88,
+    justifyContent: 'center',
+    alignItems:'center',
+    borderRadius: 8
   }
 })

@@ -18,9 +18,13 @@ import {
   UPDATE_MEDICAL_HISTORY_REQUEST,
   UPDATE_MEDICAL_HISTORY_SUCCESS,
   ADD_CHIEF_COMPLAINTS_REQUEST,
-  ADD_CHIEF_COMPLAINTS_SUCCESS
+  ADD_CHIEF_COMPLAINTS_SUCCESS,
+  FETCH_MEDICAL_RECORDS_REQUEST,
+  FETCH_MEDICAL_RECORDS_SUCCESS,
+  FETCH_MEDICAL_RECORDS_ERROR
 } from '../actions/constants';
 import { 
+  fetchMedicalRecords,
   updateMedicalHistory,
   updateScreeningResult,
   updateMedicalConditions,
@@ -55,6 +59,13 @@ const addChiefComplaintsSuccess = (recordId) => ({
   type: ADD_CHIEF_COMPLAINTS_SUCCESS,
   payload: {recordId}
 })
+
+const fetchMedicalRecordsEpic = action$ =>
+  action$.ofType(FETCH_MEDICAL_RECORDS_REQUEST)
+  .switchMap(({payload: {patientId}}) => Observable.fromPromise(fetchMedicalRecords(patientId))
+  .map(records => ({type: FETCH_MEDICAL_RECORDS_SUCCESS, payload: records}))
+  .catch(error => Observable.of({type: FETCH_MEDICAL_RECORDS_ERROR, payload: {error}}))
+  )
 
 const attachMetadataEpic = action$ =>
   action$.ofType(ATTACH_METADATA_REQUEST)
@@ -108,6 +119,7 @@ const updateMedicalConditionEpic = action$ =>
 )
 
 export {
+  fetchMedicalRecordsEpic,
   attachMetadataEpic,
   addVitalsRecordEpic,
   addChiefComplaintsEpic,

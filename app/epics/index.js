@@ -8,6 +8,7 @@ import {
     fetchPatientQueueEpic
 } from './patients'
 import {
+    fetchMedicalRecordsEpic,
     attachMetadataEpic,
     addVitalsRecordEpic,
     addChiefComplaintsEpic,
@@ -26,6 +27,7 @@ export const epics = combineEpics (
     transferPatientEpic,
     fetchPatientListEpic,
     fetchPatientQueueEpic,
+    fetchMedicalRecordsEpic,
     attachMetadataEpic,
     addVitalsRecordEpic,
     addChiefComplaintsEpic,

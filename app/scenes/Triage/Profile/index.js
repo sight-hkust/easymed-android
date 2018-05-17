@@ -9,7 +9,8 @@ import {
   TouchableOpacity,
   Dimensions,
   Switch,
-  KeyboardAvoidingView 
+  KeyboardAvoidingView,
+  Keyboard
 } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { Redirect } from 'react-router-native';
@@ -22,7 +23,7 @@ import Spinner from 'react-native-spinkit';
 import Icon from 'react-native-fontawesome-pro';
 import ImagePicker from 'react-native-image-picker';
 import Header from '../../../components/Header';
-import { IconButton, Button } from '../../../components/Button'
+import { IconButton, Button, KeyboardDismissButton } from '../../../components/Button'
 import TextField from '../../../components/TextField'
 import InfantSelect from '../../../components/InfantSelect';
 import Step from '../../../components/Step'
@@ -302,8 +303,9 @@ class Profile extends Component {
     super(props);
     this.handleScroll = this.handleScroll.bind(this);
     this.state = {
+      isKeyboardPresent: false,
       questions: ['photo','tag','name','gender','infant','doba','married','nationality'],
-      xOffset:0,
+      xOffset: 0,
       idob: { day: 0, week: 0, month: 0 },
       showSubmit: false,
       profile: {
@@ -321,12 +323,10 @@ class Profile extends Component {
       picturePath: null,
       options: {
         title: 'Select Picture',
-        quality: 0,
-        mediaType: 'photo',
-        storageOptions: {
-          skipBackup: true,
-          path: 'images'
-        }
+        quality: 1,
+        maxWidth: 500,
+        maxHeight: 500,
+        mediaType: 'photo'
       },
       queueStatus: false
     }
@@ -352,6 +352,8 @@ class Profile extends Component {
 
   componentWillMount() {
     StatusBar.setBarStyle('light-content', true)
+    this.keyboardWillShowListener = Keyboard.addListener('keyboardWillShow', this._keyboardWillShow.bind(this))
+    this.keyboardWillHideListener = Keyboard.addListener('keyboardWillHide', this._keyboardWillHide.bind(this))
   }
 
   handleCameraPress(){
@@ -361,6 +363,14 @@ class Profile extends Component {
         this.setState(({profile, picturePath}) => ({ profile: { ...profile, picture: data }, picturePath: { uri }}))
       }
     })
+  }
+
+  _keyboardWillShow () {
+    this.setState(previousState => ({isKeyboardPresent: true}))
+  }
+
+  _keyboardWillHide () {
+    this.setState(previousState => ({isKeyboardPresent: false}))
   }
 
   submit() {

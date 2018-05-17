@@ -18,6 +18,8 @@ import LinearGradient from 'react-native-linear-gradient';
 import { IconButton, Button, KeyboardDismissButton } from '../../../components/Button'
 import { addVitalsRecord } from '../../../actions/record';
 import Icon from 'react-native-fontawesome-pro';
+import Modal from 'react-native-modal';
+import Spinner from 'react-native-spinkit';
 import TextField from '../../../components/TextField'
 import Step from '../../../components/Step'
 import Header from '../../../components/Header';
@@ -308,12 +310,21 @@ class Vitals extends Component {
           {this.state.questions.map((step, i) => (
             <View style={{width: screenWidth, justifyContent:'flex-start'}} key={i}>
               <Response step={step} mutate={this.setState.bind(this)} ldw={this.state.vitals.lastDewormingDate}/>
+              {this.state.isKeyboardPresent && <KeyboardDismissButton top={-42} left={8}/>}
             </View>
           ))}
         </ScrollView>
 
         <View style={{height:'8%'}}>
-          <Button 
+          {
+            this.state.vitals.pulseRate.length > 0 &&
+            this.state.vitals.bloodPressure.length > 0 &&
+            this.state.vitals.respiratoryRate.length > 0 &&
+            this.state.vitals.temperature.length > 0 && 
+            this.state.vitals.bloodOxygenSaturation.length > 0 &&
+            this.state.vitals.height.length > 0 &&
+            this.state.vitals.weight.length > 0 &&
+            <Button 
               title="Submit" 
               onPress={this.submit.bind(this)} 
               bgColor="#1d9dff" titleColor="#fff" 
@@ -321,7 +332,23 @@ class Vitals extends Component {
               width="50%"
               round
             />
+          }
         </View>
+        <Modal
+          isVisible={this.props.loading}
+          animationIn="fadeIn"
+          backdropOpacity={0}
+          style={{justifyContent: 'center'}}
+        >
+          <View style={styles.loading}>
+            <Spinner
+            isVisible={this.props.loading}
+            size={44}
+            style={{alignSelf: 'center'}}
+            type='Bounce' 
+            color='#81e2d9'/>
+          </View>
+        </Modal>
       </KeyboardAvoidingView>
     )
   }
@@ -332,6 +359,7 @@ const mapDispatchToProps = (dispatch) => ({
 })
 
 const mapStateToProps = (state, props) => ({
+  loading: state.records.loading.spinner,
   patient: state.patients.queue[state.patients.queue.findIndex(({queueId}) => props.match.params.queueId === queueId)].patient
 })
 
@@ -375,5 +403,14 @@ const styles = StyleSheet.create({
     width: '100%',
     justifyContent: 'space-between',
     alignItems: 'center',
+  },
+  loading: {
+    alignSelf: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    height: 88,
+    width: 88,
+    justifyContent: 'center',
+    alignItems:'center',
+    borderRadius: 8
   }
 })

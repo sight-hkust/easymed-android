@@ -14,8 +14,10 @@ import {
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import LinearGradient from 'react-native-linear-gradient';
-import { IconButton, Button } from '../../../components/Button'
+import { IconButton, Button, KeyboardDismissButton } from '../../../components/Button'
 import Icon from 'react-native-fontawesome-pro';
+import Modal from 'react-native-modal';
+import Spinner from 'react-native-spinkit';
 import Header from '../../../components/Header';
 import TextField from '../../../components/TextField';
 import Step from '../../../components/Step';
@@ -196,7 +198,6 @@ class Maternal extends Component {
   }
 
   submit() {
-    console.log(this.state.queueId)
     this.addGynaecologyInfo(this.state.gynaecology, this.state.queueId)
   }
 
@@ -246,7 +247,22 @@ class Maternal extends Component {
               round
             />
         </View>
-
+        
+        <Modal
+          isVisible={this.props.loading}
+          animationIn="fadeIn"
+          backdropOpacity={0}
+          style={{justifyContent: 'center'}}
+        >
+          <View style={styles.loading}>
+            <Spinner
+            isVisible={this.props.loading}
+            size={44}
+            style={{alignSelf: 'center'}}
+            type='Bounce' 
+            color='#81e2d9'/>
+          </View>
+        </Modal>
       </KeyboardAvoidingView>
     )
   }
@@ -296,5 +312,14 @@ const styles = StyleSheet.create({
     width: '100%',
     justifyContent: 'space-between',
     alignItems: 'center',
+  },
+  loading: {
+    alignSelf: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    height: 88,
+    width: 88,
+    justifyContent: 'center',
+    alignItems:'center',
+    borderRadius: 8
   }
 })

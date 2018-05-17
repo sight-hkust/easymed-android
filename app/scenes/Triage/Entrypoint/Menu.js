@@ -6,6 +6,7 @@ import { Link, Redirect } from 'react-router-native';
 import Modal from 'react-native-modal';
 import Spinner from 'react-native-spinkit';
 import { transferPatient } from '../../../actions/patient';
+import { fetchMedicalRecords } from '../../../actions/record';
 import Header from '../../../components/Header';
 import Icon from 'react-native-fontawesome-pro';
 import { Button } from '../../../components/Button'
@@ -59,10 +60,12 @@ class Menu extends Component {
       queueId: props.match.params.queueId,
       patient: this.props.patient.patient
     }
-    this.transferPatient = props.actions.transferPatient
+    this.transferPatient = props.actions.transferPatient.bind(this)
+    this.fetchMedicalRecords = props.actions.fetchMedicalRecords.bind(this)
   }
 
   componentWillMount() {
+    this.fetchMedicalRecords(this.state.patient.id)
     StatusBar.setBarStyle('dark-content', true)
   }
 
@@ -125,7 +128,7 @@ class Menu extends Component {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-  actions: bindActionCreators({transferPatient}, dispatch)
+  actions: bindActionCreators({transferPatient, fetchMedicalRecords}, dispatch)
 })
 
 const mapStateToProps = (state, props) => ({

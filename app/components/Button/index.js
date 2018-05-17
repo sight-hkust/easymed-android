@@ -82,9 +82,9 @@ const styles = {
     backgroundColor: '#5e90fd',
     elevation: 1,
     shadowColor: '#e4e4e4',
-    shadowOpacity: 0.7,
+    shadowOpacity: 0.5,
     shadowOffset: { width: 1, height: 3 },
-    shadowRadius: 8,
+    shadowRadius: 5,
     alignSelf: 'flex-end'
   },
   iconButton: {
