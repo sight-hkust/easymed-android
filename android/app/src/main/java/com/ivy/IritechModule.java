@@ -6,6 +6,7 @@ import android.content.res.Resources;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactMethod;
 import com.iritech.iddk.android.*;
@@ -42,24 +43,21 @@ public class IritechModule extends ReactContextBaseJavaModule {
     private IddkConfig iddkConfig;
     //set in function that is calling instance using setApi
     private static Iddk2000Apis iddkApi;
-    private static IritechModule patientIdentifier;
     private ArrayList<String> connectedDevices;
     private HIRICAMM mDeviceHandle;
     private IddkCaptureStatus mCaptureStatus;
     private IddkResult mRes;
     private CaptureProc mCaptureProc;
-    private static ReactApplicationContext mContext;
+    private static Context mContext;
 
     private IddkTemplateInfo mTemplateInfo;
 
     public static boolean isNewPatient;
     public static String newPatientName;
 
-    private static final String DURATION_SHORT_KEY = "SHORT";
-    private static final String DURATION_LONG_KEY = "LONG";
-
     public IritechModule(ReactApplicationContext reactContext) {
         super(reactContext);
+        mContext = reactContext;
 
         iddkConfig = new IddkConfig();
         iddkConfig.setCommStd(IddkCommStd.IDDK_COMM_USB);
@@ -96,22 +94,16 @@ public class IritechModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void scanIris() {
+        if(isDeviceConnected()) {
+            String scannedPerson = identifyIris();
+        }
 
     }
 
     @ReactMethod
-    public boolean scanningDone() {
-        return true;
-
+    public void deviceConnectedCallback(Callback onPrepared) {
+        final Callback onPreparedCallback = onPrepared;
     }
-
-    @ReactMethod
-    public String patientID (){
-        return "";
-    }
-
-    //error messages
-
 
 
     public boolean isDeviceConnected() {
@@ -250,7 +242,7 @@ public class IritechModule extends ReactContextBaseJavaModule {
         }
 
         try {
-            FileOutputStream fou = mContext.openFileOutput("irises.ser", MODE_APPEND);
+            FileOutputStream fou = mContext.openFileOutput("irises.ser", mContext.MODE_APPEND);
             ObjectOutputStream out = new ObjectOutputStream(fou);
             out.writeObject(templates);
             out.close();
