@@ -23,7 +23,10 @@ import {
   DISMISS_ERROR,
   FETCH_MEDICAL_RECORDS_REQUEST,
   FETCH_MEDICAL_RECORDS_SUCCESS,
-  FETCH_MEDICAL_RECORDS_ERROR
+  FETCH_MEDICAL_RECORDS_ERROR,
+  FETCH_MEDICINE_REQUEST,
+  FETCH_MEDICINE_SUCCESS,
+  FETCH_MEDICINE_ERROR,
 } from '../actions/constants';
 
 const initialState = {
@@ -31,6 +34,7 @@ const initialState = {
     spinner: false
   },
   patients: {},
+  medicines: [],
   error: null
 }
 
@@ -43,6 +47,15 @@ const medicalRecordReducer = (state = initialState, {payload, type}) => {
       return {...state, loading: {spinner: false}}
     }
     case FETCH_MEDICAL_RECORDS_ERROR: {
+      return {...state, loading: {spinner: false}, error: payload.error}
+    }
+    case FETCH_MEDICINE_REQUEST: {
+      return {...state, loading: {spinner: true}}
+    }
+    case FETCH_MEDICINE_SUCCESS: {
+      return {...state, loading: {spinner: false}, medicines: payload.medicines}
+    }
+    case FETCH_MEDICINE_ERROR: {
       return {...state, loading: {spinner: false}, error: payload.error}
     }
     case ATTACH_METADATA_REQUEST: {

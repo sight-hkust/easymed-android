@@ -9,6 +9,7 @@ import {
   StatusBar, 
   StyleSheet, 
   Text, 
+  TextInput,
   TouchableOpacity,
   Dimensions, 
   Switch
@@ -16,6 +17,7 @@ import {
 import Modal from 'react-native-modal'
 import SketchDraw from 'react-native-sketch-draw'
 // import { createCase } from '../../../actions/case';
+// import { } from ''
 import LinearGradient from 'react-native-linear-gradient';
 import ImagePicker from 'react-native-image-picker';
 import { IconButton, Button } from '../../../components/Button'
@@ -182,18 +184,24 @@ const Response = ({step, mutate, handleCameraPress, pictureSource}) => {
     case 'diagnosis': {
       return (
         <View style={styles.response}>
-          <TextBox placeholder='Type the diagnosis here'
+          <TextField placeholder="Diagnosis"
                    onChangeText={(diagnosis) => mutate(({session}) => 
                    ({session: {...session, diagnosis}}))}/>
+          <ScrollView>
+
+          </ScrollView>
         </View>
       )
     }
     case 'prescription': {
       return (
         <View style={styles.response}>
-          <TextBox placeholder='Type the prescription here'
-                   onChangeText={(prescription) => mutate(({session}) => 
-                   ({session: {...session, prescription}}))}/>
+          <TextField width="80%" placeholder="Medicine Name"
+                   onChangeText={(diagnosis) => mutate(({session}) => 
+                   ({session: {...session, diagnosis}}))}/>
+          <Button title="test" titleColor="#000" onPress={() => {
+            mutate({displayPrescriptionDetailDialog: true})
+          }}/>
         </View>
       )
     }
@@ -218,12 +226,27 @@ const Response = ({step, mutate, handleCameraPress, pictureSource}) => {
   }
 }
 
+const Toolbar = () => (
+  <View style={styles.toolbar}>
+    <View style={{width: 44, height: 44, borderRadius: 22, backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center'}}>
+      <Icon name="heartbeat" size={28}/>
+    </View>
+    <View style={{width: 44, height: 44, borderRadius: 22, backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center'}}>
+      <Icon name="pills" size={28}/>
+    </View>
+    <View style={{width: 44, height: 44, borderRadius: 22, backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center'}}>
+      <Icon name="female" size={28}/>
+    </View>
+  </View>
+)
+
 const HeaderContainer = ({xOffset, pathPrefix}) => {
   const path = pathPrefix.replace('/session','')
   return (
     <View style={styles.headerContainer}>
       <Header title="Consultation" light="true" to={path}/>
-      <Step allSteps={stepList.length-1} step={xOffset/screenWidth} backgroundColor='#fff' highlightColor='#FAEB9A' />
+      <Toolbar/>
+      {/* <Step allSteps={stepList.length-1} step={xOffset/screenWidth} backgroundColor='#fff' highlightColor='#FAEB9A' /> */}
     </View>
   )
 }
@@ -240,6 +263,7 @@ export default class Session extends Component {
       xOffset:0,
       pictureSource: null,
       isCurrentlyDrawing: false,
+      displayPrescriptionDetailDialog: false,
       session: {
         chiefComplaints: '',
         physicalExaminations: '',
@@ -289,6 +313,10 @@ export default class Session extends Component {
     this.setState({isCurrentlyDrawing: !this.state.isCurrentlyDrawing})
   }
 
+  togglePrescriptionDetailDialog(){
+    this.setState({displayPrescriptionDetailDialog: !this.state.displayPrescriptionDetailDialog})
+  }
+
   componentWillMount() {
     StatusBar.setBarStyle('light-content')
   }
@@ -334,7 +362,7 @@ export default class Session extends Component {
         </ScrollView>
 
         <Modal isVisible={this.state.isCurrentlyDrawing}>
-          <View style={{flex: 1, flexDirection: 'column'}}>
+          <View style={{flex: 1}}>
             <SketchDraw style={{flex: 1, backgroundColor: '#fff'}} ref="sketchRef"
               selectedTool={this.state.toolSelected} 
               toolColor={this.state.drawingColor}
@@ -372,6 +400,108 @@ export default class Session extends Component {
               round
             />
         </View>
+
+        <Modal isVisible={this.state.displayPrescriptionDetailDialog}>
+          <View style={{
+            width: Dimensions.get('window').width*.9,
+            height: Dimensions.get('window').height*.9,
+            justifyContent: 'space-between',
+            backgroundColor: '#f5f5f5',
+            borderRadius: 6,
+            paddingTop: 12
+            }}>
+            <Text style={{fontSize: 24, fontFamily: 'Nunito-Bold', marginLeft: 12}}>Drug Name</Text>
+            <View style={{width: Dimensions.get('window').width*.9, paddingHorizontal: 16, flexDirection: 'row'}}>
+              <TextField width={Dimensions.get('window').width*.5} placeholder="Concentration"/>
+              <Button title="mg" icon="angle-down" titleColor="#000"/>
+            </View>
+            <View style={{width: Dimensions.get('window').width*.9, paddingHorizontal: 16, flexDirection: 'row'}}>
+              <TextField width={Dimensions.get('window').width*.5} placeholder="Quantity"/>
+              <Button title="po" icon="angle-down" titleColor="#000"/>
+            </View>
+            <View style={{width: Dimensions.get('window').width*.9, paddingHorizontal: 16, flexDirection: 'row'}}>
+              <TouchableOpacity style={{
+                width: Dimensions.get('window').width*.225-4, 
+                height: Dimensions.get('window').height*.065, 
+                justifyContent: 'center',
+                alignItems: 'center',
+                borderColor: '#63b995', 
+                borderLeftWidth: 2, 
+                borderRightWidth: 1,
+                borderTopWidth: 2, 
+                borderBottomWidth: 2, 
+                borderBottomLeftRadius: Dimensions.get('window').height*.04, 
+                borderTopLeftRadius: Dimensions.get('window').height*.04}}>
+                <Text style={{fontFamily: 'Quicksand-Bold', fontSize: 18, color: '#63b995'}}>OD</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={{
+                width: Dimensions.get('window').width*.225-4, 
+                height: Dimensions.get('window').height*.065, 
+                justifyContent: 'center',
+                alignItems: 'center',
+                borderColor: '#63b995', 
+                borderLeftWidth: 1, 
+                borderRightWidth: 1,
+                borderTopWidth: 2, 
+                borderBottomWidth: 2}}>
+                <Text style={{fontFamily: 'Quicksand-Bold', fontSize: 18, color: '#63b995'}}>BID</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={{
+                width: Dimensions.get('window').width*.225-4, 
+                height: Dimensions.get('window').height*.065, 
+                justifyContent: 'center',
+                alignItems: 'center',
+                borderColor: '#63b995', 
+                borderLeftWidth: 1, 
+                borderRightWidth: 1,
+                borderTopWidth: 2, 
+                borderBottomWidth: 2}}>
+                <Text style={{fontFamily: 'Quicksand-Bold', fontSize: 18, color: '#63b995'}}>TID</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={{
+                width: Dimensions.get('window').width*.225-4, 
+                height: Dimensions.get('window').height*.065, 
+                justifyContent: 'center',
+                alignItems: 'center',
+                borderColor: '#63b995', 
+                borderLeftWidth: 1, 
+                borderTopWidth: 2, 
+                borderRightWidth: 2,
+                borderBottomWidth: 2, 
+                borderBottomRightRadius: Dimensions.get('window').height*.04, 
+                borderTopRightRadius: Dimensions.get('window').height*.04}}>
+                <Text style={{fontFamily: 'Quicksand-Bold', fontSize: 18, color: '#63b995'}}>QID</Text>
+              </TouchableOpacity>
+            </View>
+            <View style={{width: Dimensions.get('window').width*.9, paddingHorizontal: 16, flexDirection: 'row'}}>
+              <TextField width={Dimensions.get('window').width*.5} placeholder="No. of days"/>
+              <Button title="/7" icon="angle-down" titleColor="#000"/>
+            </View>
+            <View style={{width: Dimensions.get('window').width*.9, paddingHorizontal: 16}}>
+              <View style={styles.inputWrapper}>
+                <TextInput 
+                  multiline={true}
+                  placeholder="Remarks"
+                  underlineColorAndroid='transparent'
+                  style={{
+                    height: '100%',
+                    width: '100%',
+                    backgroundColor: 'white',
+                    textAlignVertical: 'top',
+                    paddingHorizontal: 6,
+                    paddingVertical: 4,
+                    fontSize: 16,
+                    fontFamily: 'Nunito-Regular'
+                  }}
+                />
+              </View>
+            </View>
+            <TouchableOpacity style={{width: Dimensions.get('window').width*.9, height: Dimensions.get('window').height*.08, backgroundColor: '#63b995', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', borderBottomLeftRadius: 6, borderBottomRightRadius: 6}}>
+              <Icon name="check" size={20} color="#fff"/>
+              <Text style={{fontFamily: 'Quicksand-Bold', fontSize: 18, color: '#fff', marginLeft: 8}}>Submit</Text>
+            </TouchableOpacity>
+          </View>
+        </Modal>
       </KeyboardAvoidingView>
     )
   }
@@ -432,5 +562,25 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderRadius:20,
     backgroundColor: '#93D0FE'
-  }
+  },
+  toolbar: {
+    flexDirection: 'row',
+    alignSelf: 'flex-end',
+    justifyContent: 'space-around',
+    width: Dimensions.get('window').width*.5
+  },
+  inputWrapper: {
+    alignSelf: 'center',
+    backgroundColor: '#fff',
+    borderRadius: 6,
+    shadowColor: '#e4e4e4',
+    shadowOpacity: 0.5,
+    shadowOffset: { width: 1, height: 3 },
+    shadowRadius: 5,
+    width: Dimensions.get('window').width*.75,
+    height: Dimensions.get('window').height*.25,
+    marginHorizontal: 12,
+    paddingHorizontal: 4,
+    paddingVertical: 4
+  },
 })

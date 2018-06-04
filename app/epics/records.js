@@ -21,17 +21,24 @@ import {
   ADD_CHIEF_COMPLAINTS_SUCCESS,
   FETCH_MEDICAL_RECORDS_REQUEST,
   FETCH_MEDICAL_RECORDS_SUCCESS,
-  FETCH_MEDICAL_RECORDS_ERROR
+  FETCH_MEDICAL_RECORDS_ERROR,
+  FETCH_MEDICAL_DIAGNOSIS_SUCCESS,
+  FETCH_MEDICAL_DIAGNOSIS_REQUEST,
+  FETCH_MEDICAL_DIAGNOSIS_ERROR,
+  ADD_MEDICAL_DIAGNOSIS_REQUEST,
+  ADD_MEDICAL_DIAGNOSIS_SUCCESS,
+  ADD_MEDICAL_DIAGNOSIS_ERROR
 } from '../actions/constants';
 import { 
   fetchMedicalRecords,
+  fetchDiagnosises,
   updateMedicalHistory,
   updateScreeningResult,
   updateMedicalConditions,
   insertVitalsRecord,
   insertChiefComplaintsRecord,
   insertGynaecologyRecord,
-  attachMetadata 
+  attachMetadata
 } from '../services/api'
 import { ActionsObservable } from 'redux-observable'
 import { Observable } from 'rxjs';
@@ -40,34 +47,39 @@ import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch'
 
-const submitAttachment = (recordId, recordType, queueId) => ({
+export const submitAttachment = (recordId, recordType, queueId) => ({
   type: ATTACH_METADATA_REQUEST,
   payload: {recordId, recordType, queueId}
 })
 
-const addVitalsSuccess = (recordId) => ({
+export const addVitalsSuccess = (recordId) => ({
   type: ADD_VITALS_SUCCESS,
   payload: {recordId}
 })
 
-const addGynaecologyInfoSuccess = (recordId) => ({
+export const addGynaecologyInfoSuccess = (recordId) => ({
   type: ADD_GYNAECOLOGY_INFO_SUCCESS,
   payload: {recordId}
 })
 
-const addChiefComplaintsSuccess = (recordId) => ({
+export const addChiefComplaintsSuccess = (recordId) => ({
   type: ADD_CHIEF_COMPLAINTS_SUCCESS,
   payload: {recordId}
 })
 
-const fetchMedicalRecordsEpic = action$ =>
+export const checkTriageItem = (queueId, item) => ({
+  type: CHECK_TRIAGE_ITEM,
+  payload: {queueId, item}
+})
+
+export const fetchMedicalRecordsEpic = action$ =>
   action$.ofType(FETCH_MEDICAL_RECORDS_REQUEST)
   .switchMap(({payload: {patientId}}) => Observable.fromPromise(fetchMedicalRecords(patientId))
   .map(records => ({type: FETCH_MEDICAL_RECORDS_SUCCESS, payload: records}))
   .catch(error => Observable.of({type: FETCH_MEDICAL_RECORDS_ERROR, payload: {error}}))
   )
 
-const attachMetadataEpic = action$ =>
+export const attachMetadataEpic = action$ =>
   action$.ofType(ATTACH_METADATA_REQUEST)
   .switchMap(({payload: {recordId, recordType, queueId}}) => {
     return Observable.fromPromise(attachMetadata(recordId, recordType, queueId))
@@ -76,55 +88,55 @@ const attachMetadataEpic = action$ =>
   }
   )
 
-const addVitalsRecordEpic = action$ =>
+export const addVitalsRecordEpic = action$ =>
   action$.ofType(ADD_VITALS_REQUEST)
   .switchMap(({payload: {vitals, patientId, queueId}}) => Observable.fromPromise(insertVitalsRecord(vitals))
-  .mergeMap(recordId => [addVitalsSuccess(recordId), submitAttachment(recordId, 'vitals', queueId)])
+  .mergeMap(recordId => [addVitalsSuccess(recordId), submitAttachment(recordId, 'vitals', queueId), checkTriageItem(queueId, 'vitals')])
   .catch(error => Observable.of({type: ADD_VITALS_ERROR, payload: {error}}))
   )
 
-const addGynaecologyRecordEpic = action$ =>
+export const addGynaecologyRecordEpic = action$ =>
   action$.ofType(ADD_GYNAECOLOGY_INFO_REQUEST)
   .switchMap(({payload: {gynaecologyInfo, queueId}}) => Observable.fromPromise(insertGynaecologyRecord(gynaecologyInfo))
-  .mergeMap(recordId => [addGynaecologyInfoSuccess(recordId), submitAttachment(recordId, 'gynaecology', queueId)])
+  .mergeMap(recordId => [addGynaecologyInfoSuccess(recordId), submitAttachment(recordId, 'gynaecology', queueId), checkTriageItem(queueId, 'gynaecology')])
   .catch(error => Observable.of({type: ADD_GYNAECOLOGY_INFO_ERROR, payload: {error}}))
   )
 
-const addChiefComplaintsEpic = action$ =>
+export const addChiefComplaintsEpic = action$ =>
   action$.ofType(ADD_CHIEF_COMPLAINTS_REQUEST)
   .switchMap(({payload: {description, queueId}}) => Observable.fromPromise(insertChiefComplaintsRecord(description))
-  .mergeMap(recordId => [addChiefComplaintsSuccess(recordId), submitAttachment(recordId, 'cc', queueId)])
+  .mergeMap(recordId => [addChiefComplaintsSuccess(recordId), submitAttachment(recordId, 'cc', queueId), checkTriageItem(queueId, 'cc')])
   .catch(error => Observable.of({type: ADD_CHIEF_COMPLAINTS_ERROR, payload: {error}}))
   )
 
-const updateMedicalHistoryEpic = action$ =>
+export const updateMedicalHistoryEpic = action$ =>
   action$.ofType(UPDATE_MEDICAL_HISTORY_REQUEST)
   .switchMap(({payload: {history, patientId}}) => Observable.fromPromise(updateMedicalHistory(history, patientId))
-  .map(recordId => ({type: UPDATE_MEDICAL_HISTORY_SUCCESS, payload: {recordId}}))
+  .mergeMap(recordId => [{type: UPDATE_MEDICAL_HISTORY_SUCCESS, payload: {recordId}}, checkTriageItem(queueId, 'pmh')])
   .catch(error => Observable.of({type: UPDATE_MEDICAL_HISTORY_ERROR, payload: {error}}))
   )
 
-const updateScreeningResultEpic = action$ =>
+export const updateScreeningResultEpic = action$ =>
   action$.ofType(UPDATE_SCREENING_RESULT_REQUEST)
   .switchMap(({payload: {screeningResult, patientId}}) => Observable.fromPromise(updateScreeningResult(screeningResult, patientId))
-  .map(recordId => ({type: UPDATE_SCREENING_RESULT_SUCCESS, payload: {recordId}}))
+  .mergeMap(recordId => [{type: UPDATE_SCREENING_RESULT_SUCCESS, payload: {recordId}}, checkTriageItem(queueId, 'screening')])
   .catch(error => Observable.of({type: UPDATE_SCREENING_RESULT_ERROR, payload: {error}}))
   )
 
-const updateMedicalConditionEpic = action$ =>
+export const updateMedicalConditionEpic = action$ =>
   action$.ofType(UPDATE_MEDICAL_CONDITION_REQUEST)
   .switchMap(({payload: {conditions, patientId}}) => Observable.fromPromise(updateMedicalConditions(conditions, patientId))
-  .map(recordId => ({type: UPDATE_MEDICAL_CONDITION_SUCCESS, payload: {recordId}}))
+  .mergeMap(recordId => [{type: UPDATE_MEDICAL_CONDITION_SUCCESS, payload: {recordId}}, checkTriageItem(queueId, 'misc')])
   .catch(error => Observable.of({type: UPDATE_MEDICAL_CONDITION_ERROR, payload: {error}}))
-)
+  )
 
-export {
-  fetchMedicalRecordsEpic,
-  attachMetadataEpic,
-  addVitalsRecordEpic,
-  addChiefComplaintsEpic,
-  addGynaecologyRecordEpic,
-  updateMedicalHistoryEpic,
-  updateScreeningResultEpic,
-  updateMedicalConditionEpic
-}
+export const fetchDiagnosisesEpic = action$ =>
+  action$.ofType(FETCH_MEDICAL_DIAGNOSIS_REQUEST)
+  .switchMap(() => Observable.fromPromise(fetchDiagnosises())
+  .map(diagnosises => ({type: FETCH_MEDICAL_DIAGNOSIS_SUCCESS, payload: {diagnosises}}))
+  .catch(error => Observable.of({type: FETCH_MEDICAL_DIAGNOSIS_ERROR, payload: {error}}))
+  )
+
+// export const addDiagnosisEpic = action$ =>
+//   action$.ofType(ADD_MEDICAL_DIAGNOSIS_REQUEST)
+//   .switchMap(({payload: {diagnosis}}))

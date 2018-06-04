@@ -28,46 +28,38 @@ const createPatientSuccess = (patientId) => ({
   payload: { patientId }
 })
 
-const createPatientEpic = action$ =>
+export const createPatientEpic = action$ =>
   action$.ofType(CREATE_PATIENT_REQUEST)
-  .switchMap(({payload: {profile, tag}}) => Observable.fromPromise(createPatient(profile))
-  .mergeMap(patientId => ([createPatientSuccess(patientId), queuePatientRequest(tag, patientId, 'triage')]))
+  .switchMap(({payload: {profile, tag, picture}}) => Observable.fromPromise(createPatient(profile))
+  .mergeMap(patientId => ([createPatientSuccess(patientId), queuePatientRequest(tag, picture, patientId, 'triage')]))
   .catch(error => Observable.of({type: CREATE_PATIENT_ERROR, payload: {error}}))
   )
   
 
-const fetchPatientListEpic = action$ =>
+export const fetchPatientListEpic = action$ =>
   action$.ofType(FETCH_PATIENT_LIST_REQUEST)
   .switchMap(() => Observable.fromPromise(fetchPatients())
   .map(patients => ({type: FETCH_PATIENT_LIST_SUCCESS, payload: {patients}}))
   .catch(error => Observable.of({type: FETCH_PATIENT_LIST_ERROR, payload: {error}}))
   )
 
-const fetchPatientQueueEpic = action$ =>
+export const fetchPatientQueueEpic = action$ =>
   action$.ofType(FETCH_PATIENT_QUEUE_REQUEST)
   .switchMap(({payload: {stage}}) => Observable.fromPromise(fetchPatientQueue(stage))
   .map(patients => ({type: FETCH_PATIENT_QUEUE_SUCCESS, payload: {patients}}))
   .catch(error => Observable.of({type: FETCH_PATIENT_QUEUE_ERROR, payload: {error}}))
   )
 
-const queuePatientEpic = action$ =>
+export const queuePatientEpic = action$ =>
   action$.ofType(QUEUE_PATIENT_REQUEST)
-  .switchMap(({payload: {tag, patientId, stage}}) => Observable.fromPromise(queuePatient(tag, patientId, stage))
+  .switchMap(({payload: {tag, picture, patientId, stage}}) => Observable.fromPromise(queuePatient(tag, picture, patientId, stage))
   .map((patient) => ({type: QUEUE_PATIENT_SUCCESS, payload: patient}))
   .catch(error => Observable.of({type: QUEUE_PATIENT_ERROR, payload: {error}}))
 )
 
-const transferPatientEpic = action$ =>
+export const transferPatientEpic = action$ =>
   action$.ofType(TRANSFER_PATIENT_REQUEST)
   .switchMap(({payload: {stage, queueId}}) => Observable.fromPromise(transferPatient(queueId, stage))
   .map(queueId => ({type: TRANSFER_PATIENT_SUCCESS, payload: {queueId}}))
   .catch(error => Observable.of({type: TRANSFER_PATIENT_ERROR, payload: {error}}))
   )
-
-export { 
-  createPatientEpic,
-  fetchPatientListEpic,
-  fetchPatientQueueEpic,
-  queuePatientEpic,
-  transferPatientEpic
-}

@@ -12,12 +12,13 @@ import {
   TRANSFER_PATIENT_SUCCESS,
   TRANSFER_PATIENT_ERROR,
   RESET_PATIENT_QUEUE,
-  DISMISS_ERROR
+  DISMISS_ERROR,
+  CHECK_TRIAGE_ITEM
 } from '../actions/constants'
 
 const initialState = {
   all: [],
-  queue: [],
+  queue: {},
   loading: { queue: false, all: false, spinner: false },
   error: null
 };
@@ -37,7 +38,26 @@ const patientsReducer = (state = initialState, {type, payload}) => {
         return {...state, loading: {...state.loading, queue:true} };
       }
       case FETCH_PATIENT_QUEUE_SUCCESS: {
-        return {...state, loading: {...state.loading, queue:false}, queue: payload.patients.sort((p, s) => parseInt(p.patient.tag) - parseInt(s.patient.tag))}
+        return {...state, loading: {...state.loading, queue:false}, queue: Object.keys(payload.patients)
+        .forEach(queueId => {
+          if(payload.patients[queueId].sex === 'Female') {
+            payload.patients[queueId] = {
+              ...payload.patients[queueId],
+              checklist:{
+                vitals: false, cc: false, pmh: false, screening: false, misc: false, gynaecology: false
+              }
+            }
+          }
+          else {
+            payload.patients[queueId] = {
+              ...payload.patients[queueId],
+              checklist:{
+                vitals: false, cc: false, pmh: false, screening: false, misc: false
+              }
+            }
+          }
+        })
+        }
       }
       case FETCH_PATIENT_QUEUE_ERROR: {
         return {...state, loading: {...state.loading, queue:false}, error: payload.error}
@@ -56,16 +76,24 @@ const patientsReducer = (state = initialState, {type, payload}) => {
         return {...state, loading: {...state.loading, spinner: true}}
       }
       case TRANSFER_PATIENT_SUCCESS: {
-        const index = state.queue.findIndex(({queueId}) => queueId === payload.queueId)
         let queue = state.queue
-        queue.splice(index, 1)
+        delete queue[payload.queueId]
         return {...state, loading: {...state.loading, spinner: false}, queue: queue}
       }
       case TRANSFER_PATIENT_ERROR: {
         return {...state, loading: {...state.loading, spinner: false}, error: payload.error}
       }
       case RESET_PATIENT_QUEUE: {
-        return {...state, queue: []}
+        return {...state, queue: {}}
+      }
+      case CHECK_TRIAGE_ITEM: {
+        return {...state, queue: {...state.queue, [payload.queueId]: {
+          ...state.queue[payload.queueId],
+          checklist: {
+            ...state.queue[payload.queueId].checklist,
+            [payload.item]: true
+          }
+        }}}
       }
       case DISMISS_ERROR: {
       return {...state, error: null}

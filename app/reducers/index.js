@@ -32,7 +32,7 @@ const patientsPersistConfig = {
 const recordsPersistConfig = {
   key: 'records',
   storage,
-  blacklist: ['patients', 'loading', 'error']
+  blacklist: ['patients', 'loading', 'error', 'medicines']
 }
 
 const config = {

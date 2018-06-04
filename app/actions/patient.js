@@ -6,13 +6,14 @@ import {
   FETCH_PATIENT_QUEUE_REQUEST,
   QUEUE_PATIENT_REQUEST,
   TRANSFER_PATIENT_REQUEST,
-  RESET_PATIENT_QUEUE
+  RESET_PATIENT_QUEUE,
+  CHECK_TRIAGE_ITEM
 } from './constants';
   
   
-export const createPatient = (profile, tag) => ({
+export const createPatient = (profile, tag, picture) => ({
   type: CREATE_PATIENT_REQUEST,
-  payload: { profile, tag }
+  payload: { profile, tag, picture }
 })
 
 export const instantiate = () => ({
@@ -28,9 +29,9 @@ export const fetchPatientQueue = (stage) => ({
   payload: {stage}
 })
 
-export const queuePatient = (tag, patientId, stage) => ({
+export const queuePatient = (tag, picture, patientId, stage) => ({
   type: QUEUE_PATIENT_REQUEST,
-  payload: {tag, patientId, stage}
+  payload: {tag, picture, patientId, stage}
 })
 
 export const transferPatient = (queueId, stage) => ({

@@ -1,9 +1,11 @@
 import React, { Component } from 'react'
 import { Dimensions ,Image, View, Text, StatusBar, StyleSheet, ScrollView } from 'react-native'
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { fetchMedicalRecords } from '../../../actions/record';
 import Icon from 'react-native-fontawesome-pro';
 import Header from '../../../components/Header';
 import { IconButton, Button } from '../../../components/Button';
-import Modal from 'react-native-modal';
 
 const Appearance = ({sex}) => {
   const style = {
@@ -86,142 +88,43 @@ const Vitals = ({vitals}) => (
   </View>
 )
 
-const Cases = () => (
-  <View style={styles.cases}>
-    <ScrollView>
-      <View style={styles.record}>
-        <View style={{height:24, width:64, backgroundColor: '#FFCE45', borderRadius: 8, alignItems:'center', justifyContent:'center'}}>
-          <Text style={{fontFamily: 'Nunito-Bold', color: '#fff', fontSize: 12}}>123456</Text>
-        </View>
-
-        <View style={{height:'80%', width:'60%', alignItems:'flex-start', justifyContent:'center', paddingLeft:8}}>
-          <Text style={{fontFamily: 'Nunito-Bold', color: '#A4A6AA', fontSize: 16}}>11/07/2017</Text>
-          <Text style={{fontFamily: 'Nunito-Bold', color: '#3c4859', fontSize: 18}}>Fever</Text>
-        </View>
-        
-        <IconButton name="chevron-circle-right" type="solid" color="#3c4859" size={24}/>
-      </View>
-
-      <View style={styles.record}>
-        <View style={{height:24, width:64, backgroundColor: '#FFCE45', borderRadius: 8, alignItems:'center', justifyContent:'center'}}>
-          <Text style={{fontFamily: 'Nunito-Bold', color: '#fff', fontSize: 12}}>123456</Text>
-        </View>
-
-        <View style={{height:'80%', width:'60%', alignItems:'flex-start', justifyContent:'center', paddingLeft:8}}>
-          <Text style={{fontFamily: 'Nunito-Bold', color: '#A4A6AA', fontSize: 16}}>11/07/2017</Text>
-          <Text style={{fontFamily: 'Nunito-Bold', color: '#3c4859', fontSize: 18}}>Fever</Text>
-        </View>
-        
-        <IconButton name="chevron-circle-right" type="solid" color="#3c4859" size={24}/>
-      </View>
-      <View style={styles.record}>
-        <View style={{height:24, width:64, backgroundColor: '#FFCE45', borderRadius: 8, alignItems:'center', justifyContent:'center'}}>
-          <Text style={{fontFamily: 'Nunito-Bold', color: '#fff', fontSize: 12}}>123456</Text>
-        </View>
-
-        <View style={{height:'80%', width:'60%', alignItems:'flex-start', justifyContent:'center', paddingLeft:8}}>
-          <Text style={{fontFamily: 'Nunito-Bold', color: '#A4A6AA', fontSize: 16}}>11/07/2017</Text>
-          <Text style={{fontFamily: 'Nunito-Bold', color: '#3c4859', fontSize: 18}}>Fever</Text>
-        </View>
-        
-        <IconButton name="chevron-circle-right" type="solid" color="#3c4859" size={24}/>
-      </View>
-      <View style={styles.record}>
-        <View style={{height:24, width:64, backgroundColor: '#FFCE45', borderRadius: 8, alignItems:'center', justifyContent:'center'}}>
-          <Text style={{fontFamily: 'Nunito-Bold', color: '#fff', fontSize: 12}}>123456</Text>
-        </View>
-
-        <View style={{height:'80%', width:'60%', alignItems:'flex-start', justifyContent:'center', paddingLeft:8}}>
-          <Text style={{fontFamily: 'Nunito-Bold', color: '#A4A6AA', fontSize: 16}}>11/07/2017</Text>
-          <Text style={{fontFamily: 'Nunito-Bold', color: '#3c4859', fontSize: 18}}>Fever</Text>
-        </View>
-        
-        <IconButton name="chevron-circle-right" type="solid" color="#3c4859" size={24}/>
-      </View>
-    </ScrollView>
-  </View>
-)
-
-const NewConsultationSession = ({toggle, pathPrefix}) => (
-  <View style={styles.newConsultationSession}>
-    <Button title="New Case" titleColor="#3c4859" to={`${pathPrefix}/session`} icon="file-plus" width="95%" round/>
-    <Button title="New Folder" titleColor="#3c4859" icon="folder-open" width="95%" round/>
-    <Button title="Cancel" titleColor="#fff" bgColor="#d27787" onPress={toggle}/>
-  </View>
-)
-
-export default class Record extends Component {
+class Record extends Component {
   constructor(props) {
     super(props)
-    this.state = {
-      isModalPresent: false,
-      pathPrefix: props.match.url
-    }
+    this.fetchMedicalRecords = this.props.actions.fetchMedicalRecords.bind(this)
   }
-
-  componentWillUnmount() {
-    this.setState({ isModalPresent: false })
-  }
-
   componentWillMount() {
+    this.fetchMedicalRecords(this.props.patientId)
     StatusBar.setBarStyle('dark-content', true)
-  }
-
-  toggleNewSessionDialog() {
-    this.setState({isModalPresent: !this.state.isModalPresent})
   }
 
   render() {
     return (
       <View style={styles.container}>
-        <Header title="Medical Record" to="/consultation" />
-        <View style={styles.toolbar}>
-          <IconButton name="plus" onPress={this.toggleNewSessionDialog.bind(this)} color="#3c4859" />
-          <IconButton name="edit" color="#3c4859" />
-          <IconButton name="history" color="#3c4859"/>
-        </View>
         <ScrollView>
           <Appearance tag="31" picture=""/>
           <PatientName name="Preah R"/>
           <Vitals/>
-          <Cases />
         </ScrollView>
-        <Modal isVisible={this.state.isModalPresent}
-          backdropOpacity={0}
-          style={{height: Dimensions.get('window').height*.5, justifyContent: 'flex-end'}}>
-          <NewConsultationSession
-            toggle={this.toggleNewSessionDialog.bind(this)}
-            pathPrefix={this.state.pathPrefix}
-          />
-        </Modal>
       </View>
     )
   }
 }
 
-const mapStateToProps = (state, props) => ({
-  patient: state.record.patients[props.match.params]
-})
-
 const mapDispatchToProps = (dispatch) => ({
-
+  actions: bindActionCreators({fetchMedicalRecords}, dispatch)
 })
+
+const mapStateToProps = (state, props) => ({
+  record: state.records.patients[props.patientId]
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(Record)
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'flex-start',
-    paddingTop: '6%',
     backgroundColor: '#f5f6fb',
-  },
-  toolbar: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginRight: 12,
-    width: '40%',
-    height: 56,
-    alignItems: 'center',
-    alignSelf: 'flex-end'
   },
   appearance: {
     height: 80,
@@ -255,42 +158,5 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     flexWrap: 'wrap',
     flexDirection: 'row'
-  },
-  cases: {
-    height: 224,
-    width: 336,
-    marginVertical: 8,
-    alignSelf: 'center',
-  },
-  record: {
-    borderRadius: 6,
-    backgroundColor: '#fff',
-    height: 64,
-    width: '100%',
-    shadowColor: '#e4e4e4',
-    shadowOpacity: 0.7,
-    shadowOffset: { width: 1, height: 3 },
-    shadowRadius: 8,
-    marginVertical: 6,
-    borderStyle: 'solid',
-    borderLeftWidth: 5,
-    borderLeftColor: '#566DF0',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 8
-    
-  },
-  newConsultationSession: {
-    backgroundColor: '#fff',
-    height: 200,
-    width: '100%',
-    justifyContent: 'space-around',
-    borderRadius: 8,
-    shadowColor: '#3a4252',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.12,
-    shadowRadius: 10,
-    margin: 0
   }
 })

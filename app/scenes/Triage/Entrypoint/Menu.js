@@ -6,7 +6,6 @@ import { Link, Redirect } from 'react-router-native';
 import Modal from 'react-native-modal';
 import Spinner from 'react-native-spinkit';
 import { transferPatient } from '../../../actions/patient';
-import { fetchMedicalRecords } from '../../../actions/record';
 import Header from '../../../components/Header';
 import Icon from 'react-native-fontawesome-pro';
 import { Button } from '../../../components/Button'
@@ -16,31 +15,36 @@ const menuItems = [
     destination: '/vitals',
     icon: 'heartbeat',
     color: '#ef798a',
-    title: 'Vitals'
+    title: 'Vitals',
+    marker: 'vitals'
   },
   {
     destination: '/cheifcomplaints',
     icon: 'clipboard-list',
     color: '#f99945',
-    title: 'Chief Complaints'
+    title: 'Chief Complaints',
+    marker: 'cc'
   },
   {
     destination: '/history',
     icon: 'procedures',
     color: '#ffcb2f',
-    title: 'Previous Medical History'
+    title: 'Previous Medical History',
+    marker: 'pmh'
   },
   {
     destination: '/screening',
     icon: 'diagnoses',
     color: '#49e5aa',
-    title: 'Screening'
+    title: 'Screening',
+    marker: 'screening'
   },
   {
     destination: '/miscellaneous',
     icon: 'allergies',
     color: '#7d82b8',
-    title: 'Miscellaneous'
+    title: 'Miscellaneous',
+    marker: 'misc'
   }
 ]
 
@@ -58,15 +62,18 @@ class Menu extends Component {
     super(props)
     this.state = {
       queueId: props.match.params.queueId,
-      patient: this.props.patient.patient
+      patient: this.props.patient.patient,
+      checklist: this.props.patient.checklist
     }
     this.transferPatient = props.actions.transferPatient.bind(this)
-    this.fetchMedicalRecords = props.actions.fetchMedicalRecords.bind(this)
+    // this.fetchMedicalRecords = props.actions.fetchMedicalRecords.bind(this)
   }
 
   componentWillMount() {
-    this.fetchMedicalRecords(this.state.patient.id)
     StatusBar.setBarStyle('dark-content', true)
+  }
+  componentDidMount() {
+    console.log(this.state.checklist)
   }
 
   transfer() {
@@ -82,7 +89,9 @@ class Menu extends Component {
         <View style={styles.container}>
             <Header title="Add Records" to="/triage/patients/admission"/>
             <ScrollView>
-              {menuItems.map(({destination, icon, color, title}, i) => (
+              {menuItems
+              .filter(({marker}) => { return this.state.checklist[marker]===false })
+              .map(({destination, icon, color, title}, i) => (
                 <Metric
                   to={`/triage/patients/${this.state.queueId}${destination}`}
                   title={title}
@@ -128,7 +137,7 @@ class Menu extends Component {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-  actions: bindActionCreators({transferPatient, fetchMedicalRecords}, dispatch)
+  actions: bindActionCreators({transferPatient}, dispatch)
 })
 
 const mapStateToProps = (state, props) => ({

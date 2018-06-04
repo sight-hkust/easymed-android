@@ -17,7 +17,6 @@ const Header = ({title='Title', light=false, to='/'}) => {
       fontFamily: 'Nunito-Bold',
       textAlign: 'right',
       marginRight: 8,
-      paddingBottom: 4,
       backgroundColor: '#fff0',
       color: light?'#fff':'#3c4859'
     },

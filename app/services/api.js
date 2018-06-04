@@ -1,6 +1,6 @@
 import Parse from './parse';
 
-const register = async (username, password) => {
+export const register = async (username, password) => {
   const user = new Parse.User()
   user.set('username', username)
   user.set('password', password)
@@ -12,7 +12,7 @@ const register = async (username, password) => {
   }
 }
 
-const authenticate = async (username, password) => {
+export const authenticate = async (username, password) => {
   try {
     const user = await Parse.User.logIn(username, password)
     return user.authenticated()
@@ -21,7 +21,7 @@ const authenticate = async (username, password) => {
   }
 }
 
-const deauthenticate = async () => {
+export const deauthenticate = async () => {
   try {
     await Parse.User.logOut()
     return !(Parse.User.current() === null)
@@ -30,47 +30,35 @@ const deauthenticate = async () => {
   }
 }
 
-const createPatient = async (profile) => {
+export const createPatient = async (profile) => {
   const Patient = Parse.Object.extend('Patient')
   const Profile = Parse.Object.extend('Profile')
   let _profile = new Profile()
-  const picture = await new Parse.File(`${profile.name.regular}.JPG`, { base64: profile.picture }).save()
-  Object.keys(profile).forEach(attribute => 
-    attribute==='picture'?
-    _profile.set(attribute, picture):
-    _profile.set(attribute, profile[attribute])
-  )
+  Object.keys(profile).forEach(attribute => _profile.set(attribute, profile[attribute]))
   let _patient = new Patient()
   _patient.set('profile', _profile)
   try {
     await Promise.all([_profile.save(), _patient.save()])
     return _patient.id
   } catch (error) {
-    console.log(error)
     throw error
   }
 }
 
-const fetchMedicines = async (name) => {
+export const fetchMedicines = async () => {
   const Medicine = Parse.Object.extend('Medicine')
   const query = new Parse.Query(Medicine)
-  if(name){
-    query.equalTo(name)
-  }
   try {
     const result = await query.find()
-    return result.map((medicine) => medicine.attributes)
+    return result.map((medicine) => ({...medicine.attributes, id: medicine.id}))
   } catch (error) {
     throw error
   }
 }
 
-const fetchDiagnosis = async (name) => {
+export const fetchDiagnosises = async (name) => {
   const Diagnosis = Parse.Object.extend('Diagnosis')
   const query = new Parse.Query(Diagnosis)
-  if(name){
-    query.equalTo(name)
-  }
   try {
     const result = await query.find()
     return result.map((diagnosis) => diagnosis.attributes)
@@ -79,7 +67,7 @@ const fetchDiagnosis = async (name) => {
   }
 }
 
-const fetchPatients = async () => {
+export const fetchPatients = async () => {
   const Patient = Parse.Object.extend('Patient')
   const Profile = Parse.Object.extend('Profile')
   const query = new Parse.Query(Patient)
@@ -100,23 +88,24 @@ const fetchPatients = async () => {
   }
 }
 
-const fetchPatientQueue = async (stage) => {
+export const fetchPatientQueue = async (stage) => {
   const Queue = Parse.Object.extend('Queue')
   const query = new Parse.Query(Queue).equalTo('stage', stage)
   try {
     const result = await query.find()
-    const patients = await Promise.all([...result.map(async ({id, attributes: {patient, tag}}) => {
+    const queue = await result.reduce(async (patients, {id, attributes: {patient, tag}}) => {
       patient = await findPatient(patient.id)
       const profile = await findProfile(patient.attributes.profile.id)
-      return {patient: {...profile, tag, id: patient.id}, queueId: id}
-    })])
-    return patients
+      patients[id] = {...profile, tag, id: patient.id}
+      return patients
+    }, {})
+    return queue
   } catch (error) {
     throw error
   }
 }
 
-const updateMedicalHistory = async (history, patientId) => {
+export const updateMedicalHistory = async (history, patientId) => {
   try {
     const MedicalHistory = Parse.Object.extend('MedicalHistory')
     const _patient = await findPatient(patientId)
@@ -136,12 +125,11 @@ const updateMedicalHistory = async (history, patientId) => {
       return previousMedicalHistory.id
     }
   } catch (error) {
-    console.log(error)
     throw error
   }
 }
 
-const updateScreeningResult = async (screening, patientId) => {
+export const updateScreeningResult = async (screening, patientId) => {
   try {
     const Screening = Parse.Object.extend('Screening')
     const _patient = await findPatient(patientId)
@@ -161,14 +149,12 @@ const updateScreeningResult = async (screening, patientId) => {
       return screeningResult.id
     }
   } catch (error) {
-    console.log(error)
     throw error
   }
 }
 
-const updateMedicalConditions = async (conditions, patientId) => {
+export const updateMedicalConditions = async (conditions, patientId) => {
   try {
-    console.log('hello')
     const MedicalCondition = Parse.Object.extend('MedicalCondition')
     const _patient = await findPatient(patientId)
     const record = _patient.get('conditions')
@@ -187,39 +173,48 @@ const updateMedicalConditions = async (conditions, patientId) => {
       return medicalConditions.id
     }
   } catch (error) {
+    throw error
+  }
+}
+
+export const fetchMedicalRecords = async (queueId) => {
+  try {
+    const Queue = Parse.Object.extend('Queue')
+    const Vitals = Parse.Object.extend('Vitals')
+    const ChiefComplaints = Parse.Object.extend('ChiefComplaints')
+    const queuingPatient = await new Parse.Query(Queue).get(queueId)
+    const vitals = await new Parse.Query(Vitals).get(queuingPatient.get('vitals').id)
+    const cc = await new Parse.Query(ChiefComplaints).get(queuingPatient.get('cc').id)
+    const { regular, khmer } = queuingPatient.get('patient').get('profile').get('name')
+    return {name: khmer?khmer:regular, vitals: {...vitals.attributes}, cc, pmh: '', screening: '', conditions: '', picture: queuingPatient.get('snapshot').url()}
+  } catch (error) {
     console.log(error)
     throw error
   }
 }
 
-const fetchMedicalRecords = async (patientId) => {
-  try {
-    const _patient = await findPatient(patientId)
-    let result = { id: _patient.id }
-  
-  } catch (error) {
-    throw error
-  }
-}
-
-const queuePatient = async (tag, patientId, stage) => {
+export const queuePatient = async (tag, picture, patientId, stage) => {
   try {
     const Queue = Parse.Object.extend('Queue')
     const Patient = Parse.Object.extend('Patient')
     const _patient = await new Parse.Query(Patient).get(patientId)
     const enlisting = new Queue()
+    console.log(picture)
+    const snapshot = await new Parse.File(`${patientId}.JPG`, { base64: picture }).save()
     enlisting.set('stage', stage)
     enlisting.set('patient', _patient)
     enlisting.set('tag', Math.abs(tag))
+    enlisting.set('snapshot', snapshot)
     await enlisting.save()
     const profile = await findProfile(_patient.attributes.profile.id)
     return {patient: {...profile, tag, id: patientId}, queueId: enlisting.id}
   } catch (error) {
+    console.log(error)
     throw error
   }
 }
 
-const transferPatient = async (queueId, stage) => {
+export const transferPatient = async (queueId, stage) => {
   try {
     const Queue = Parse.Object.extend('Queue')
     const queuingPatient = await new Parse.Query(Queue).get(queueId)
@@ -231,7 +226,7 @@ const transferPatient = async (queueId, stage) => {
   }
 }
 
-const findProfile = async (id) => {
+export const findProfile = async (id) => {
   try {
     const Profile = Parse.Object.extend('Profile')
     const _profile = (await new Parse.Query(Profile).get(id)).attributes
@@ -241,7 +236,7 @@ const findProfile = async (id) => {
   }
 }
 
-const findPatient = async (patientId) => {
+export const findPatient = async (patientId) => {
   try {
     const Patient = Parse.Object.extend('Patient')
     const _patient = await new Parse.Query(Patient).get(patientId)
@@ -251,7 +246,7 @@ const findPatient = async (patientId) => {
   }
 }
 
-const findMedicalRecord = async (type, id) => {
+export const findMedicalRecord = async (type, id) => {
   try {
     let record;
     switch(type) {
@@ -262,7 +257,6 @@ const findMedicalRecord = async (type, id) => {
       }
       case 'gynaecology': {
         const Gynaecology = Parse.Object.extend('Gynaecology')
-        console.log(id)
         record = await new Parse.Query(Gynaecology).get(id)
         break
       }
@@ -278,7 +272,7 @@ const findMedicalRecord = async (type, id) => {
   }
 }
 
-const insertVitalsRecord = async (data) => {
+export const insertVitalsRecord = async (data) => {
   try {
     const Vitals = Parse.Object.extend('Vitals')
     const record = new Vitals()
@@ -290,7 +284,7 @@ const insertVitalsRecord = async (data) => {
   }
 }
 
-const insertGynaecologyRecord = async (data) => {
+export const insertGynaecologyRecord = async (data) => {
   try {
     const Gynaecology = Parse.Object.extend('Gynaecology')
     const record = new Gynaecology()
@@ -303,7 +297,7 @@ const insertGynaecologyRecord = async (data) => {
   }
 }
 
-const insertChiefComplaintsRecord = async (data) => {
+export const insertChiefComplaintsRecord = async (data) => {
   try {
     const ChiefComplaints = Parse.Object.extend('ChiefComplaints')
     const record = new ChiefComplaints()
@@ -315,7 +309,7 @@ const insertChiefComplaintsRecord = async (data) => {
   }
 }
 
-const addMedicalCase = async (records, patientId) => {
+export const addMedicalCase = async (records, patientId) => {
   try {
     const patient = await findPatient(patientId)
     const relation = patient.relation('cases')
@@ -329,7 +323,7 @@ const addMedicalCase = async (records, patientId) => {
   }
 }
 
-const attachMetadata = async (recordId, recordType, queueId) => {
+export const attachMetadata = async (recordId, recordType, queueId) => {
   try {
     const Queue = Parse.Object.extend('Queue')
     const queuingPatient = await new Parse.Query(Queue).get(queueId)
@@ -338,28 +332,6 @@ const attachMetadata = async (recordId, recordType, queueId) => {
     await queuingPatient.save()
     return queuePatient.id
   } catch (error) {
-    console.log(error)
     throw error
   }
-}
-
-export {
-  register,
-  authenticate,
-  deauthenticate,
-  insertVitalsRecord,
-  attachMetadata,
-  insertGynaecologyRecord,
-  insertChiefComplaintsRecord,
-  updateMedicalHistory,
-  updateScreeningResult,
-  updateMedicalConditions,
-  createPatient,
-  queuePatient,
-  transferPatient,
-  fetchPatients,
-  fetchPatientQueue,
-  fetchDiagnosis,
-  fetchMedicines,
-  fetchMedicalRecords
 }

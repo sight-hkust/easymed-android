@@ -31,9 +31,9 @@ const ServiceQueue = ({queue, isLoading, onRefresh}) => {
     <ScrollView refreshControl={<RefreshControl refreshing={isLoading} onRefresh={onRefresh}/>}>
       {queue.length === 0 && <EmptyStub />}
       {queue.map(({patient, queueId}) => (
-        <Patient 
+        <Patient
           patient={patient}
-          to={`/consultation/patients/${patient.id}`}
+          to={`/consultation/patients/${queueId}`}
           key={queueId} />
       ))}
     </ScrollView>

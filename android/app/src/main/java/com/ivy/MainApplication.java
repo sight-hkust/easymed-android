@@ -7,6 +7,13 @@ import com.horcrux.svg.SvgPackage;
 import com.react.rnspinkit.RNSpinkitPackage;
 import com.reactlibrary.RNSketchViewPackage;
 import br.com.classapp.RNSensitiveInfo.RNSensitiveInfoPackage;
+import com.beefe.picker.PickerViewPackage;
+import com.BV.LinearGradient.LinearGradientPackage;
+import com.imagepicker.ImagePickerPackage;
+import com.horcrux.svg.SvgPackage;
+import com.react.rnspinkit.RNSpinkitPackage;
+import com.reactlibrary.RNSketchViewPackage;
+import br.com.classapp.RNSensitiveInfo.RNSensitiveInfoPackage;
 import com.BV.LinearGradient.LinearGradientPackage;
 import com.imagepicker.ImagePickerPackage;
 import com.facebook.react.ReactNativeHost;
@@ -30,6 +37,13 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new SvgPackage(),
+            new RNSpinkitPackage(),
+            new RNSketchViewPackage(),
+            new RNSensitiveInfoPackage(),
+            new PickerViewPackage(),
+            new LinearGradientPackage(),
+            new ImagePickerPackage(),
             new IritechPackage(),
             new SvgPackage(),
             new RNSpinkitPackage(),

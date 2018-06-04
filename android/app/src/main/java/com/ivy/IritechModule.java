@@ -57,25 +57,25 @@ public class IritechModule extends ReactContextBaseJavaModule {
 
     public IritechModule(ReactApplicationContext reactContext) {
         super(reactContext);
-        mContext = reactContext;
+        // mContext = reactContext;
 
-        iddkConfig = new IddkConfig();
-        iddkConfig.setCommStd(IddkCommStd.IDDK_COMM_USB);
-        iddkConfig.setResetOnOpenDevice(true);
-        iddkConfig.setEnableLog(false);
-        mCaptureStatus = new IddkCaptureStatus();
+        // iddkConfig = new IddkConfig();
+        // iddkConfig.setCommStd(IddkCommStd.IDDK_COMM_USB);
+        // iddkConfig.setResetOnOpenDevice(true);
+        // iddkConfig.setEnableLog(false);
+        // mCaptureStatus = new IddkCaptureStatus();
 
 
-        if (iddkApi.getSdkConfig(iddkConfig).getValue() == IddkResult.IDDK_OK) {
-            if (iddkConfig.getCommStd().getValue() == IddkCommStd.IDDK_COMM_USB) {
-                Log.d(TAG, "USB Comm being used for iris cam communication");
-            } else {
-                iddkConfig.setCommStd(IddkCommStd.IDDK_COMM_USB);
-                iddkApi.setSdkConfig(iddkConfig);
-            }
-        }
+        // if (iddkApi.getSdkConfig(iddkConfig).getValue() == IddkResult.IDDK_OK) {
+        //     if (iddkConfig.getCommStd().getValue() == IddkCommStd.IDDK_COMM_USB) {
+        //         Log.d(TAG, "USB Comm being used for iris cam communication");
+        //     } else {
+        //         iddkConfig.setCommStd(IddkCommStd.IDDK_COMM_USB);
+        //         iddkApi.setSdkConfig(iddkConfig);
+        //     }
+        // }
 
-        iddkApi = Iddk2000Apis.getInstance(reactContext);
+        // iddkApi = Iddk2000Apis.getInstance(reactContext);
     }
 
 

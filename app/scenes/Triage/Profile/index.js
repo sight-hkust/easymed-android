@@ -309,7 +309,6 @@ class Profile extends Component {
       idob: { day: 0, week: 0, month: 0 },
       showSubmit: false,
       profile: {
-        picture: null,
         name: {
           regular: '',
           khmer: ''
@@ -320,6 +319,7 @@ class Profile extends Component {
         nationality: 'Khmer',
       },
       tag: '',
+      picture: null,
       picturePath: null,
       options: {
         title: 'Select Picture',
@@ -360,7 +360,7 @@ class Profile extends Component {
     ImagePicker.showImagePicker(this.state.options, (response) => {    
       if (!response.didCancel && !response.error) {
         const {data, uri} = response
-        this.setState(({profile, picturePath}) => ({ profile: { ...profile, picture: data }, picturePath: { uri }}))
+        this.setState(({picture, picturePath}) => ({ picture: data, picturePath: { uri }}))
       }
     })
   }
@@ -374,8 +374,8 @@ class Profile extends Component {
   }
 
   submit() {
-    const { profile, tag } = this.state
-    this.createPatient(profile, tag)
+    const { profile, tag, picture } = this.state
+    this.createPatient(profile, tag, picture)
   }
 
   render() {
@@ -384,7 +384,7 @@ class Profile extends Component {
     }
     else {
       return (
-        <KeyboardAvoidingView style={styles.parentContainer} behavior={'position'}>
+        <KeyboardAvoidingView style={styles.parentContainer}>
           <HeaderContainer xOffset={this.state.xOffset} stepsLength={this.state.questions.length-1}/>
           <ScrollView 
             ref = 'questionScroll'
@@ -462,7 +462,8 @@ export default connect(mapStateToProps, mapDispatchToProps)(Profile)
 
 const styles = StyleSheet.create({
   parentContainer: {
-    flex: 1,
+    width: Dimensions.get('window').width,
+    height: Dimensions.get('window').height-StatusBar.currentHeight,
     justifyContent: 'flex-start',
     backgroundColor: '#f5f6fb',
   },

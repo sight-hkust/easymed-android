@@ -12,7 +12,8 @@ import {
   Text,
   TouchableOpacity,
   Dimensions,
-  Switch
+  Switch,
+  Platform
 } from 'react-native'
 import LinearGradient from 'react-native-linear-gradient';
 import { IconButton, Button, KeyboardDismissButton } from '../../../components/Button'
@@ -25,68 +26,53 @@ import Step from '../../../components/Step'
 import Header from '../../../components/Header';
 import DatePicker from '../../../components/DatePicker';
 
-const screenWidth = Dimensions.get('window').width
-
-const gradientLayout = {
-  colors: ['#f0788a','#ef546a'],
-  start: {x: 0.0, y: 1.0},
-  end: {x: 1.0, y: 1.0},
-  locations: [0, 0.75]
-}
+const {width, height} = Dimensions.get('window')
 
 const Instruction = ({step}) => {
   switch(step) {
     case 'deworming': {
       return (
         <View style={styles.textWrapper}>
-          <Text style={styles.instruction}>Identify the patient's</Text>
-          <Text style={styles.instruction}>last deworming date</Text>
-          <Text style={styles.instruction}>from below</Text>
+          <Text style={styles.instruction}>Last Deworming Date</Text>
         </View>
       )
     }
     case 'bloodPressure': {
       return (
         <View style={styles.textWrapper}>
-          <Text style={styles.instruction}>Enter the upper and</Text>
-          <Text style={styles.instruction}>lower blood pressure</Text>
-          <Text style={styles.instruction}>of the patient</Text>
+          <Text style={styles.instruction}>Upper and Lower</Text>
+          <Text style={styles.instruction}>Blood Pressure</Text>
         </View>
       )
     }
     case 'pulseRateRespirationRate': {
       return (
         <View style={styles.textWrapper}>
-          <Text style={styles.instruction}>Enter the pulse rate</Text>
-          <Text style={styles.instruction}>and respiration rate</Text>
-          <Text style={styles.instruction}>of the patient</Text>
+          <Text style={styles.instruction}>Pulse Rate</Text>
+          <Text style={styles.instruction}>and Respiration rate</Text>
         </View>
       )
     }
     case 'weightHeight': {
       return (
         <View style={styles.textWrapper}>
-          <Text style={styles.instruction}>Enter the</Text>
-          <Text style={styles.instruction}>weight and height</Text>
-          <Text style={styles.instruction}>of the patient</Text>
+          <Text style={styles.instruction}>Weight</Text>
+          <Text style={styles.instruction}>and Height</Text>
         </View>
       )
     }
     case 'temperature': {
       return (
         <View style={styles.textWrapper}>
-          <Text style={styles.instruction}>Enter the body</Text>
-          <Text style={styles.instruction}>temperature</Text>
-          <Text style={styles.instruction}>of the patient</Text>
+          <Text style={styles.instruction}>Body Temperature</Text>
         </View>
       )
     }
     case 'SpO2bloodSugar': {
       return (
         <View style={styles.textWrapper}>
-          <Text style={styles.instruction}>Enter the SpO2</Text>
-          <Text style={styles.instruction}>and blood sugar</Text>
-          <Text style={styles.instruction}>of the patient</Text>
+          <Text style={styles.instruction}>SpO2</Text>
+          <Text style={styles.instruction}>and Glucose level</Text>
         </View>
       )
     }
@@ -226,7 +212,7 @@ const Response = ({step, mutate, ldw}) => {
 const HeaderContainer = ({xOffset, path, stepsLength}) => (
   <View style={styles.headerContainer}>
     <Header title="Vitals" light="true" to={`/triage/patients/${path}`}/>
-    <Step allSteps={stepsLength} step={xOffset/screenWidth} backgroundColor='#fff' highlightColor='#FAEB9A' />
+    <Step allSteps={stepsLength} step={xOffset/width} backgroundColor='#fff' highlightColor='#FAEB9A' />
   </View>
 )
 
@@ -281,7 +267,7 @@ class Vitals extends Component {
 
   render() {
     return (
-      <KeyboardAvoidingView style={styles.parentContainer} behavior="position">
+      <KeyboardAvoidingView style={styles.parentContainer} behavior= {(Platform.OS === 'ios')? "padding" : null}>
         <HeaderContainer xOffset={this.state.xOffset} path={this.state.queueId} stepsLength={this.state.questions.length-1}/>
         <ScrollView 
           ref = 'questionScroll'
@@ -293,7 +279,7 @@ class Vitals extends Component {
           style={styles.questionContainer}
           >
           {this.state.questions.map((step, i) => (
-            <View style={{width: screenWidth}} key={i}>
+            <View style={{width}} key={i}>
               <Instruction step={step}/>
             </View>
           ))}
@@ -308,7 +294,7 @@ class Vitals extends Component {
           style={styles.responseContainer}
           >
           {this.state.questions.map((step, i) => (
-            <View style={{width: screenWidth, justifyContent:'flex-start'}} key={i}>
+            <View style={{width, justifyContent:'flex-start'}} key={i}>
               <Response step={step} mutate={this.setState.bind(this)} ldw={this.state.vitals.lastDewormingDate}/>
               {this.state.isKeyboardPresent && <KeyboardDismissButton top={-42} left={8}/>}
             </View>
@@ -367,22 +353,22 @@ export default connect(mapStateToProps, mapDispatchToProps)(Vitals)
 
 const styles = StyleSheet.create({
   parentContainer: {
-    flex: 1,
-    justifyContent: 'flex-start',
+    height: Platform.select({ios: Dimensions.get('window').height, android: Dimensions.get('window').height-StatusBar.currentHeight}),
+    width: Dimensions.get('window').width,
     backgroundColor: '#f5f6fb',
     paddingBottom: 16
   },
   headerContainer: {
-    height: '20%',
+    height: height*.2,
     justifyContent: 'space-around',
     backgroundColor: '#f0788a',
   },
   questionContainer:{
-    height: '24%',
+    height: height*.24,
     backgroundColor: '#f0788a',
   },
   responseContainer:{
-    height: '48%',
+    height: height*.48,
     backgroundColor: '#f5f6fb',
     paddingTop: 40
   },
@@ -390,7 +376,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     paddingHorizontal: 18,
     backgroundColor: 'transparent',
-    paddingBottom: '12%'
+    paddingBottom: height*.12
   },
   instruction: {
     fontSize: 26,

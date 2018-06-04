@@ -33,7 +33,6 @@ const TextBox = ({value, width, placeholder, onChangeText, onSubmitEditing}) => 
         style={[styles.inputBox, {height: Platform.OS == 'android' ? 40 : '100%'}]}
         value={value}
         placeholder={placeholder}
-        underlineColorAndroid='transparent'
         onChangeText={onChangeText}
         onSubmitEditing={onSubmitEditing}
         multiline = {true}
@@ -71,7 +70,9 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 1, height: 3 },
     shadowRadius: 5,
     width: '75%',
-    height: 240
+    height: 240,
+    paddingHorizontal: 8,
+    paddingVertical: 8
   },
   unit: {
     flex: 8,

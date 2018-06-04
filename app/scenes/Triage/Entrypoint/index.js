@@ -6,6 +6,7 @@ import { Link } from 'react-router-native';
 import { IconButton } from '../../../components/Button'
 import Icon from 'react-native-fontawesome-pro';
 import Header from '../../../components/Header'
+import IritechModule from '../../../components/IrisScanner'
 
 const createGradient = {
   colors: ['#ffe6ad','#fba05e'],
@@ -54,6 +55,11 @@ export default class Entrypoint extends Component {
         <Header title="Triage" />
         <CreatePatientProfile />
         <LoadPatientProfile />
+        <TouchableOpacity onPress={() => {
+          console.log(IritechModule)
+        }}>
+          <Text>Click me</Text>
+        </TouchableOpacity>
       </View>
     )
   }
