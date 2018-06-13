@@ -6,41 +6,26 @@ import {
   StatusBar,
   StyleSheet,
   Text,
-  TouchableOpacity,
   Dimensions,
-  Switch,
   KeyboardAvoidingView,
   Keyboard
 } from 'react-native'
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { Redirect } from 'react-router-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import DropdownAlert from 'react-native-dropdownalert'
 import { createPatient, instantiate, queuePatient } from '../../../actions/patient';
-import LinearGradient from 'react-native-linear-gradient';
-import Modal from 'react-native-modal';
-import Spinner from 'react-native-spinkit';
-import Icon from 'react-native-fontawesome-pro';
 import ImagePicker from 'react-native-image-picker';
+import Loading from '../../../components/Loading';
 import Header from '../../../components/Header';
-import { IconButton, Button, KeyboardDismissButton } from '../../../components/Button'
+import { Button } from '../../../components/Button'
 import TextField from '../../../components/TextField'
 import InfantSelect from '../../../components/InfantSelect';
-import Step from '../../../components/Step'
 import Sex from '../../../components/Sex';
 import MaritalStatus from '../../../components/MaritalStatus';
-import Birthday from '../../../components/Birthday';
 
 const { width, height } = Dimensions.get('window')
 const screenWidth = Dimensions.get('window').width
-
-
-const gradientLayout = {
-  colors: ['#19AEFA','#1D9DFF'],
-  start: {x: 0.0, y: 1.0},
-  end: {x: 1.0, y: 1.0},
-  locations: [0, 0.75]
-}
 
 const Instruction = ({step}) => {
   switch(step) {
@@ -68,8 +53,7 @@ const Instruction = ({step}) => {
     case 'infant': {
       return (
         <View style={styles.textWrapper}>
-          <Text style={styles.instruction}>Is patient an infant?</Text>
-          <Text style={styles.instruction}>{'(< 24 months old)'}</Text>
+          <Text style={styles.instruction}>Is patient an adult?</Text>
         </View>
       )
     }
@@ -292,18 +276,11 @@ const Response = ({step, mutate, handleCameraPress, pictureSource}) => {
   }
 }
 
-const HeaderContainer = ({xOffset, stepsLength}) => (
-  <View style={styles.headerContainer}>
-    <Header title="Profile" light="true" to="/triage"/>
-    <Step allSteps={stepsLength} step={xOffset/screenWidth} backgroundColor='#fff' highlightColor='#FAEB9A' />
-  </View>
-)
 class Profile extends Component {
   constructor(props) {
     super(props);
     this.handleScroll = this.handleScroll.bind(this);
     this.state = {
-      isKeyboardPresent: false,
       questions: ['photo','tag','name','gender','infant','doba','married','nationality'],
       xOffset: 0,
       idob: { day: 0, week: 0, month: 0 },
@@ -328,7 +305,8 @@ class Profile extends Component {
         maxHeight: 500,
         mediaType: 'photo'
       },
-      queueStatus: false
+      queueStatus: false,
+      dismiss: false
     }
     this.createPatient = props.actions.createPatient
     this.reset = props.actions.instantiate
@@ -346,14 +324,28 @@ class Profile extends Component {
     this.refs.responseScroll.scrollTo({x: x, animated:false})
   }
 
+  componentWillReceiveProps(nextProps) {
+    if(this.props.queueId !== nextProps.queueId) {
+      console.log(nextProps.queueId)
+      this.dropdown.alertWithType('success', 'Success', `New patient's profile has been successfully saved.`)
+    }
+    if(this.props.error !== nextProps.error) {
+      this.dropdown.alertWithType('error', 'Error', `${nextProps.error}`)
+    }
+  }
+
+  onClose(data) {
+    if(data.type === 'success') {
+      this.setState({dismiss: true})
+    }
+  }
+
   componentWillUnmount() {
     this.reset()
   }
 
   componentWillMount() {
     StatusBar.setBarStyle('light-content', true)
-    this.keyboardWillShowListener = Keyboard.addListener('keyboardWillShow', this._keyboardWillShow.bind(this))
-    this.keyboardWillHideListener = Keyboard.addListener('keyboardWillHide', this._keyboardWillHide.bind(this))
   }
 
   handleCameraPress(){
@@ -365,27 +357,22 @@ class Profile extends Component {
     })
   }
 
-  _keyboardWillShow () {
-    this.setState(previousState => ({isKeyboardPresent: true}))
-  }
-
-  _keyboardWillHide () {
-    this.setState(previousState => ({isKeyboardPresent: false}))
-  }
-
   submit() {
     const { profile, tag, picture } = this.state
     this.createPatient(profile, tag, picture)
   }
 
   render() {
-    if(this.props.queueId) {
+    if(this.state.dismiss) {
+      console.log(this.props.queueId)
       return <Redirect to={`/triage/patients/${this.props.queueId}`}/>
     }
     else {
       return (
         <KeyboardAvoidingView style={styles.parentContainer}>
-          <HeaderContainer xOffset={this.state.xOffset} stepsLength={this.state.questions.length-1}/>
+          <View style={styles.headerContainer}>
+            <Header title="Profile" light="true" to="/triage"/>
+          </View>
           <ScrollView 
             ref = 'questionScroll'
             horizontal
@@ -418,30 +405,21 @@ class Profile extends Component {
           </ScrollView>
 
           <View style={{height:'8%'}}>
-            <Button 
+            {
+              this.state.profile.sex.length > 0 &&
+              this.state.profile.dob !== null &&
+              <Button 
                   title="Submit" 
                   onPress={this.submit.bind(this)} 
                   bgColor="#1d9dff" titleColor="#fff" 
                   icon="chevron-right"
                   width="50%"
                   round
-            />
+              />
+             }
           </View>
-          <Modal
-            isVisible={this.props.loading}
-            animationIn="fadeIn"
-            backdropOpacity={0}
-            style={{justifyContent: 'center'}}
-          >
-            <View style={styles.loading}>
-              <Spinner
-              isVisible={this.props.loading}
-              size={44}
-              style={{alignSelf: 'center'}}
-              type='Bounce' 
-              color='#81e2d9'/>
-            </View>
-          </Modal>
+          <Loading isLoading={this.props.loading} />
+          <DropdownAlert ref={ref => this.dropdown = ref} onClose={data => this.onClose(data)} closeInterval={2500}/>
         </KeyboardAvoidingView>
       )
     }
@@ -494,14 +472,5 @@ const styles = StyleSheet.create({
   response: {
     alignSelf: 'stretch',
     alignItems: 'center',
-  },
-  loading: {
-    alignSelf: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    height: 88,
-    width: 88,
-    justifyContent: 'center',
-    alignItems:'center',
-    borderRadius: 8
   }
 })

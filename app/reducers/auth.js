@@ -8,7 +8,7 @@ import {
   AUTH_LOGOUT_REQUEST,
   AUTH_LOGOUT_SUCCESS,
   AUTH_LOGOUT_ERROR,
-  DISMISS_ERROR
+  RESET_ERROR
 } from '../actions/constants';
 
 const initialState = {
@@ -46,7 +46,7 @@ const authReducer = (state = initialState, {type, payload}) => {
     case AUTH_LOGOUT_ERROR: {
       return {...state, loading: false, error: payload.error}
     }
-    case DISMISS_ERROR: {
+    case RESET_ERROR: {
       return {...state, error: null}
     }
     default: return state;

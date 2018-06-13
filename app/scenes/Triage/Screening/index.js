@@ -2,149 +2,90 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { 
+  Alert,
   View,
-  KeyboardAvoidingView,
   Keyboard,
-  Image,
   ScrollView,
   StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
-  Dimensions,
-  Switch
+  TouchableWithoutFeedback,
+  Dimensions
 } from 'react-native'
-import LinearGradient from 'react-native-linear-gradient';
-import { IconButton, Button, KeyboardDismissButton } from '../../../components/Button'
-import Icon from 'react-native-fontawesome-pro';
-import Modal from 'react-native-modal';
-import Spinner from 'react-native-spinkit';
-import {TextField, TextBox} from '../../../components/TextField'
-import Step from '../../../components/Step'
-import BooleanSelect from '../../../components/BooleanSelect';
+import { Redirect } from 'react-router-native';
+import { Button } from '../../../components/Button'
+import Icon from 'react-native-fontawesome-pro'
+import DropdownAlert from 'react-native-dropdownalert'
+import Loading from '../../../components/Loading'
+import { TextBox } from '../../../components/TextField'
 import Header from '../../../components/Header';
 import { updateScreeningStatus } from '../../../actions/record'
 
-const screenWidth = Dimensions.get('window').width
+const { width, height } = Dimensions.get('window')
 
-const gradientLayout = {
-  colors: ['#58DACF','#34D2C5'],
-  start: {x: 0.0, y: 1.0},
-  end: {x: 1.0, y: 1.0},
-  locations: [0, 0.75]
-}
-
-const stepList = ['tobacco', 'ETOH', 'drugUse', 'otherSH',];
-
-const Instruction = ({step}) => {
-  switch(step) {
-    case 'tobacco': {
-      return(
-        <View style={styles.textWrapper}>
-          <Text style={styles.instruction}>Tobacco Use?</Text>
-        </View>      
-      )
-    }
-    case 'ETOH': {
-      return(
-        <View style={styles.textWrapper}>
-          <Text style={styles.instruction}>Alchohol Use?</Text>
-        </View>      
-      )
-    }
-    case 'drugUse': {
-      return(
-        <View style={styles.textWrapper}>
-          <Text style={styles.instruction}>Drug Use?</Text>
-        </View>      
-      )
-    }
-    case 'otherSH': {
-      return(
-        <View style={styles.textWrapper}>
-          <Text style={styles.instruction}>Social History?</Text>
-        </View>      
-      )
-    }
-  } 
-}
-
-const SubmitButton = () => (
-  <View style={{width:'100%', position:'absolute', top:'100%', zIndex:10}}>
-    <Button title="Submit" icon="chevron-right" titleColor="#3c4859" round width="50%"/>
-  </View>
-)
-
-const Response = ({step, mutate}) => {
-  switch(step) {
-    case 'tobacco': {
-      return(
-        <View style={styles.response}>
-          <BooleanSelect onSelect={(tobaccoUse) => 
-            mutate(
-              ({screening}) => ({ screening: { ...screening, tobaccoUse}})
-            )
-          }/>
-        </View>
-      )
-    }
-    case 'ETOH': {
-      return(
-        <View style={styles.response}>
-          <BooleanSelect onSelect={(alchoholUse) => 
-            mutate(
-              ({screening}) => ({ screening: { ...screening, alchoholUse}})
-            )
-          }/>
-        </View>
-      )
-    }
-    case 'drugUse': {
-      return(
-        <View style={styles.response}>
-          <BooleanSelect onSelect={(drugUse) => 
-            mutate(
-              ({screening}) => ({ screening: { ...screening, drugUse}})
-            )
-          }/>
-        </View>
-      )
-    }
-    case 'otherSH': {
-      return(
-        <View style={{alignItems:'center'}}>
-          <TextBox placeholder="Type the social history here" width="80%" onChangeText={
-            (other) => mutate(
-              ({screening}) => ({ screening: { ...screening, other}})
-            )
-          }/>
-        </View>    
-      )
+class Survey extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      selected: '',
+      dismiss: false
     }
   }
-}
 
-const HeaderContainer = ({xOffset, path}) => (
-  <View style={styles.headerContainer}>
-    <Header title="Screening" light="true" to={`/triage/patients/${path}`}/>
-    <Step allSteps={stepList.length-1} step={xOffset/screenWidth} backgroundColor='#fff' highlightColor='#FAEB9A' />
-  </View>
-)
+  render() {
+    const icons = {
+      drug: 'pills',
+      alchohol: 'beer',
+      tobacco: 'smoking'
+    }
+    const baseStyle = { width: width*.4, height: height*.05, alignItems: 'center', justifyContent: 'center'}
+    return (
+      <View style={styles.surveyContainer}>
+        <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'flex-start', alignSelf:'flex-start', paddingTop: 16}}>
+          <Icon name={icons[this.props.title]} color="#3c4859" type="solid" size={20}/>
+          <Text style={{fontFamily: 'Nunito-Bold', fontSize: 16, color:'#3c4859', marginLeft: 8}}>{this.props.title.toUpperCase()} USE</Text>
+        </View>
+        <View style={{flexDirection: 'row'}}>
+        <TouchableOpacity 
+          style={{...StyleSheet.flatten(baseStyle), backgroundColor: '#06D6A0', borderBottomLeftRadius: 5}}
+          onPress={() => {
+            this.setState({selected: 'yes'})
+            this.props.onSelect('yes')
+          }}
+        >
+          <Icon name={this.state.selected==='yes'?'check-circle':'check'} color="#fff" type="solid"/>
+        </TouchableOpacity>
+        <TouchableOpacity 
+          style={{...StyleSheet.flatten(baseStyle), backgroundColor: '#EF476F', borderBottomRightRadius: 5}}
+          onPress={() => {
+            this.setState({selected: 'no'})
+            this.props.onSelect('no')
+          }}
+        >
+          <Icon name={this.state.selected==='no'?'times-circle':'times'} color="#fff" type="solid"/>
+        </TouchableOpacity>
+        </View>
+      </View>
+    )
+  }
+}
 
 class Screening extends Component {
   constructor(props) {
     super(props);
     this.handleScroll = this.handleScroll.bind(this);
     this.updateScreeningStatus = this.props.actions.updateScreeningStatus.bind(this)
-    isKeyboardPresent: false,
     this.state = {
       xOffset:0,
       queueId: props.match.params.queueId,
       screening: {
-        tobaccoUse: '',
-        alchoholUse: '',
-        drugUse: '',
-        other: ''
+        substanceUsage: {
+          tobacco: '',
+          alchohol: '',
+          drug: '',
+        },
+        remarks: ''
       }
     }
   }
@@ -154,87 +95,86 @@ class Screening extends Component {
     this.refs.responseScroll.scrollTo({x: x, animated:false})
   }
 
+  componentWillReceiveProps(nextProps) {
+    if(this.props.hasTaskCompleted !== nextProps.hasTaskCompleted) {
+      this.dropdown.alertWithType('success', 'Success', `Screening result has been successfully saved.`)
+    }
+  }
+
+  onClose(data) {
+    if(data.type === 'success') {
+      this.setState({dismiss: true})
+    }
+  }
+
   componentWillMount() {
     StatusBar.setBarStyle('light-content')
-    this.keyboardWillShowListener = Keyboard.addListener('keyboardWillShow', this._keyboardWillShow.bind(this))
-    this.keyboardWillHideListener = Keyboard.addListener('keyboardWillHide', this._keyboardWillHide.bind(this))
-  }
-
-  _keyboardWillShow () {
-    this.setState(previousState => ({isKeyboardPresent: true}))
-  }
-
-  _keyboardWillHide () {
-    this.setState(previousState => ({isKeyboardPresent: false}))
   }
 
   submit() {
-    this.updateScreeningStatus(this.state.screening, this.props.patientId)
+    this.updateScreeningStatus(this.state.screening, this.props.patientId, this.props.match.params.queueId)
   }
 
   render() {
-    return (
-      <KeyboardAvoidingView style={styles.parentContainer} behavior="position">
-        <HeaderContainer xOffset={this.state.xOffset} path={this.state.queueId}/>
-        <ScrollView 
-          ref = 'questionScroll'
-          horizontal = {true} 
-          pagingEnabled = {true}
-          onScroll = {this.handleScroll}
-          scrollEventThrottle = {1}
-          showsHorizontalScrollIndicator = {false}
-          style={styles.questionContainer}
-          >
-          {stepList.map((step, i) => (
-            <View style={{width: screenWidth}} key={i}>
-              <Instruction step={step}/>
+    if(this.state.dismiss) {
+      return <Redirect to={`/triage/patients/${this.props.match.params.queueId}`}/>
+    }
+    else {
+      return (
+        <View style={styles.container}>
+          <Header title="Screening" onPress={() => {
+                  Alert.alert(
+                    'Unsaved progress will be lost',
+                    'Are you sure you want to continue?',
+                    [
+                      {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+                      {text: 'OK', onPress: () => {
+                        this.setState({dismiss: true})
+                      }}
+                    ]
+                  )
+                }}/>
+            <ScrollView
+              horizontal
+              pagingEnabled
+              showsHorizontalScrollIndicator = {false}
+              scrollEventThrottle = {1}
+            >
+              <View style={{width: Dimensions.get('window').width}}>
+                <ScrollView>
+                  {Object.keys(this.state.screening.substanceUsage).map((title, i) => <Survey key={i} onSelect={(answer) => {
+                    this.setState(({screening}) => ({screening: {...screening, substanceUsage: {...screening.substanceUsage, [title]: answer}}}))
+                  }} title={title}/>)}
+                </ScrollView>
+              </View>
+              <TouchableWithoutFeedback onPress={() => {Keyboard.dismiss()}}>
+                <View style={{width: Dimensions.get('window').width, alignItems: 'center'}}>
+                  <TextBox placeholder="Remarks" width="90%" onChangeText={(remarks) => {
+                    this.setState(({screening}) => ({screening: {...screening, remarks}}))
+                  }}/>
+                </View>
+              </TouchableWithoutFeedback>
+            </ScrollView>
+            <View style={{height:'8%'}}>
+              {
+                this.state.screening.substanceUsage.drug.length > 0 &&
+                this.state.screening.substanceUsage.alchohol.length > 0 &&
+                this.state.screening.substanceUsage.tobacco.length > 0 &&
+                <Button 
+                  title="Submit" 
+                  onPress={this.submit.bind(this)} 
+                  bgColor="#1d9dff" titleColor="#fff" 
+                  icon="chevron-right"
+                  width="50%"
+                  round
+                />
+              }
             </View>
-          ))}
-        </ScrollView>
-
-        <ScrollView 
-          ref = 'responseScroll'
-          horizontal = {true} 
-          pagingEnabled ={true}
-          scrollEnabled = {false}
-          showsHorizontalScrollIndicator = {false}
-          style={styles.responseContainer}
-          >
-          {stepList.map((step, i) => (
-            <View style={{width: screenWidth, justifyContent:'flex-start'}} key={i}>
-              <Response step={step} mutate={this.setState.bind(this)}/>
-              {this.state.isKeyboardPresent && <KeyboardDismissButton top={-42} left={8}/>}
-            </View>
-          ))}
-        </ScrollView>
-
-        <View style={{height:'8%'}}>
-          <Button 
-              title="Submit" 
-              onPress={this.submit.bind(this)} 
-              bgColor="#1d9dff" titleColor="#fff" 
-              icon="chevron-right"
-              width="50%"
-              round
-            />
+            <Loading isLoading={this.props.loading}/>
+            <DropdownAlert ref={ref => this.dropdown = ref} onClose={data => this.onClose(data)} closeInterval={2500}/>
         </View>
-        <Modal
-          isVisible={this.props.loading}
-          animationIn="fadeIn"
-          backdropOpacity={0}
-          style={{justifyContent: 'center'}}
-        >
-          <View style={styles.loading}>
-            <Spinner
-            isVisible={this.props.loading}
-            size={44}
-            style={{alignSelf: 'center'}}
-            type='Bounce' 
-            color='#81e2d9'/>
-          </View>
-        </Modal>
-      </KeyboardAvoidingView>
-    )
+      )
+    }
   }
 }
 
@@ -244,55 +184,32 @@ const mapDispatchToProps = (dispatch) => ({
 
 const mapStateToProps = (state, props) => ({
   loading: state.records.loading.spinner,
-  patientId: state.patients.queue[state.patients.queue.findIndex(({queueId}) => props.match.params.queueId)].patient.id
+  hasTaskCompleted: !state.patients.checklist[props.match.params.queueId].includes('screening'),
+  patientId: state.patients.queue[props.match.params.queueId].id
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Screening)
 
 const styles = StyleSheet.create({
-  parentContainer: {
+  container: {
     flex: 1,
     justifyContent: 'flex-start',
     backgroundColor: '#f5f6fb',
-    paddingBottom: 16
+    paddingTop: '6%',
   },
-  headerContainer: {
-    height: '20%',
-    justifyContent: 'space-around',
-    backgroundColor: '#34D2C5',
-  },
-  questionContainer:{
-    height: '24%',
-    backgroundColor: '#34D2C5',
-  },
-  responseContainer:{
-    height: '48%',
-    backgroundColor: '#f5f6fb',
-    paddingTop: 40,
-  },
-  textWrapper: {
-    marginTop: 20,
-    paddingHorizontal: 18,
-    backgroundColor: 'transparent',
-    paddingBottom: '12%'
-  },
-  instruction: {
-    fontSize: 26,
-    fontFamily: 'Nunito-Bold',
-    textAlign: 'left',
-    color: '#fff',
-  },
-  response: {
-    height: '56%',
-    width: '100%',
-  },
-  loading: {
+  surveyContainer:{
+    height: height*.12,
+    width: width*0.8,
+    justifyContent: 'space-between',
+    backgroundColor: '#fff',
+    paddingHorizontal: 12,
+    marginVertical: 10,
+    borderRadius: 5,
+    shadowColor: '#e4e4e4',
+    shadowOpacity: 0.5,
+    shadowOffset: { width: 1, height: 3 },
+    shadowRadius: 5,
     alignSelf: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    height: 88,
-    width: 88,
-    justifyContent: 'center',
-    alignItems:'center',
-    borderRadius: 8
+    alignItems: 'center'
   }
 })

@@ -13,9 +13,12 @@ import {
   CREATE_PATIENT_ERROR,
   TRANSFER_PATIENT_REQUEST,
   TRANSFER_PATIENT_SUCCESS,
-  TRANSFER_PATIENT_ERROR
+  TRANSFER_PATIENT_ERROR,
+  DISCHARGE_PATIENT_REQUEST,
+  DISCHARGE_PATIENT_SUCCESS,
+  DISCHARGE_PATIENT_ERROR
 } from '../actions/constants';
-import { createPatient, fetchPatients, fetchPatientQueue, queuePatient, transferPatient } from '../services/api'
+import { createPatient, fetchPatients, fetchPatientQueue, queuePatient, transferPatient, dischargePatient } from '../services/api'
 import { ActionsObservable } from 'redux-observable'
 import { Observable } from 'rxjs';
 import 'rxjs/add/operator/switchMap';
@@ -62,4 +65,11 @@ export const transferPatientEpic = action$ =>
   .switchMap(({payload: {stage, queueId}}) => Observable.fromPromise(transferPatient(queueId, stage))
   .map(queueId => ({type: TRANSFER_PATIENT_SUCCESS, payload: {queueId}}))
   .catch(error => Observable.of({type: TRANSFER_PATIENT_ERROR, payload: {error}}))
+  )
+
+export const dischargePatientEpic = action$ =>
+  action$.ofType(DISCHARGE_PATIENT_REQUEST)
+  .switchMap( ({payload: {queueId}}) => Observable.fromPromise(dischargePatient)
+  .map((queueId) => ({type: DISCHARGE_PATIENT_SUCCESS, payload: {queueId}}))
+  .catch(error => Observable.of({type: DISCHARGE_PATIENT_ERROR, payload: {error}}))
   )

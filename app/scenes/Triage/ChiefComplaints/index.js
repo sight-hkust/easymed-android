@@ -1,27 +1,22 @@
 import React, { Component } from 'react'
 import { 
+  Alert,
   View,
   KeyboardAvoidingView,
   Keyboard,
-  Image,
-  ScrollView,
   StatusBar,
   StyleSheet,
-  Text,
   TextInput,
-  TouchableOpacity,
+  TouchableWithoutFeedback,
   Dimensions,
-  Switch
 } from 'react-native';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import LinearGradient from 'react-native-linear-gradient';
-import { IconButton, Button, KeyboardDismissButton } from '../../../components/Button'
-import Icon from 'react-native-fontawesome-pro';
-import Modal from 'react-native-modal';
-import Spinner from 'react-native-spinkit';
-import { TextField, TextBox } from '../../../components/TextField';
-import Header from '../../../components/Header';
+import { Redirect } from 'react-router-native';
+import { Button } from '../../../components/Button'
+import DropdownAlert from 'react-native-dropdownalert'
+import Loading from '../../../components/Loading'
+import Header from '../../../components/Header'
 import { addChiefComplaints } from '../../../actions/record';
 
 const screenWidth = Dimensions.get('window').width
@@ -32,24 +27,24 @@ class ChiefComplaints extends Component {
     super(props);
     this.addChiefComplaints = this.props.actions.addChiefComplaints.bind(this)
     this.state = {
-      isKeyboardPresent: false,
       queueId: props.match.params.queueId,
-      cheifComplaints: ''
+      cheifComplaints: '',
+      dismiss: false
     }
   }
 
-  _keyboardWillShow () {
-    this.setState(previousState => ({isKeyboardPresent: true}))
+  onClose(data) {
+    this.setState({dismiss: true})
   }
 
-  _keyboardWillHide () {
-    this.setState(previousState => ({isKeyboardPresent: false}))
+  componentDidUpdate() {
+    if(this.props.hasTaskCompleted && !this.state.dismiss) {
+      this.dropdown.alertWithType('success', 'Success', `Patient's chief complaints has been successfully saved.`)
+    }
   }
 
   componentWillMount() {
     StatusBar.setBarStyle('light-content')
-    this.keyboardWillShowListener = Keyboard.addListener('keyboardWillShow', this._keyboardWillShow.bind(this))
-    this.keyboardWillHideListener = Keyboard.addListener('keyboardWillHide', this._keyboardWillHide.bind(this))
   }
 
   submit() {
@@ -57,30 +52,66 @@ class ChiefComplaints extends Component {
   }
 
   render() {
-    return (
-      <KeyboardAvoidingView style={styles.container}>
-        <View style={styles.header}>
-          <Header light="true" title="Chief Complaints" to={`/triage/patients/${this.state.queueId}`}/>
-        </View>
-        <View style={styles.inputWrapper}>
-          <TextInput 
-            multiline={true}
-            placeholder="Enter patients' chief complaints here"
-            underlineColorAndroid='transparent'
-            style={{
-              height: '100%',
-              width: '100%',
-              backgroundColor: 'white',
-              textAlignVertical: 'top',
-              paddingHorizontal: 6,
-              paddingVertical: 4,
-              fontSize: 16,
-              fontFamily: 'Nunito-Regular'
-            }}
-          />
-        </View>
-      </KeyboardAvoidingView>
-    )
+    if(this.state.dismiss) {
+      return <Redirect to={`/triage/patients/${this.props.match.params.queueId}`}/>
+    }
+    else {
+      return (
+        <TouchableWithoutFeedback onPress={()=>{Keyboard.dismiss()}}>
+          <KeyboardAvoidingView style={styles.container}>
+            <View>
+              <View style={styles.header}>
+                <Header light="true" title="Chief Complaints" onPress={() => {
+                  Alert.alert(
+                    'Unsaved progress will be lost',
+                    'Are you sure you want to continue?',
+                    [
+                      {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+                      {text: 'OK', onPress: () => {
+                        this.setState({dismiss: true})
+                      }}
+                    ]
+                  )
+                }}/>
+              </View>
+              <View style={styles.inputWrapper}>
+                <TextInput 
+                  multiline={true}
+                  placeholder="Enter patients' chief complaints here"
+                  underlineColorAndroid='transparent'
+                  onChangeText={(cheifComplaints) => {this.setState({cheifComplaints})}}
+                  style={{
+                    height: '100%',
+                    width: '100%',
+                    backgroundColor: 'white',
+                    textAlignVertical: 'top',
+                    paddingHorizontal: 6,
+                    paddingVertical: 4,
+                    fontSize: 16,
+                    fontFamily: 'Nunito-Regular'
+                  }}
+                />
+              </View>
+            </View>
+            <View>
+              {
+                this.state.cheifComplaints.length > 0 &&
+                <Button 
+                  title="Submit" 
+                  onPress={this.submit.bind(this)} 
+                  bgColor="#1d9dff" titleColor="#fff" 
+                  icon="chevron-right"
+                  width="50%"
+                  round
+                />
+              }
+            </View>
+            <Loading isLoading={this.props.loading} />
+            <DropdownAlert ref={ref => this.dropdown = ref} onClose={data => this.onClose(data)} closeInterval={2500}/>
+          </KeyboardAvoidingView>
+        </TouchableWithoutFeedback>
+      )
+    }
   }
 }
 
@@ -88,8 +119,9 @@ const mapDispatchToProps = (dispatch) => ({
   actions: bindActionCreators({ addChiefComplaints }, dispatch)
 })
 
-const mapStateToProps = (state) => ({
-  loading: state.records.loading.spinner
+const mapStateToProps = (state, props) => ({
+  loading: state.records.loading.spinner,
+  hasTaskCompleted: !state.patients.checklist[props.match.params.queueId].includes('cc'),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(ChiefComplaints)
@@ -97,7 +129,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(ChiefComplaints)
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'flex-start',
+    justifyContent: 'space-between',
     alignItems: 'center',
     backgroundColor: '#f5f6fb',
     paddingBottom: 16

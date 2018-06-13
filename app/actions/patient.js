@@ -7,7 +7,8 @@ import {
   QUEUE_PATIENT_REQUEST,
   TRANSFER_PATIENT_REQUEST,
   RESET_PATIENT_QUEUE,
-  CHECK_TRIAGE_ITEM
+  CHECK_TRIAGE_ITEM,
+  DISCHARGE_PATIENT_REQUEST
 } from './constants';
   
   
@@ -37,6 +38,11 @@ export const queuePatient = (tag, picture, patientId, stage) => ({
 export const transferPatient = (queueId, stage) => ({
   type: TRANSFER_PATIENT_REQUEST,
   payload: {queueId, stage}
+})
+
+export const dischargePatient = (queueId) => ({
+  type: DISCHARGE_PATIENT_REQUEST,
+  payload: {queueId}
 })
 
 export const resetPatientQueue = () => ({

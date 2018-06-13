@@ -1,16 +1,20 @@
 import React, { Component } from 'react';
-import { Alert, Image, Keyboard, Dimensions, View, Text, TextInput, StyleSheet, StatusBar, Platform } from 'react-native';
-import Spinner from 'react-native-spinkit';
-import Modal from 'react-native-modal';
+import { Image, Keyboard, Dimensions, View, Text, KeyboardAvoidingView, TextInput, StyleSheet, StatusBar, Platform, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
+import { Link } from 'react-router-native';
+import DropdownAlert from 'react-native-dropdownalert'
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Redirect } from 'react-router-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-fontawesome-pro';
-import { logIn } from '../../actions/auth';
-import { Button, KeyboardDismissButton } from '../../components/Button';
+import { logIn, resetError } from '../../actions/auth';
+import Loading from '../../components/Loading'
+import { KeyboardDismissButton } from '../../components/Button';
 
-// import { logIn } from '../../actions/auth'
+const device = {
+  height: Platform.select({ios: Dimensions.get('window').height, android: Dimensions.get('window').height-StatusBar.currentHeight}),
+  width: Dimensions.get('window').width
+}
 
 const Header = () => (
   <View style={styles.header}>
@@ -29,7 +33,7 @@ const gradientLayout = {
 const Textfield = ({icon, obfuscate, placeholder, onChangeText}) => (
   <View style={styles.field}>
     <Icon name={icon} type='solid' color="#b4c2e8" size={20}/>
-    <TextInput  style={[styles.input, {height: Platform.OS == 'android' ? 40 : 20}]} underlineColorAndroid='transparent' autoCapitalize='none' autoCorrect={false} placeholder={placeholder} secureTextEntry={obfuscate} placeholderTextColor="#B4C2E8" onChangeText={onChangeText}></TextInput>
+    <TextInput  style={[styles.input, {height: Platform.OS == 'android' ? 40 : 20}]} autoCorrect={false} underlineColorAndroid='transparent' autoCapitalize='none' autoCorrect={false} placeholder={placeholder} secureTextEntry={obfuscate} placeholderTextColor="#B4C2E8" onChangeText={onChangeText}></TextInput>
   </View>
 )
 
@@ -46,21 +50,17 @@ class Login extends Component {
 
   componentWillMount() {
     StatusBar.setBarStyle('dark-content', true)
-    this.keyboardWillShowListener = Keyboard.addListener('keyboardWillShow', this._keyboardWillShow.bind(this))
-    this.keyboardWillHideListener = Keyboard.addListener('keyboardWillHide', this._keyboardWillHide.bind(this))
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if(this.props.error !== nextProps.error) {
+      this.dropdown.alertWithType('error', 'Error', `${nextProps.error}`)
+    }
   }
 
   authenticate() {
     const { username, password } = this.state
     this.logIn(username, password)
-  }
-
-  _keyboardWillShow () {
-    this.setState(previousState => ({isKeyboardPresent: true}))
-  }
-
-  _keyboardWillHide () {
-    this.setState(previousState => ({isKeyboardPresent: false}))
   }
 
   render() {
@@ -69,33 +69,32 @@ class Login extends Component {
     }
     else {
       return (
-        <LinearGradient {...gradientLayout} style={styles.container}>
-          { this.state.isKeyboardPresent && <KeyboardDismissButton top={24} right={6} />}
-          <Header />
-          <View style={styles.crendentials}>
-            <Textfield icon='user' placeholder='Username' onChangeText={(username)=>this.setState({username})}/>
-            <Textfield icon='key' obfuscate={true} placeholder='Password' onChangeText={(password)=>this.setState({password})}/>
-          </View>
-          <View style={styles.footer}>
-            <Button title="login" icon="chevron-circle-right" opaque bgColor="#9196f0" width={128} round onPress={this.authenticate.bind(this)}/>
-            <Button title="create account" icon="user-plus" bgColor="#5beed1" titleColor="white" to={'/register'} round/>
-          </View>
-          <Modal
-              isVisible={this.props.loading}
-              animationIn="fadeIn"
-              backdropOpacity={0}
-              style={{justifyContent: 'center'}}
-            >
-              <View style={styles.loading}>
-                <Spinner
-                isVisible={this.props.loading}
-                size={44}
-                style={{alignSelf: 'center'}}
-                type='Bounce' 
-                color='#81e2d9'/>
+          <LinearGradient {...gradientLayout} style={styles.container}>
+            { this.state.isKeyboardPresent && <KeyboardDismissButton top={24} right={6} />}
+            <TouchableWithoutFeedback onPress={() => {Keyboard.dismiss()}}>
+              <View style={{height: device.height, width: device.width, justifyContent: 'space-between'}}>
+                <View style={{height: device.height*.6, justifyContent: 'space-between'}}>
+                  <Header />
+                  <View style={styles.crendentials}>
+                    <Textfield icon='user' placeholder='Username' onChangeText={(username)=>this.setState({username})}/>
+                    <Textfield icon='key' obfuscate={true} placeholder='Password' onChangeText={(password)=>this.setState({password})}/>
+                  </View>
+                </View>
+                <View style={styles.footer}>
+                  <TouchableOpacity style={{...StyleSheet.flatten(styles.actionButtons), backgroundColor: '#9196f0'}} onPress={this.authenticate.bind(this)}>
+                    <Icon name="caret-circle-right" size={20} color="#fff"/>
+                    <Text style={{fontFamily: 'Quicksand-Bold', fontSize: 18, color: '#fff', marginLeft: 8}}>LOGIN</Text>
+                  </TouchableOpacity>
+                  <Link to='/register' component={TouchableOpacity} style={{...StyleSheet.flatten(styles.actionButtons), backgroundColor: '#5beed1'}} activeOpacity={0.25}>
+                    <Icon name="user-plus" size={20} color="#fff"/>
+                    <Text style={{fontFamily: 'Quicksand-Bold', fontSize: 18, color: '#fff', marginLeft: 8}}>REGISTER</Text>
+                  </Link>
+                </View>
+                <Loading isLoading={this.props.loading} />
               </View>
-          </Modal>
-        </LinearGradient>
+            </TouchableWithoutFeedback>
+            <DropdownAlert ref={ref => this.dropdown = ref} />
+          </LinearGradient>
       )
     }
   }
@@ -103,7 +102,7 @@ class Login extends Component {
 
 
 const mapDispatchToProps = (dispatch) => ({
-  actions: bindActionCreators({logIn}, dispatch)
+  actions: bindActionCreators({logIn, resetError}, dispatch)
 })
 
 const mapStateToProps = (state) => ({
@@ -116,10 +115,11 @@ export default connect(mapStateToProps, mapDispatchToProps)(Login)
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: 'center'
+    height: device.height,
+    width: device.width
   },
   header: {
+    marginTop: device.height*.1,
     height: '25%',
     alignItems: 'center',
     justifyContent: 'center'
@@ -139,7 +139,8 @@ const styles = StyleSheet.create({
   },
   crendentials: {
     height: '25%',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    marginBottom: device.height*.1
   },
   field: {
     height: 44,
@@ -167,17 +168,14 @@ const styles = StyleSheet.create({
     width: 210
   },
   footer: {
-    height: '30%',
-    justifyContent: 'space-around',
-    flexDirection: 'column'
+    alignSelf: 'flex-end',
+    flexDirection: 'row'
   },
-  loading: {
-    alignSelf: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    height: 88,
-    width: 88,
+  actionButtons: {
+    flexDirection: 'row',
+    width: device.width*.5,
+    height: device.height*.08,
     justifyContent: 'center',
-    alignItems:'center',
-    borderRadius: 8
+    alignItems: 'center'
   }
 })

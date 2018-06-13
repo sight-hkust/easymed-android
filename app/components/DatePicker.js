@@ -105,7 +105,7 @@ export default class DatePicker extends Component {
           date: new Date()
         });
         if (action !== DatePickerAndroid.dismissedAction) {
-          const selectedDate = new Date(`${year}-${month}-${day}`)
+          const selectedDate = new Date(year,month-1,day)
           this.setState({ age: new Date().getFullYear() - selectedDate.getFullYear() })
           this.props.onSelect(selectedDate)
         }

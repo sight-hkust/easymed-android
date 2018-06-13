@@ -7,13 +7,21 @@ import {
   View,
   Image,
   ScrollView,
+  Dimensions,
   StatusBar,
   TouchableOpacity
 } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
-import { Redirect, Link } from 'react-router-native';
 import Icon from 'react-native-fontawesome-pro';
-import { IconButton } from '../../../components/Button'
+import { IconButton, Button } from '../../../components/Button';
+import { dischargePatient } from '../../../actions/patient';
+import { fetchPrescription } from '../../../actions/record';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+
+const device = {
+  height: Dimensions.get('window').height,
+  width: Dimensions.get('window').width
+}
 
 const prescribedDrugs = [
   {
@@ -167,9 +175,18 @@ const Toolbar = () => (
 )
 
 
-export default class Checkout extends Component {
+class Checkout extends Component {
   constructor(props) {
     super(props)
+    this.fetchPrescription = props.actions.fetchPrescription.bind(this)
+  }
+
+  componentWillReceiveProps(nextProps){
+    console.log(nextProps)
+  }
+
+  componentWillMount() {
+    this.fetchPrescription(this.props.match.params.queueId)
   }
 
   render() {
@@ -182,10 +199,26 @@ export default class Checkout extends Component {
             <PrescribedDrugEntry key={i} type={type} item={item} dosage={dosage} days={days} times={times} instructions={instructions} confirm={confirm} />
           ))}
         </ScrollView>
+        <TouchableOpacity style={{...StyleSheet.flatten(styles.actionButtons), backgroundColor: '#5beed1'}} onPress={()=>{}}>
+          <Icon name="sign-out-alt" type="solid" size={20} color="#fff"/>
+          <Text style={{fontFamily: 'Quicksand-Bold', fontSize: 18, color: '#fff', marginLeft: 8}}>DISCHARGE</Text>
+        </TouchableOpacity>
       </View>
     )
   }
 }
+
+const mapDispatchToProps = (dispatch) => ({
+  actions: bindActionCreators({dischargePatient, fetchPrescription}, dispatch)
+})
+
+const mapStateToProps = (state, props) => ({
+  queue: state.patients.queue,
+  // prescription: state.records.patients[props.match.params.queueId],
+  isPatientDischarged: state.patients.queue.hasOwnProperty(props.match.params.queueId)
+})
+
+export default connect(mapStateToProps,mapDispatchToProps)(Checkout)
 
 const styles = StyleSheet.create({
   container: {
@@ -255,4 +288,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     width: '60%',
   },
+  actionButtons: {
+    flexDirection: 'row',
+    width: device.width,
+    height: device.height*.08,
+    justifyContent: 'center',
+    alignItems: 'center'
+  }
 })

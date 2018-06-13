@@ -44,13 +44,7 @@ public class MainApplication extends Application implements ReactApplication {
             new PickerViewPackage(),
             new LinearGradientPackage(),
             new ImagePickerPackage(),
-            new IritechPackage(),
-            new SvgPackage(),
-            new RNSpinkitPackage(),
-            new RNSketchViewPackage(),
-            new RNSensitiveInfoPackage(),
-            new LinearGradientPackage(),
-            new ImagePickerPackage()
+            new IritechPackage()
       );
     }
 

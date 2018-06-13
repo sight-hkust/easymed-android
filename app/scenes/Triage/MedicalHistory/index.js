@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { 
+  Alert,
   View,
   Keyboard,
   KeyboardAvoidingView,
@@ -11,16 +12,17 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  Dimensions,
-  Switch
+  TouchableWithoutFeedback,
+  Dimensions
 } from 'react-native'
-import { IconButton, Button, KeyboardDismissButton } from '../../../components/Button'
+import { Redirect } from 'react-router-native';
+import { Button } from '../../../components/Button'
 import Icon from 'react-native-fontawesome-pro';
-import Modal from 'react-native-modal';
-import Spinner from 'react-native-spinkit';
-import { TextField, TextBox } from '../../../components/TextField'
+import Loading from '../../../components/Loading'
+import { TextBox } from '../../../components/TextField'
 import Header from '../../../components/Header';
 import {updateMedicalHistory} from '../../../actions/record'
+import DropdownAlert from 'react-native-dropdownalert'
 
 const { width, height } = Dimensions.get('window')
 
@@ -33,29 +35,38 @@ class Survey extends Component {
   }
 
   render() {
-    const answers = [
-      { value: 'yes', icon: 'check', color: '#40fd65'},
-      { value: 'no', icon: 'times', color: '#ff4260'},
-      { value: 'unknown', icon: 'question', color: '#ffbd65'}
-    ]
-    const highlighted = { borderBottomWidth: 2, borderColor: '#1d9dff', borderStyle: 'solid'}
+    const baseStyle = { width: width*.8/3, height: height*.05, alignItems: 'center', justifyContent: 'center'}
     return (
       <View style={styles.surveyContainer}>
-        <Text style={{fontFamily: 'Nunito-Bold', color:'#3c4859'}}>{this.props.title.toUpperCase()}</Text>
-        <View style={{flexDirection: 'row', width: '50%', justifyContent:'space-around'}}>
-          {answers.map((answer, i) => (<TouchableOpacity 
-                                        style={this.state.selected === answer.value?highlighted:{}}
-                                        onPress={() => {
-                                          this.setState({selected: answer.value})
-                                          this.props.onSelect(answer.value)
-                                        }}
-                                        key={i}
-                                       >
-                                          <Icon 
-                                            name={answer.icon}
-                                            color={answer.color}
-                                          />
-                                       </TouchableOpacity>))}
+        <Text style={{fontFamily: 'Nunito-Bold', fontSize: 16, color:'#3c4859', alignSelf:'flex-start', paddingTop: 16}}>{this.props.title.toUpperCase()}</Text>
+        <View style={{flexDirection: 'row'}}>
+        <TouchableOpacity 
+          style={{...StyleSheet.flatten(baseStyle), backgroundColor: '#06D6A0', borderBottomLeftRadius: 5}}
+          onPress={() => {
+            this.setState({selected: 'yes'})
+            this.props.onSelect('yes')
+          }}
+        >
+          <Icon name={this.state.selected==='yes'?'check-circle':'check'} color="#fff" type="solid"/>
+        </TouchableOpacity>
+        <TouchableOpacity 
+          style={{...StyleSheet.flatten(baseStyle), backgroundColor: '#EF476F'}}
+          onPress={() => {
+            this.setState({selected: 'no'})
+            this.props.onSelect('no')
+          }}
+        >
+          <Icon name={this.state.selected==='no'?'times-circle':'times'} color="#fff" type="solid"/>
+        </TouchableOpacity>
+        <TouchableOpacity 
+          style={{...StyleSheet.flatten(baseStyle), backgroundColor: '#FFD166', borderBottomRightRadius: 5}}
+          onPress={() => {
+            this.setState({selected: 'unknown'})
+            this.props.onSelect('unknown')
+          }}
+        >
+          <Icon name={this.state.selected==='unknown'?'question-circle':'question'} color="#fff" type="solid"/>
+        </TouchableOpacity>
         </View>
       </View>
     )
@@ -68,103 +79,108 @@ class MedicalHistory extends Component {
     this.updateMedicalHistory = this.props.actions.updateMedicalHistory.bind(this)
     this.state = {
       queueId: props.match.params.queueId,
-      isKeyboardPresent: false,
       medicalHistory: {
         diseases: {
-          HTN: '',
-          Diabetes: '', 
-          TB: '',
-          Asthma: '',
+          hypertension: '',
+          diabetes: '', 
+          tuberculosis: '',
+          asthma: '',
           HEPA: '',
           HEPB: '',
           malaria: '',
           HIV: ''
         },
         remarks: ''
-      }
+      },
+      dismiss: false
     }
   }
 
-  _keyboardWillShow () {
-    this.setState(previousState => ({isKeyboardPresent: true}))
+  componentWillReceiveProps(nextProps) {
+    if(this.props.hasTaskCompleted !== nextProps.hasTaskCompleted) {
+      this.dropdown.alertWithType('success', 'Success', `Patient's medical history has been updated.`)
+    }
   }
 
-  _keyboardWillHide () {
-    this.setState(previousState => ({isKeyboardPresent: false}))
+  onClose(data) {
+    if(data.type === 'success') {
+      this.setState({dismiss: true})
+    }
   }
 
   componentWillMount() {
     StatusBar.setBarStyle('dark-content')
-    this.keyboardWillShowListener = Keyboard.addListener('keyboardWillShow', this._keyboardWillShow.bind(this))
-    this.keyboardWillHideListener = Keyboard.addListener('keyboardWillHide', this._keyboardWillHide.bind(this))
   }
 
   submit() {
-    // console.log(this.state.medicalHistory, this.props.patientId)
-    this.updateMedicalHistory(this.state.medicalHistory,this.props.patientId)
+    this.updateMedicalHistory(this.state.medicalHistory,this.props.patientId, this.props.match.params.queueId)
   }
 
   render() {
-    return (
-      <View style={styles.container}>
-        <Header title="Medical History" to={`/triage/patients/${this.props.match.params.queueId}`}/>
-          <ScrollView
-            horizontal
-            pagingEnabled
-            showsHorizontalScrollIndicator = {false}
-            scrollEventThrottle = {1}
-          >
-            <View style={{width: Dimensions.get('window').width}}>
-              <ScrollView>
-                {Object.keys(this.state.medicalHistory.diseases).map((title, i) => <Survey key={i} onSelect={(answer) => {
-                  this.setState(({medicalHistory}) => ({medicalHistory: {...medicalHistory, diseases: {...medicalHistory.diseases, [title]: answer}}}))
-                }} title={title}/>)}
-              </ScrollView>
+    if(this.state.dismiss) {
+      return <Redirect to={`/triage/patients/${this.props.match.params.queueId}`}/>
+    }
+    else {
+      return (
+        <View style={styles.container}>
+          <Header title="Medical History" onPress={() => {
+            Alert.alert(
+              'Unsaved progress will be lost',
+              'Are you sure you want to continue?',
+              [
+                {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+                {text: 'OK', onPress: () => {
+                  this.setState({dismiss: true})
+                }}
+              ]
+            )
+          }}/>
+            <ScrollView
+              horizontal
+              pagingEnabled
+              showsHorizontalScrollIndicator = {false}
+              scrollEventThrottle = {1}
+            >
+              <View style={{width: Dimensions.get('window').width}}>
+                <ScrollView>
+                  {Object.keys(this.state.medicalHistory.diseases).map((title, i) => <Survey key={i} onSelect={(answer) => {
+                    this.setState(({medicalHistory}) => ({medicalHistory: {...medicalHistory, diseases: {...medicalHistory.diseases, [title]: answer}}}))
+                  }} title={title}/>)}
+                </ScrollView>
+              </View>
+              <TouchableWithoutFeedback onPress={() => {Keyboard.dismiss()}}>
+                <View style={{width: Dimensions.get('window').width, alignItems: 'center'}}>
+                  <TextBox placeholder="Remarks" width="90%" onChangeText={(remarks) => {
+                    this.setState(({medicalHistory}) => ({medicalHistory: {...medicalHistory, remarks}}))
+                  }}/>
+                </View>
+              </TouchableWithoutFeedback>
+            </ScrollView>
+            <View style={{height:'8%'}}>
+              {
+                this.state.medicalHistory.diseases.hypertension.length > 0 &&
+                this.state.medicalHistory.diseases.diabetes.length > 0 &&
+                this.state.medicalHistory.diseases.tuberculosis.length > 0 &&
+                this.state.medicalHistory.diseases.asthma.length > 0 && 
+                this.state.medicalHistory.diseases.HEPA.length > 0 &&
+                this.state.medicalHistory.diseases.HEPB.length > 0 &&
+                this.state.medicalHistory.diseases.malaria.length > 0 &&
+                this.state.medicalHistory.diseases.HIV.length > 0 &&
+                <Button 
+                  title="Submit" 
+                  onPress={this.submit.bind(this)} 
+                  bgColor="#1d9dff" titleColor="#fff" 
+                  icon="chevron-right"
+                  width="50%"
+                  round
+                />
+              }
             </View>
-            <View style={{width: Dimensions.get('window').width, alignItems: 'center'}}>
-              <TextBox placeholder="Remarks" width="90%" onChangeText={(remarks) => {
-                this.setState(({medicalHistory}) => ({medicalHistory: {...medicalHistory, remarks}}))
-              }}/>
-              {this.state.isKeyboardPresent && <KeyboardDismissButton />}
-            </View>
-          </ScrollView>
-          <View style={{height:'8%'}}>
-            {
-              this.state.medicalHistory.diseases.HTN.length > 0 &&
-              this.state.medicalHistory.diseases.Diabetes.length > 0 &&
-              this.state.medicalHistory.diseases.TB.length > 0 &&
-              this.state.medicalHistory.diseases.Asthma.length > 0 && 
-              this.state.medicalHistory.diseases.HEPA.length > 0 &&
-              this.state.medicalHistory.diseases.HEPB.length > 0 &&
-              this.state.medicalHistory.diseases.malaria.length > 0 &&
-              this.state.medicalHistory.diseases.HIV.length > 0 &&
-              <Button 
-                title="Submit" 
-                onPress={this.submit.bind(this)} 
-                bgColor="#1d9dff" titleColor="#fff" 
-                icon="chevron-right"
-                width="50%"
-                round
-              />
-            }
-          </View>
-          <Modal
-            isVisible={this.props.loading}
-            animationIn="fadeIn"
-            backdropOpacity={0}
-            style={{justifyContent: 'center'}}
-          >
-          <View style={styles.loading}>
-            <Spinner
-            isVisible={this.props.loading}
-            size={44}
-            style={{alignSelf: 'center'}}
-            type='Bounce' 
-            color='#81e2d9'/>
-          </View>
-        </Modal>
-      </View>
-    )
+            <Loading isLoading={this.props.loading}/>
+            <DropdownAlert ref={ref => this.dropdown = ref} onClose={data => this.onClose(data)} closeInterval={2500}/>
+        </View>
+      )
+    }
   }
 }
 
@@ -174,7 +190,8 @@ const mapDispatchToProps = (dispatch) => ({
 
 const mapStateToProps = (state, props) => ({
   loading: state.records.loading.spinner,
-  patientId: state.patients.queue[state.patients.queue.findIndex(({queueId}) => props.match.params.queueId)].patient.id
+  patientId: state.patients.queue[props.match.params.queueId].id,
+  hasTaskCompleted: !state.patients.checklist[props.match.params.queueId].includes('pmh'),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(MedicalHistory)
@@ -187,8 +204,7 @@ const styles = StyleSheet.create({
     paddingTop: '6%',
   },
   surveyContainer:{
-    flexDirection: 'row',
-    height: height*.08,
+    height: height*.12,
     width: width*0.8,
     justifyContent: 'space-between',
     backgroundColor: '#fff',
@@ -201,14 +217,5 @@ const styles = StyleSheet.create({
     shadowRadius: 5,
     alignSelf: 'center',
     alignItems: 'center'
-  },
-  loading: {
-    alignSelf: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    height: 88,
-    width: 88,
-    justifyContent: 'center',
-    alignItems:'center',
-    borderRadius: 8
   }
 })

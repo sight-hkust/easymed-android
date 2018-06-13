@@ -1,13 +1,8 @@
 import { 
   AUTH_LOGIN_REQUEST,
-  AUTH_LOGIN_SUCCESS,
-  AUTH_LOGIN_ERROR,
   AUTH_LOGOUT_REQUEST,
-  AUTH_LOGOUT_SUCCESS,
-  AUTH_LOGOUT_ERROR,
   AUTH_REGISTER_REQUEST,
-  AUTH_REGISTER_SUCCESS,
-  AUTH_REGISTER_ERROR
+  RESET_ERROR
 } from './constants';
 
 export const logIn = (username, password) => ({
@@ -22,4 +17,8 @@ export const logOut = () => ({
 export const register = (username, password) => ({
   type: AUTH_REGISTER_REQUEST,
   payload: {username, password}
+})
+
+export const resetError = () => ({
+  type: RESET_ERROR
 })

@@ -8,6 +8,7 @@ import {
     fetchPatientQueueEpic
 } from './patients';
 import {
+    fetchPrescriptionsEpic,
     fetchMedicalRecordsEpic,
     attachMetadataEpic,
     addVitalsRecordEpic,
@@ -15,7 +16,9 @@ import {
     addGynaecologyRecordEpic,
     updateMedicalHistoryEpic,
     updateScreeningResultEpic,
-    updateMedicalConditionEpic
+    updateMedicalConditionEpic,
+    fetchDiagnosisesEpic,
+    addMedicalCaseEpic
 } from './records';
 import { fetchMedicinesEpic } from './medicine';
 
@@ -30,6 +33,8 @@ export const epics = combineEpics (
     fetchPatientQueueEpic,
     fetchMedicalRecordsEpic,
     fetchMedicinesEpic,
+    fetchDiagnosisesEpic,
+    fetchPrescriptionsEpic,
     attachMetadataEpic,
     addVitalsRecordEpic,
     addChiefComplaintsEpic,
@@ -37,6 +42,7 @@ export const epics = combineEpics (
     updateMedicalHistoryEpic,
     updateScreeningResultEpic,
     updateMedicalConditionEpic,
+    addMedicalCaseEpic
 )
 
 export default epics

@@ -46,7 +46,7 @@ export default class InfantSelect extends Component {
       paddingBottom: 12
     }
     const options = [
-      {type: 'Infant', icon: 'child', color: '#73ffc2'},
+      {type: '<18', icon: 'child', color: '#73ffc2'},
       {type: 'Adult', icon: 'male', color: '#ffc473'}
     ]
     return (

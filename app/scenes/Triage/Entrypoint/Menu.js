@@ -62,18 +62,20 @@ class Menu extends Component {
     super(props)
     this.state = {
       queueId: props.match.params.queueId,
-      patient: this.props.patient.patient,
-      checklist: this.props.patient.checklist
+      patient: this.props.patient
     }
     this.transferPatient = props.actions.transferPatient.bind(this)
     // this.fetchMedicalRecords = props.actions.fetchMedicalRecords.bind(this)
   }
 
+  componentWillReceiveProps(nextProps) {
+    if(this.props.isPatientTransferred !== nextProps.isPatientTransferred) {
+      this.setState({dismiss: true})
+    }
+  }
+
   componentWillMount() {
     StatusBar.setBarStyle('dark-content', true)
-  }
-  componentDidMount() {
-    console.log(this.state.checklist)
   }
 
   transfer() {
@@ -90,7 +92,7 @@ class Menu extends Component {
             <Header title="Add Records" to="/triage/patients/admission"/>
             <ScrollView>
               {menuItems
-              .filter(({marker}) => { return this.state.checklist[marker]===false })
+              .filter(({marker}) => { return this.props.checklist.includes(marker) })
               .map(({destination, icon, color, title}, i) => (
                 <Metric
                   to={`/triage/patients/${this.state.queueId}${destination}`}
@@ -100,7 +102,9 @@ class Menu extends Component {
                   key={i}
                 />
               ))}
-              {this.state.patient.sex === 'Female' && <Metric title="Maternal"
+              {this.state.patient.sex === 'Female' &&
+               this.props.checklist.includes('gynaecology') &&
+              <Metric title="Maternal"
                                                               icon="female"
                                                               color="#f4649e"
                                                               to={`/triage/patients/${this.state.queueId}/maternal`}
@@ -142,9 +146,9 @@ const mapDispatchToProps = (dispatch) => ({
 
 const mapStateToProps = (state, props) => ({
   loading: state.patients.loading,
-  queue: state.patients.queue,
-  isPatientTransferred: state.patients.queue.findIndex(({queueId}) => props.match.params.queueId) === -1,
-  patient: state.patients.queue[state.patients.queue.findIndex(({queueId}) => props.match.params.queueId === queueId)]
+  isPatientTransferred: state.patients.queue.hasOwnProperty(props.match.params.queueId) === false,
+  patient: state.patients.queue[props.match.params.queueId],
+  checklist: state.patients.checklist[props.match.params.queueId]
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Menu)

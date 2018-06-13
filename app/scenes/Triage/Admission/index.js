@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { Dimensions, View, Text, StyleSheet, ScrollView, RefreshControl, Image } from 'react-native';
-import Icon from 'react-native-fontawesome-pro';
+import DropdownAlert from 'react-native-dropdownalert';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import Modal from 'react-native-modal';
-import Spinner from 'react-native-spinkit'
 import { fetchPatientList, fetchPatientQueue, resetPatientQueue } from '../../../actions/patient';
 import Header from '../../../components/Header';
+import Loading from '../../../components/Loading';
 import { Button } from '../../../components/Button';
 import { PatientListItem, PatientQueueItem } from '../../../components/Patient';
 
@@ -54,6 +54,12 @@ class Admission extends Component {
     this.refreshPatientQueue(true)
   }
 
+  componentWillReceiveProps(nextProps) {
+    if(this.props.error !== nextProps.error) {
+      this.dropdown.alertWithType('error', 'Error', `${nextProps.error}`)
+    }
+  }
+
   refreshPatientQueue(auto) {
     if (!auto) {
       this.setState({loading: this.props.loading})
@@ -62,9 +68,6 @@ class Admission extends Component {
   }
 
   toggleOperationSelection() {
-    // if(this.state.isModalPresent) {
-    //   this.setState({patientTBA: null})
-    // }
     this.setState({isModalPresent: !this.state.isModalPresent})
   }
 
@@ -87,7 +90,7 @@ class Admission extends Component {
               />
             }>
               {this.props.queue.length === 0 && <EmptyStub />}
-              {this.props.queue && this.props.queue.map(({patient, queueId}, i) => <PatientQueueItem patient={patient} key={i} to={`/triage/patients/${queueId}`}/> )}
+              {this.props.queue && Object.keys(this.props.queue).sort( (p,s) => { return this.props.queue[p].tag - this.props.queue[s].tag}).map((queueId, i) => <PatientQueueItem patient={this.props.queue[queueId]} key={i} to={`/triage/patients/${queueId}`}/> )}
             </ScrollView>
           </View>
           <View style={{width: Dimensions.get('window').width}}>
@@ -105,21 +108,8 @@ class Admission extends Component {
             toggle={this.toggleOperationSelection.bind(this)}
           />
         </Modal>
-        <Modal
-          isVisible={this.props.loading.queue}
-          animationIn="fadeIn"
-          backdropOpacity={0}
-          style={{justifyContent: 'center'}}
-        >
-          <View style={styles.loading}>
-            <Spinner
-            isVisible={this.props.loading.queue}
-            size={44}
-            style={{alignSelf: 'center'}}
-            type='WanderingCubes' 
-            color='#81e2d9'/>
-          </View>
-        </Modal>
+        <Loading isLoading={this.props.loading.queue} />
+        <DropdownAlert ref={ref => this.dropdown = ref} />
       </View>
     )
   }
@@ -132,7 +122,8 @@ const mapDispatchToProps = (dispatch) => ({
 const mapStateToProps = (state) => ({
   patients: state.patients.all,
   queue: state.patients.queue,
-  loading: state.patients.loading
+  loading: state.patients.loading,
+  error: state.patients.error
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Admission)

@@ -11,25 +11,30 @@ const Tag = ({tag}) => (
 )
 
 const nameFormatter = ({regular}) => {
-  return regular.split(' ').map((part, i) => { if(i == 0) { return part } else if (i == 1) { return part.substring(0,1) } else return ''}).join(' ').toUpperCase()
+  if(regular) {
+    return regular.split(' ').map((part, i) => { if(i == 0) { return part } else if (i == 1) { return part.substring(0,1) } else return ''}).join(' ').toUpperCase()
+  }
+  else {
+    return 'Patient Name'
+  }
 }
 
 const PatientQueueItem = ({patient: {age, sex, name, tag=0}, to}) => (
-  <Link component={TouchableOpacity} to={to} style={styles.patient} activeOpacity={0.4}>
-    <Tag tag={tag}/>
-    <View style={styles.patientInfoContainer}>
-      <Text style={styles.patientName}>{nameFormatter(name)}</Text>
-      <View style={styles.patientPhysicalRemarks}>
-        <Text style={styles.patientPhysicalAttributeText}>AGE: {age<1?'<1':age}</Text>
-        <View style={styles.patientGender}>
-          <Text style={styles.patientPhysicalAttributeText}>SEX: </Text>
-          <Icon name={sex==='Female'?'venus':'mars'} color={sex==='Female'?'#ff5273':'#4c79fc'} size={18}/>
+    <Link component={TouchableOpacity} to={to} style={styles.patient} activeOpacity={0.4}>
+      <Tag tag={tag}/>
+      <View style={styles.patientInfoContainer}>
+        <Text style={styles.patientName}>{name}</Text>
+        <View style={styles.patientPhysicalRemarks}>
+          <Text style={styles.patientPhysicalAttributeText}>AGE: {age<1?'<1':age}</Text>
+          <View style={styles.patientGender}>
+            <Text style={styles.patientPhysicalAttributeText}>SEX: </Text>
+            <Icon name={sex==='Female'?'venus':'mars'} color={sex==='Female'?'#ff5273':'#4c79fc'} size={18}/>
+          </View>
         </View>
       </View>
-    </View>
-    <IconButton name="chevron-circle-right" type="solid" color="#3c4859" size={24}/>
-  </Link>
-)
+      <IconButton name="chevron-circle-right" type="solid" color="#3c4859" size={24}/>
+    </Link>
+  )
 
 const PatientListItem = ({patient: {age, sex, name}, onPress}) => {
   const gender = {
@@ -38,17 +43,17 @@ const PatientListItem = ({patient: {age, sex, name}, onPress}) => {
     borderRadius: 28,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: sex==='female'?'#ff5273':'#4c79fc',
+    backgroundColor: sex==='Female'?'#ff5273':'#4c79fc',
     elevation: 1,
     borderWidth: 3,
     borderStyle: 'solid',
-    borderColor: sex==='female'?'#ff718c':'#7c9dfc'
+    borderColor: sex==='Female'?'#ff718c':'#7c9dfc'
   }
 
   return (
     <TouchableOpacity style={styles.patient} onPress={onPress}>
       <View style={gender}>
-        <Icon name={sex==='female'?'venus':'mars'} color="white" size={24}/>
+        <Icon name={sex==='Female'?'venus':'mars'} color="white" size={24}/>
       </View>
       <View style={styles.patientInfoContainer}>
         <Text style={styles.patientName}>{nameFormatter(name)}</Text>

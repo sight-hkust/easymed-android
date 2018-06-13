@@ -1,7 +1,8 @@
 import {
   FETCH_MEDICINE_REQUEST,
   FETCH_MEDICINE_SUCCESS,
-  FETCH_MEDICINE_ERROR
+  FETCH_MEDICINE_ERROR,
+  FETCH_PRESCRIPTION_REQUEST
 } from '../actions/constants'
 import { fetchMedicines } from '../services/api'
 import { ActionsObservable } from 'redux-observable'

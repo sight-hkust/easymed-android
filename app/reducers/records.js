@@ -20,6 +20,9 @@ import {
   ATTACH_METADATA_REQUEST,
   ATTACH_METADATA_SUCCESS,
   ATTACH_METADATA_ERROR,
+  ADD_CASE_REQUEST,
+  ADD_CASE_SUCCESS,
+  ADD_CASE_ERROR,
   DISMISS_ERROR,
   FETCH_MEDICAL_RECORDS_REQUEST,
   FETCH_MEDICAL_RECORDS_SUCCESS,
@@ -27,6 +30,12 @@ import {
   FETCH_MEDICINE_REQUEST,
   FETCH_MEDICINE_SUCCESS,
   FETCH_MEDICINE_ERROR,
+  FETCH_MEDICAL_DIAGNOSIS_REQUEST,
+  FETCH_MEDICAL_DIAGNOSIS_SUCCESS,
+  FETCH_MEDICAL_DIAGNOSIS_ERROR,
+  FETCH_PRESCRIPTION_REQUEST,
+  FETCH_PRESCRIPTION_SUCCESS,
+  FETCH_PRESCRIPTION_ERROR,
 } from '../actions/constants';
 
 const initialState = {
@@ -35,6 +44,7 @@ const initialState = {
   },
   patients: {},
   medicines: [],
+  diagnosises: [],
   error: null
 }
 
@@ -44,7 +54,7 @@ const medicalRecordReducer = (state = initialState, {payload, type}) => {
       return {...state, loading: {spinner: true}}
     }
     case FETCH_MEDICAL_RECORDS_SUCCESS: {
-      return {...state, loading: {spinner: false}}
+      return {...state, loading: {spinner: false}, patients: {...state.patients, [payload.patientId]: payload.records}}
     }
     case FETCH_MEDICAL_RECORDS_ERROR: {
       return {...state, loading: {spinner: false}, error: payload.error}
@@ -58,10 +68,30 @@ const medicalRecordReducer = (state = initialState, {payload, type}) => {
     case FETCH_MEDICINE_ERROR: {
       return {...state, loading: {spinner: false}, error: payload.error}
     }
+    case FETCH_PRESCRIPTION_REQUEST: {
+      return {...state, loading: {spinner: true}}
+    }
+    case FETCH_PRESCRIPTION_SUCCESS: {
+      console.log(payload)
+      return {...state, loading: {spinner: false}, patients: {...state.patients, [payload.queueId]: payload.prescription}}
+    }
+    case FETCH_PRESCRIPTION_ERROR: {
+      return {...state, loading: {spinner: false}, error: payload.error}
+    }
+    case FETCH_MEDICAL_DIAGNOSIS_REQUEST: {
+      return {...state, loading: {spinner: true}}
+    }
+    case FETCH_MEDICAL_DIAGNOSIS_SUCCESS: {
+      return {...state, loading: {spinner: false}, diagnosises: payload.diagnosises}
+    }
+    case FETCH_MEDICAL_DIAGNOSIS_ERROR: {
+      return {...state, loading: {spinner: false}, error: payload.error}
+    }
     case ATTACH_METADATA_REQUEST: {
       return {...state, loading: {spinner: true}}
     }
     case ATTACH_METADATA_SUCCESS: {
+      console.log('passed here')
       return {...state, loading: {spinner: false}}
     }
     case ATTACH_METADATA_ERROR: {
@@ -120,6 +150,15 @@ const medicalRecordReducer = (state = initialState, {payload, type}) => {
     }
     case UPDATE_MEDICAL_CONDITION_ERROR: {
       return {...state, loading: {spinner: false}, error: payload.error}
+    }
+    case ADD_CASE_REQUEST: {
+      return {...state, loading: {spinner: true}, error: payload.error}
+    }
+    case ADD_CASE_SUCCESS: {
+      return {...state, loading: {spinner: false}}
+    }
+    case ADD_CASE_ERROR: {
+      return {...state, loading: {spinner: false}}
     }
     case DISMISS_ERROR: {
       return {...state, error: null}

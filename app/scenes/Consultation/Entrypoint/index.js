@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import { View, Image, ScrollView, StatusBar, StyleSheet, RefreshControl, Text, TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
-import Modal from 'react-native-modal';
-import Spinner from 'react-native-spinkit';
+import Loading from '../../../components/Loading';
 import { bindActionCreators } from 'redux';
 import { fetchPatientQueue, resetPatientQueue } from '../../../actions/patient';
 import { IconButton } from '../../../components/Button'
@@ -29,10 +28,12 @@ const EmptyStub = () => (
 const ServiceQueue = ({queue, isLoading, onRefresh}) => {
   return (
     <ScrollView refreshControl={<RefreshControl refreshing={isLoading} onRefresh={onRefresh}/>}>
-      {queue.length === 0 && <EmptyStub />}
-      {queue.map(({patient, queueId}) => (
+      {Object.keys(queue).length === 0 && <EmptyStub />}
+      {Object.keys(queue)
+        .sort( (p,s) => { return queue[p].tag - queue[s].tag})
+        .map(queueId => (
         <Patient
-          patient={patient}
+          patient={queue[queueId]}
           to={`/consultation/patients/${queueId}`}
           key={queueId} />
       ))}
@@ -48,6 +49,12 @@ class Entrypoint extends Component {
     }
     this.fetchPatientQueue = props.actions.fetchPatientQueue
     this.resetPatientQueue = props.actions.resetPatientQueue
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if(this.props.queue !== nextProps.queue) {
+      console.log(nextProps.queue)
+    }
   }
 
   componentWillMount() {
@@ -72,21 +79,7 @@ class Entrypoint extends Component {
         <Header title="Consultation" />
         <Toolbar />
         <ServiceQueue queue={this.props.queue} isLoading={this.state.loading.queue} onRefresh={this.refreshPatientQueue.bind(this)} />
-        <Modal
-          isVisible={this.props.loading.queue}
-          animationIn="fadeIn"
-          backdropOpacity={0}
-          style={{justifyContent: 'center'}}
-        >
-          <View style={styles.loading}>
-            <Spinner
-            isVisible={this.props.loading.queue}
-            size={44}
-            style={{alignSelf: 'center'}}
-            type='WanderingCubes' 
-            color='#81e2d9'/>
-          </View>
-        </Modal>
+        <Loading isLoading={this.props.loading.queue}/>
       </View>
     )
   }

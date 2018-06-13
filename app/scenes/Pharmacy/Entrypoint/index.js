@@ -1,48 +1,19 @@
 import React, { Component } from 'react';
-import { View, Image, ScrollView, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { View, Image, ScrollView, StatusBar, StyleSheet, RefreshControl, Text, TouchableOpacity } from 'react-native';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { fetchPatientQueue, resetPatientQueue } from '../../../actions/patient';
 import { IconButton } from '../../../components/Button'
+import Loading from '../../../components/Loading'
 import Icon from 'react-native-fontawesome-pro';
 import Header from '../../../components/Header'
 import { PatientQueueItem as Patient } from '../../../components/Patient'
-import { Link } from 'react-router-native'
-
-const nameFormatter = ({regular}) => {
-  return regular.split(' ').map((part, i) => { if(i == 0) { return part } else if (i == 1) { return part.substring(0,1) } else return ''}).join(' ').toUpperCase()
-}
-
-const demoPatient1 = {
-  sex: 'female',
-  name: {
-    regular: 'Preah Reachanachâk',
-    khmer: 'Kampuchea'
-  },
-  age: '34',
-  tag: 18,
-  id: 'something'
-}
-
-const demoPatient2 = {
-  gender: 'male',
-  name: {
-    regular: 'Sanskrit Kambujadeśa',
-    khmer: 'Kambujadeśa'
-  },
-  age: '26',
-  tag: 24,
-  id: 'testing'
-}
 
 const Toolbar = () => (
   <View style={styles.toolbar}>
     <IconButton name="medkit" color="#3c4859" />
     <IconButton name="clipboard-list" color="#3c4859"/>
     <IconButton name="bell" color="#3c4859" />
-  </View>
-)
-
-const Tag = ({tag}) => (
-  <View style={styles.tag}>
-    <Text style={{fontFamily: 'Nunito-Bold', fontSize: 28, color: 'white'}}>{tag}</Text>
   </View>
 )
 
@@ -56,22 +27,46 @@ const EmptyStub = () => (
   </View>
 )
 
-const ServiceQueue = () => {
+const ServiceQueue = ({queue, isLoading, onRefresh}) => {
   return (
-    <ScrollView>
-      {/* <EmptyStub /> */}
-      <Patient patient={demoPatient1} to="/pharmacy/checkout" />
-      <Patient patient={demoPatient2} to={`/pharmacy/checkout`} />
-      <Patient patient={demoPatient1} to={`/pharmacy/checkout`} />
-      <Patient patient={demoPatient2} to={`/pharmacy/checkout`} />
-      <Patient patient={demoPatient2} to={`/pharmacy/checkout`} />
+    <ScrollView refreshControl={<RefreshControl refreshing={isLoading} onRefresh={onRefresh}/>}>
+      {Object.keys(queue).length === 0 && <EmptyStub />}
+      {Object.keys(queue)
+        .sort( (p,s) => { return queue[p].tag - queue[s].tag})
+        .map(queueId => (
+        <Patient
+          patient={queue[queueId]}
+          to={`/pharmacy/patients/${queueId}/checkout`}
+          key={queueId} />
+      ))}
     </ScrollView>
   )
 }
 
-export default class Entrypoint extends Component {
+class Entrypoint extends Component {
   constructor(props) {
     super(props)
+    this.state = {
+      loading: props.loading
+    }
+    this.fetchPatientQueue = props.actions.fetchPatientQueue
+    this.resetPatientQueue = props.actions.resetPatientQueue
+  }
+
+  componentWillMount() {
+    StatusBar.setBarStyle('dark-content', true)
+    this.refreshPatientQueue(true)
+  }
+
+  componentWillUnmount() {
+    this.resetPatientQueue()
+  }
+
+  refreshPatientQueue(auto) {
+    if (!auto) {
+      this.setState({loading: this.props.loading})
+    }
+    this.fetchPatientQueue('pharmacy')
   }
 
   render() {
@@ -79,11 +74,23 @@ export default class Entrypoint extends Component {
       <View style={styles.container}>
         <Header title="Pharmacy" />
         <Toolbar />
-        <ServiceQueue/>
+        <ServiceQueue queue={this.props.queue} isLoading={this.state.loading} onRefresh={this.refreshPatientQueue.bind(this)} />
+        <Loading isLoading={this.props.loading} />
       </View>
     )
   }
 }
+
+const mapDispatchToProps = (dispatch) => ({
+  actions: bindActionCreators({fetchPatientQueue, resetPatientQueue}, dispatch)
+})
+
+const mapStateToProps = (state) => ({
+  queue: state.patients.queue,
+  loading: state.patients.loading.queue
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(Entrypoint)
 
 const styles = StyleSheet.create({
   container: {
@@ -98,10 +105,18 @@ const styles = StyleSheet.create({
     width: '40%',
     height: 56,
     alignItems: 'center',
-    alignSelf: 'flex-end',
-    marginRight: 20
+    alignSelf: 'flex-end'
   },
   queue: {
     alignItems: 'center'
+  },
+  loading: {
+    alignSelf: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    height: 88,
+    width: 88,
+    justifyContent: 'center',
+    alignItems:'center',
+    borderRadius: 8
   }
 })

@@ -22,9 +22,11 @@ const initialState = {
 const profileReducer = (state = initialState, {type, payload}) => {
     switch(type) {
         case CREATE_PATIENT_REQUEST: {
+            console.log('test')
             return {...state, loading: true };
         }
         case CREATE_PATIENT_SUCCESS: {
+            console.log('tested')
             return {...state, loading: false, patientId: payload.patientId};
         }
         case CREATE_PATIENT_ERROR: {

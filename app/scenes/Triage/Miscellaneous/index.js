@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { 
+  Alert,
   View,
   KeyboardAvoidingView,
   Keyboard,
@@ -9,30 +10,19 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  Dimensions,
-  Switch
+  Dimensions
 } from 'react-native'
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import LinearGradient from 'react-native-linear-gradient';
-import { IconButton, Button, KeyboardDismissButton } from '../../../components/Button'
-import Icon from 'react-native-fontawesome-pro';
-import Modal from 'react-native-modal';
-import Spinner from 'react-native-spinkit';
-import { TextField, TextBox } from '../../../components/TextField'
-import Step from '../../../components/Step'
-import BooleanSelect from '../../../components/BooleanSelect';
+import { Redirect } from 'react-router-native';
+import DropdownAlert from 'react-native-dropdownalert';
+import { Button, KeyboardDismissButton } from '../../../components/Button'
+import Loading from '../../../components/Loading'
+import { TextBox } from '../../../components/TextField'
 import Header from '../../../components/Header';
 import {updateMedicalCondition} from '../../../actions/record'
 
 const screenWidth = Dimensions.get('window').width
-
-const gradientLayout = {
-  colors: ['#E9D9AE','#E1CB90'],
-  start: {x: 0.0, y: 1.0},
-  end: {x: 1.0, y: 1.0},
-  locations: [0, 0.75]
-}
 
 const stepList = ['drugHistory', 'familyHistory', 'allergies', 'ROS'];
 
@@ -111,10 +101,20 @@ const Response = ({step, mutate}) => {
   }
 }
 
-const HeaderContainer = ({xOffset, path}) => (
+const HeaderContainer = ({xOffset, mutate}) => (
   <View style={styles.headerContainer}>
-    <Header title="Miscellaneous" light="true" to={`/triage/patients/${path}`}/>
-    <Step allSteps={stepList.length-1} step={xOffset/screenWidth} backgroundColor='#fff' highlightColor='#FAEB9A' />
+    <Header light="true" title="Miscellaneous" onPress={() => {
+                  Alert.alert(
+                    'Unsaved progress will be lost',
+                    'Are you sure you want to continue?',
+                    [
+                      {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+                      {text: 'OK', onPress: () => {
+                        mutate({dismiss: true})
+                      }}
+                    ]
+                  )
+                }}/>
   </View>
 )
 
@@ -132,7 +132,8 @@ class Miscellaneous extends Component {
         familyHistory: '',
         allergies: '',
         ROS: ''
-      }
+      },
+      dismiss: false
     }
   }
 
@@ -156,86 +157,90 @@ class Miscellaneous extends Component {
 
   }
 
+  componentWillReceiveProps(nextProps) {
+    if(this.props.hasTaskCompleted !== nextProps.hasTaskCompleted) {
+      this.dropdown.alertWithType('success', 'Success', `Patient's background has been updated.`)
+    }
+  }
+
+  onClose(data) {
+    if(data.type === 'success') {
+      this.setState({dismiss: true})
+    }
+  }
+
   submit() {
-    this.updateMedicalCondition(this.state.miscellaneous, this.props.patientId)
+    this.updateMedicalCondition(this.state.miscellaneous, this.props.patientId, this.props.match.params.queueId)
   }
 
   render() {
-    return (
-      <KeyboardAvoidingView style={styles.parentContainer} behavior="position">
-        <HeaderContainer xOffset={this.state.xOffset} path={this.state.queueId}/>
-
-        <ScrollView 
-          ref = 'questionScroll'
-          horizontal = {true} 
-          pagingEnabled = {true}
-          onScroll = {this.handleScroll}
-          scrollEventThrottle = {1}
-          showsHorizontalScrollIndicator = {false}
-          style={styles.questionContainer}
-          >
-          {stepList.map((step, i) => (
-            <View style={{width: screenWidth}} key={i}>
-              <Instruction step={step}/>
-            </View>
-          ))}
-        </ScrollView>
-
-        <ScrollView 
-          ref = 'responseScroll'
-          horizontal = {true} 
-          pagingEnabled ={true}
-          scrollEnabled = {false}
-          showsHorizontalScrollIndicator = {false}
-          style={styles.responseContainer}
-          >
-          {stepList.map((step, i) => (
-            <View style={{width: screenWidth, justifyContent:'flex-start'}} key={i}>
-              <Response step={step} mutate={this.setState.bind(this)}/>
-              {this.state.isKeyboardPresent && <KeyboardDismissButton top={-42} left={8}/>}
-            </View>
-          ))}
-        </ScrollView>
-
-        <View style={{height:'8%'}}>
-          {
-            this.state.miscellaneous.drugHistory.length > 0 &&
-            this.state.miscellaneous.familyHistory.length > 0 &&
-            this.state.miscellaneous.allergies.length > 0 &&
-            this.state.miscellaneous['ROS'].length > 0 &&
-            <Button 
-              title="Submit" 
-              onPress={this.submit.bind(this)} 
-              bgColor="#1d9dff" titleColor="#fff" 
-              icon="chevron-right"
-              width="50%"
-              round
-            />
-          }
-        </View>
-        <Modal
-          isVisible={this.props.loading}
-          animationIn="fadeIn"
-          backdropOpacity={0}
-          style={{justifyContent: 'center'}}
-        >
-          <View style={styles.loading}>
-            <Spinner
-            isVisible={this.props.loading}
-            size={44}
-            style={{alignSelf: 'center'}}
-            type='Bounce' 
-            color='#81e2d9'/>
+    if(this.state.dismiss) {
+      return <Redirect to={`/triage/patients/${this.props.match.params.queueId}`}/>
+    }
+    else {
+      return (
+        <KeyboardAvoidingView style={styles.parentContainer} behavior="position">
+          <HeaderContainer xOffset={this.state.xOffset} mutate={this.setState.bind(this)}/>
+  
+          <ScrollView 
+            ref = 'questionScroll'
+            horizontal = {true} 
+            pagingEnabled = {true}
+            onScroll = {this.handleScroll}
+            scrollEventThrottle = {1}
+            showsHorizontalScrollIndicator = {false}
+            style={styles.questionContainer}
+            >
+            {stepList.map((step, i) => (
+              <View style={{width: screenWidth}} key={i}>
+                <Instruction step={step}/>
+              </View>
+            ))}
+          </ScrollView>
+  
+          <ScrollView 
+            ref = 'responseScroll'
+            horizontal = {true} 
+            pagingEnabled ={true}
+            scrollEnabled = {false}
+            showsHorizontalScrollIndicator = {false}
+            style={styles.responseContainer}
+            >
+            {stepList.map((step, i) => (
+              <View style={{width: screenWidth, justifyContent:'flex-start'}} key={i}>
+                <Response step={step} mutate={this.setState.bind(this)}/>
+                {this.state.isKeyboardPresent && <KeyboardDismissButton top={-42} left={8}/>}
+              </View>
+            ))}
+          </ScrollView>
+  
+          <View style={{height:'8%'}}>
+            {
+              this.state.miscellaneous.drugHistory.length > 0 &&
+              this.state.miscellaneous.familyHistory.length > 0 &&
+              this.state.miscellaneous.allergies.length > 0 &&
+              <Button 
+                title="Submit" 
+                onPress={this.submit.bind(this)} 
+                bgColor="#1d9dff" titleColor="#fff" 
+                icon="chevron-right"
+                width="50%"
+                round
+              />
+            }
           </View>
-        </Modal>
-      </KeyboardAvoidingView>
-    )
+          <Loading isLoading={this.props.loading}/>
+          <DropdownAlert ref={ref => this.dropdown = ref} onClose={data => this.onClose(data)} closeInterval={2500}/>
+        </KeyboardAvoidingView>
+      )
+    }
   }
 }
 
 const mapStateToProps = (state, props) => ({
   loading: state.records.loading.spinner,
-  patientId: state.patients.queue[state.patients.queue.findIndex(({queueId}) => props.match.params.queueId)].patient.id
+  patientId: state.patients.queue[props.match.params.queueId].id,
+  hasTaskCompleted: !state.patients.checklist[props.match.params.queueId].includes('misc'),
 })
 
 const mapDispatchToProps = (dispatch) => ({

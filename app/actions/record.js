@@ -1,5 +1,5 @@
 import {
-  CREATE_CASE_REQUEST,
+  ADD_CASE_REQUEST,
   CREATE_CASE_FOLDER_REQUEST,
   ADD_VITALS_REQUEST,
   ADD_CHIEF_COMPLAINTS_REQUEST,
@@ -9,12 +9,14 @@ import {
   UPDATE_MEDICAL_CONDITION_REQUEST,
   ATTACH_METADATA_REQUEST,
   FETCH_MEDICAL_RECORDS_REQUEST,
-  FETCH_MEDICINE_REQUEST
+  FETCH_MEDICINE_REQUEST,
+  FETCH_MEDICAL_DIAGNOSIS_REQUEST,
+  FETCH_PRESCRIPTION_REQUEST
 } from './constants'
 
-export const createCase = (session) => ({
-  type: CREATE_CASE_REQUEST,
-  payload: { session }
+export const addCase = (session, queueId) => ({
+  type: ADD_CASE_REQUEST,
+  payload: { session, queueId }
 })
 
 export const createFolder = (sessions, identifier) => ({
@@ -42,19 +44,24 @@ export const addGynaecologyInfo = (gynaecologyInfo, queueId) => ({
   payload: { gynaecologyInfo, queueId }
 })
 
-export const updateMedicalHistory = (history, patientId) => ({
+export const updateMedicalHistory = (history, patientId, queueId) => ({
   type: UPDATE_MEDICAL_HISTORY_REQUEST,
-  payload: {history, patientId}
+  payload: {history, patientId, queueId}
 })
 
-export const updateScreeningStatus = (screeningResult, patientId) => ({
+export const updateScreeningStatus = (screeningResult, patientId, queueId) => ({
   type: UPDATE_SCREENING_RESULT_REQUEST,
-  payload: {screeningResult, patientId}
+  payload: {screeningResult, patientId, queueId}
 })
 
-export const updateMedicalCondition = (conditions, patientId) => ({
+export const updateMedicalCondition = (conditions, patientId, queueId) => ({
   type: UPDATE_MEDICAL_CONDITION_REQUEST,
-  payload: {conditions, patientId}
+  payload: {conditions, patientId, queueId}
+})
+
+export const fetchPrescription = (queueId) => ({
+  type: FETCH_PRESCRIPTION_REQUEST,
+  payload: {queueId}
 })
 
 export const fetchMedicalRecords = (patientId) => ({
@@ -64,4 +71,8 @@ export const fetchMedicalRecords = (patientId) => ({
 
 export const fetchMedicines = () => ({
   type: FETCH_MEDICINE_REQUEST
+})
+
+export const fetchMedicalDiagnosises = () => ({
+  type: FETCH_MEDICAL_DIAGNOSIS_REQUEST
 })

@@ -6,7 +6,7 @@ import Checkout from './Checkout'
 const Pharmacy = ({match}) => (
   <Switch>
     <Route exact path={`${match.url}`} component={Entrypoint} />
-    <Route path={`${match.url}/checkout`} component={Checkout} />
+    <Route path={`${match.url}/patients/:queueId/checkout`} component={Checkout} />
   </Switch>
 )
 

@@ -13,12 +13,16 @@ import {
   TRANSFER_PATIENT_ERROR,
   RESET_PATIENT_QUEUE,
   DISMISS_ERROR,
-  CHECK_TRIAGE_ITEM
+  CHECK_TRIAGE_ITEM,
+  DISCHARGE_PATIENT_REQUEST,
+  DISCHARGE_PATIENT_SUCCESS,
+  DISCHARGE_PATIENT_ERROR
 } from '../actions/constants'
 
 const initialState = {
   all: [],
   queue: {},
+  checklist: {},
   loading: { queue: false, all: false, spinner: false },
   error: null
 };
@@ -38,26 +42,11 @@ const patientsReducer = (state = initialState, {type, payload}) => {
         return {...state, loading: {...state.loading, queue:true} };
       }
       case FETCH_PATIENT_QUEUE_SUCCESS: {
-        return {...state, loading: {...state.loading, queue:false}, queue: Object.keys(payload.patients)
-        .forEach(queueId => {
-          if(payload.patients[queueId].sex === 'Female') {
-            payload.patients[queueId] = {
-              ...payload.patients[queueId],
-              checklist:{
-                vitals: false, cc: false, pmh: false, screening: false, misc: false, gynaecology: false
-              }
-            }
-          }
-          else {
-            payload.patients[queueId] = {
-              ...payload.patients[queueId],
-              checklist:{
-                vitals: false, cc: false, pmh: false, screening: false, misc: false
-              }
-            }
-          }
-        })
-        }
+        const checklist = Object.keys(payload.patients).reduce((list, key) => {
+            list[key] = ['vitals', 'pmh', 'cc', 'misc', 'screening', 'gynaecology']
+            return list
+          }, {})
+        return {...state, loading: {...state.loading, queue:false}, queue: payload.patients, checklist }
       }
       case FETCH_PATIENT_QUEUE_ERROR: {
         return {...state, loading: {...state.loading, queue:false}, error: payload.error}
@@ -87,16 +76,22 @@ const patientsReducer = (state = initialState, {type, payload}) => {
         return {...state, queue: {}}
       }
       case CHECK_TRIAGE_ITEM: {
-        return {...state, queue: {...state.queue, [payload.queueId]: {
-          ...state.queue[payload.queueId],
-          checklist: {
-            ...state.queue[payload.queueId].checklist,
-            [payload.item]: true
-          }
-        }}}
+        state.checklist[payload.queueId].splice(state.checklist[payload.queueId].indexOf(payload.item), 1)
+        return {...state, checklist: {...state.checklist}}
       }
       case DISMISS_ERROR: {
-      return {...state, error: null}
+        return {...state, error: null}
+      }
+      case DISCHARGE_PATIENT_REQUEST: {
+        return {...state, loading: {...state.loading, spinner: true}}
+      }
+      case DISCHARGE_PATIENT_SUCCESS: {
+        let queue = state.queue
+        delete queue[payload.queueId]
+        return {...state, loading: {...state.loading, spinner: false}, queue}
+      }
+      case DISCHARGE_PATIENT_ERROR: {
+        return {...state, loading: {...state.loading, spinner: false}, payload: error}
       }
       default: return state;
   }

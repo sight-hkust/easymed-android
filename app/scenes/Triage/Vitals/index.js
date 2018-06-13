@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { 
+  Alert,
   View,
   KeyboardAvoidingView,
   Image,
@@ -15,14 +16,13 @@ import {
   Switch,
   Platform
 } from 'react-native'
-import LinearGradient from 'react-native-linear-gradient';
-import { IconButton, Button, KeyboardDismissButton } from '../../../components/Button'
+import { Redirect } from 'react-router-native';
+import DropdownAlert from 'react-native-dropdownalert'
+import { Button, KeyboardDismissButton } from '../../../components/Button'
 import { addVitalsRecord } from '../../../actions/record';
 import Icon from 'react-native-fontawesome-pro';
-import Modal from 'react-native-modal';
-import Spinner from 'react-native-spinkit';
+import Loading from '../../../components/Loading'
 import TextField from '../../../components/TextField'
-import Step from '../../../components/Step'
 import Header from '../../../components/Header';
 import DatePicker from '../../../components/DatePicker';
 
@@ -209,10 +209,20 @@ const Response = ({step, mutate, ldw}) => {
   }
 }
 
-const HeaderContainer = ({xOffset, path, stepsLength}) => (
+const HeaderContainer = ({xOffset, mutate, stepsLength}) => (
   <View style={styles.headerContainer}>
-    <Header title="Vitals" light="true" to={`/triage/patients/${path}`}/>
-    <Step allSteps={stepsLength} step={xOffset/width} backgroundColor='#fff' highlightColor='#FAEB9A' />
+    <Header light="true" title="Vitals" onPress={() => {
+                  Alert.alert(
+                    'Unsaved progress will be lost',
+                    'Are you sure you want to continue?',
+                    [
+                      {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+                      {text: 'OK', onPress: () => {
+                        mutate({dismiss: true})
+                      }}
+                    ]
+                  )
+                }}/>
   </View>
 )
 
@@ -221,7 +231,7 @@ class Vitals extends Component {
     super(props);
     this.handleScroll = this.handleScroll.bind(this);
     this.state = {
-      questions: props.patient.age < 2 ? ['weightHeight', 'temperature', 'bloodPressure', 'pulseRateRespirationRate', 'SpO2bloodSugar']: ['weightHeight', 'temperature', 'bloodPressure', 'pulseRateRespirationRate', 'SpO2bloodSugar', 'deworming'],
+      questions: props.patient.age < 18 ? ['weightHeight', 'temperature', 'pulseRateRespirationRate', 'SpO2bloodSugar', 'deworming']: ['weightHeight', 'temperature', 'bloodPressure', 'pulseRateRespirationRate', 'SpO2bloodSugar', 'deworming'],
       xOffset:0,
       isKeyboardPresent: false,
       queueId: props.match.params.queueId,
@@ -235,7 +245,8 @@ class Vitals extends Component {
         weight: '',
         height: '',
         lastDewormingDate: null
-      }
+      },
+      dismiss: false
     }
     this.addVitalsRecord = this.props.actions.addVitalsRecord.bind(this)
   }
@@ -244,10 +255,18 @@ class Vitals extends Component {
     this.setState({ xOffset: x})
     this.refs.responseScroll.scrollTo({x: x, animated:false})
   }
+  
+  componentDidUpdate() {
+    if(this.props.hasTaskCompleted && !this.state.dismiss) {
+      this.dropdown.alertWithType('success', 'Success', `Patient's vitals information has been successfully saved.`)
+    }
+  }
+
+  onClose(data) {
+    this.setState({dismiss: true})
+  }
 
   componentWillMount() {
-    const adult = ['weightHeight', 'temperature', 'bloodPressure', 'pulseRateRespirationRate', 'SpO2bloodSugar', 'deworming'];
-    const child = ['weightHeight', 'temperature', 'bloodPressure', 'pulseRateRespirationRate', 'SpO2bloodSugar'];
     StatusBar.setBarStyle('light-content')
     this.keyboardWillShowListener = Keyboard.addListener('keyboardWillShow', this._keyboardWillShow.bind(this))
     this.keyboardWillHideListener = Keyboard.addListener('keyboardWillHide', this._keyboardWillHide.bind(this))
@@ -266,77 +285,67 @@ class Vitals extends Component {
   }
 
   render() {
-    return (
-      <KeyboardAvoidingView style={styles.parentContainer} behavior= {(Platform.OS === 'ios')? "padding" : null}>
-        <HeaderContainer xOffset={this.state.xOffset} path={this.state.queueId} stepsLength={this.state.questions.length-1}/>
-        <ScrollView 
-          ref = 'questionScroll'
-          horizontal = {true} 
-          pagingEnabled = {true}
-          onScroll = {this.handleScroll}
-          scrollEventThrottle = {1}
-          showsHorizontalScrollIndicator = {false}
-          style={styles.questionContainer}
-          >
-          {this.state.questions.map((step, i) => (
-            <View style={{width}} key={i}>
-              <Instruction step={step}/>
-            </View>
-          ))}
-        </ScrollView>
-        
-        <ScrollView 
-          ref = 'responseScroll'
-          horizontal = {true} 
-          pagingEnabled ={true}
-          scrollEnabled = {false}
-          showsHorizontalScrollIndicator = {false}
-          style={styles.responseContainer}
-          >
-          {this.state.questions.map((step, i) => (
-            <View style={{width, justifyContent:'flex-start'}} key={i}>
-              <Response step={step} mutate={this.setState.bind(this)} ldw={this.state.vitals.lastDewormingDate}/>
-              {this.state.isKeyboardPresent && <KeyboardDismissButton top={-42} left={8}/>}
-            </View>
-          ))}
-        </ScrollView>
-
-        <View style={{height:'8%'}}>
-          {
-            this.state.vitals.pulseRate.length > 0 &&
-            this.state.vitals.bloodPressure.length > 0 &&
-            this.state.vitals.respiratoryRate.length > 0 &&
-            this.state.vitals.temperature.length > 0 && 
-            this.state.vitals.bloodOxygenSaturation.length > 0 &&
-            this.state.vitals.height.length > 0 &&
-            this.state.vitals.weight.length > 0 &&
-            <Button 
-              title="Submit" 
-              onPress={this.submit.bind(this)} 
-              bgColor="#1d9dff" titleColor="#fff" 
-              icon="chevron-right"
-              width="50%"
-              round
-            />
-          }
-        </View>
-        <Modal
-          isVisible={this.props.loading}
-          animationIn="fadeIn"
-          backdropOpacity={0}
-          style={{justifyContent: 'center'}}
-        >
-          <View style={styles.loading}>
-            <Spinner
-            isVisible={this.props.loading}
-            size={44}
-            style={{alignSelf: 'center'}}
-            type='Bounce' 
-            color='#81e2d9'/>
+    if (this.state.dismiss) {
+      return <Redirect to={`/triage/patients/${this.state.queueId}`}/>
+    } else {
+      return (
+        <KeyboardAvoidingView style={styles.parentContainer} behavior= {(Platform.OS === 'ios')? "padding" : null}>
+          <HeaderContainer xOffset={this.state.xOffset} mutate={this.setState.bind(this)} stepsLength={this.state.questions.length-1}/>
+          <ScrollView 
+            ref = 'questionScroll'
+            horizontal = {true} 
+            pagingEnabled = {true}
+            onScroll = {this.handleScroll}
+            scrollEventThrottle = {1}
+            showsHorizontalScrollIndicator = {false}
+            style={styles.questionContainer}
+            >
+            {this.state.questions.map((step, i) => (
+              <View style={{width}} key={i}>
+                <Instruction step={step}/>
+              </View>
+            ))}
+          </ScrollView>
+          
+          <ScrollView 
+            ref = 'responseScroll'
+            horizontal = {true} 
+            pagingEnabled ={true}
+            scrollEnabled = {false}
+            showsHorizontalScrollIndicator = {false}
+            style={styles.responseContainer}
+            >
+            {this.state.questions.map((step, i) => (
+              <View style={{width, justifyContent:'flex-start'}} key={i}>
+                <Response step={step} mutate={this.setState.bind(this)} ldw={this.state.vitals.lastDewormingDate}/>
+                {this.state.isKeyboardPresent && <KeyboardDismissButton top={-42} left={8}/>}
+              </View>
+            ))}
+          </ScrollView>
+  
+          <View style={{height:'8%'}}>
+            {
+              this.state.vitals.pulseRate.length > 0 &&
+              this.state.vitals.respiratoryRate.length > 0 &&
+              this.state.vitals.temperature.length > 0 && 
+              this.state.vitals.bloodOxygenSaturation.length > 0 &&
+              this.state.vitals.height.length > 0 &&
+              this.state.vitals.weight.length > 0 &&
+              <Button 
+                title="Submit" 
+                onPress={this.submit.bind(this)} 
+                bgColor="#1d9dff" titleColor="#fff" 
+                icon="chevron-right"
+                width="50%"
+                round
+              />
+            }
           </View>
-        </Modal>
-      </KeyboardAvoidingView>
-    )
+          <Loading isLoading={this.props.loading} />
+          <DropdownAlert ref={ref => this.dropdown = ref} onClose={data => this.onClose(data)} closeInterval={2500}/>
+        </KeyboardAvoidingView>
+      )
+    }
   }
 }
 
@@ -346,7 +355,9 @@ const mapDispatchToProps = (dispatch) => ({
 
 const mapStateToProps = (state, props) => ({
   loading: state.records.loading.spinner,
-  patient: state.patients.queue[state.patients.queue.findIndex(({queueId}) => props.match.params.queueId === queueId)].patient
+  patient: state.patients.queue[props.match.params.queueId],
+  hasTaskCompleted: !state.patients.checklist[props.match.params.queueId].includes('vitals'),
+  error: state.records.error
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Vitals)

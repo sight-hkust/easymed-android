@@ -8,7 +8,8 @@ import { Button } from '../../../components/Button';
 import Record from '../Record';
 import { Cases } from '../History'
 import Header from '../../../components/Header';
-import { fetchMedicines, fetchMedicalRecords } from '../../../actions/record'; 
+import Loading from '../../../components/Loading';
+import { fetchMedicalRecords } from '../../../actions/record'; 
 
 const NewConsultationSession = ({toggle, pathPrefix}) => (
   <View style={styles.newConsultationSession}>
@@ -22,14 +23,18 @@ class Summary extends Component {
   constructor(props) {
     super(props)
     this.state = {
+      pathPrefix: props.match.url,
       pageTitle: 'Today',
       isModalPresent: false
     }
-    this.fetchMedicines = this.props.actions.fetchMedicines.bind(this)
+    this.fetchMedicalRecords = this.props.actions.fetchMedicalRecords.bind(this)
+  }
+  componentWillReceiveProps(nextProps) {
+    console.log(nextProps)
   }
 
   componentWillMount() {
-    this.fetchMedicines()
+    this.fetchMedicalRecords(this.props.match.params.patientId)
   }
   
   toggleNewSessionDialog() {
@@ -50,18 +55,18 @@ class Summary extends Component {
         onScroll={(event) => event.nativeEvent.contentOffset.x?this.setState({pageTitle:'History'}):this.setState({pageTitle: 'Today'})}
         >
           <View style={{justifyContent: 'space-between', width: Dimensions.get('window').width}}>
-            <Record patientId={this.props.match.params.patientId}/>
+            <Record record={this.props.record}/>
           </View>
           <View style={{justifyContent: 'space-between', width: Dimensions.get('window').width}}>
             <View style={styles.search}>
-            <Icon name="search" color="#3c4859" size={18}/>
-            <TextInput
-              underlineColorAndroid='transparent'
-              style={{
-                height: '100%', fontSize: 16, fontFamily: 'Quicksand-Medium', color: '#3c4859', paddingHorizontal: 16, width: '100%'}}
-              placeholder="Search"
-            >
-            </TextInput>
+              <Icon name="search" color="#3c4859" size={18}/>
+              <TextInput
+                underlineColorAndroid='transparent'
+                style={{
+                  height: '100%', fontSize: 16, fontFamily: 'Quicksand-Medium', color: '#3c4859', paddingHorizontal: 16, width: '100%'}}
+                placeholder="Search"
+              >
+              </TextInput>
             </View>
             <Cases />
           </View>
@@ -86,17 +91,19 @@ class Summary extends Component {
             pathPrefix={this.state.pathPrefix}
           />
         </Modal>
+        <Loading isLoading={this.props.loading}/>
       </KeyboardAvoidingView>
     )
   }
 }
 
 const mapDispatchToProps = (dispatch) => ({
-  actions: bindActionCreators({ fetchMedicines, fetchMedicalRecords }, dispatch)
+  actions: bindActionCreators({ fetchMedicalRecords }, dispatch)
 })
 
-const mapStateToProps = (state) => ({
-  medicines: state.records.medicines
+const mapStateToProps = (state, props) => ({
+  loading: state.records.loading.spinner,
+  record: state.records.patients[props.match.params.patientId]
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Summary);
