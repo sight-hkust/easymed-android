@@ -1,6 +1,11 @@
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { Dimensions, View, Text, TouchableOpacity, StyleSheet, StatusBar, Platform } from 'react-native';
 import Icon from 'react-native-fontawesome-pro';
+
+const device = {
+  height: Platform.select({android: Dimensions.get('window').height - StatusBar.currentHeight, ios: Dimensions.get('window').height}),
+  width: Dimensions.get('window').width
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -10,10 +15,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24
   },
   type: {
-    width: 106,
-    height: 106,
+    width: device.height*.14,
+    height: device.height*.14,
     borderRadius: 8,
-    backgroundColor: '#fff',
     shadowColor: '#3a4252',
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.12,
@@ -25,7 +29,7 @@ const styles = StyleSheet.create({
   typeText: {
     fontSize: 18,
     fontFamily: 'Nunito-Bold',
-    color: '#3c4859'
+    color: '#fff'
   }
 })
 
@@ -41,27 +45,33 @@ export default class BooleanSelect extends Component {
     const highlighted = {
       ...StyleSheet.flatten(styles.type),
       borderBottomWidth: 4,
-      borderColor: '#1d9dff',
+      borderColor: '#fff',
       borderStyle: 'solid',
       paddingBottom: 12
     }
     const options = [
-      {type: 'yes', icon: 'check', color: '#21fa90'},
-      {type: 'no', icon: 'times', color: '#de636f'}
+      {type: 'yes', icon: 'check', color: '#06d6a0'},
+      {type: 'no', icon: 'times', color: '#ef476f'}
     ]
     return (
       <View style={styles.container}>
         {options.map(({type, icon, color}, i) => (
           <TouchableOpacity
             key = {i}
-            style={this.state.selected===type?highlighted:styles.type}
+            style={{
+              ...StyleSheet.flatten(styles.type),
+              backgroundColor: color
+            }}
             onPress={() => {
               this.setState({selected: type})
-              this.props.onSelect(type)
+              this.props.onSelect(type==='yes'?true:false)
             }}
           >
-          <Icon name={icon} size={44} color={color}/>
-          <Text style={styles.typeText}>{type.toUpperCase()}</Text>
+          <Icon name={icon} size={44} color="#fff"/>
+          {
+            this.state.selected === type &&
+            <Text style={styles.typeText}>{type.toUpperCase()}</Text>
+          }
         </TouchableOpacity>
         ))}
       </View>

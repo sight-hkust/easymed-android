@@ -34,6 +34,7 @@ const device = {
 
 const methods = ['PO', 'VR', 'Topical', 'IV', 'Eye Drop', 'Nose Drop', 'Ear Drop', 'Chewing', 'Sucking', 'Anal Route', 'Sublingual', 'Clean', 'SC'];
 const options = ['OD', 'BID', 'TID', 'QID', 'NA'];
+const units = ['mg', 'ml', 'mg/ml', 'tube']
 const dayIntervals = ['/7', '/52', '/12', '/30'];
 
 class HorizontalListPicker extends Component {
@@ -148,6 +149,7 @@ class Session extends Component {
       },
       prescriptionDialog: {
         show: false,
+        isCustomizable: false,
         medId: '',
         description: '',
         unit: '',
@@ -212,7 +214,6 @@ class Session extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log(nextProps)
     if(this.props.isPatientTransferred !== nextProps.isPatientTransferred) {
       this.dropdown.alertWithType('info', 'Info', `Patient has been transferred to pharmacy`)
     }
@@ -354,7 +355,7 @@ class Session extends Component {
                     onBlur={() => this.setState({showCompletedDiagnosis: true})}
                     onChangeText={(query) => {
                       this.setState({diagnosisQueryText: query})
-                      this.setState({diagnosisesQueryResult: this.props.diagnosises.filter(({name: {name}}) => query.length>0?name.toLowerCase().includes(query.toLocaleLowerCase()):false)})
+                      this.setState({diagnosisesQueryResult: this.props.diagnosises.filter(({name}) => query.length>0?name.toLowerCase().includes(query.toLocaleLowerCase()):false)})
                     }}
                     style={{
                       height: '100%', fontSize: 16, fontFamily: 'Quicksand-Medium', color: '#3c4859', paddingHorizontal: 16, width: '88%'}}
@@ -465,7 +466,7 @@ class Session extends Component {
                                     {text: 'OK', onPress: () => {
                                       this.setState(({session}) => ({session:{ ...session, diagnosis: {
                                         ...session.diagnosis,
-                                        existing: {...session.diagnosis.existing, [diagnosis.id]: diagnosis.name.name}
+                                        existing: {...session.diagnosis.existing, [diagnosis.id]: diagnosis.name}
                                       }}}))
                                       console.log(this.state.session.diagnosis)
                                     }}
@@ -474,7 +475,7 @@ class Session extends Component {
                               }
                             }
                           >
-                            <Text style={{fontFamily: 'Nunito-Bold', fontSize: 18, color: '#3c4859'}}>{diagnosis.name.name}</Text>
+                            <Text style={{fontFamily: 'Nunito-Bold', fontSize: 18, color: '#3c4859'}}>{diagnosis.name}</Text>
                             <Icon name="plus" type="solid" size={18} color="#3c4859"/>
                           </TouchableOpacity>
                         )
@@ -671,17 +672,32 @@ class Session extends Component {
               avoidKeyboard={true}
               >
               <View style={{flex: 1, justifyContent: 'flex-end', alignItems: 'center'}}>
-                <View style={{height: device.height/1.6, borderRadius: 6, width: device.width*.9, backgroundColor: '#fff', paddingHorizontal: 16, paddingVertical: 16, justifyContent: 'space-around'}}>
+                <View style={{height: this.state.prescriptionDialog.isCustomizable?device.height/1.4:device.height/1.5, borderRadius: 6, width: device.width*.9, backgroundColor: '#fff', paddingHorizontal: 16, paddingVertical: 16, justifyContent: 'space-around'}}>
                   <Text style={{fontFamily: 'Nunito-Bold', fontSize: 16, color: '#3c4859'}}>Intake Method</Text>
                   <HorizontalListPicker items={methods} onSelect={(intake) => {
                     this.setState(({prescriptionDialog}) => ({prescriptionDialog: {...prescriptionDialog, instruction: {...prescriptionDialog.instruction, intake}}}))
                   }} />
+                  <Text style={{fontFamily: 'Nunito-Bold', fontSize: 16, color: '#3c4859'}}>Amount per Intake</Text>
+                  <View style={{justifyContent: 'center', height: 44, width: device.width*.8, borderColor: '#5F70A2', borderWidth: 2, borderRadius: 6, paddingHorizontal: 8, paddingVertical: 6, marginVertical: 12}}>
+                    <TextInput
+                      underlineColorAndroid='transparent'
+                      keyboardType="numeric"
+                      onChangeText={(amount) => {
+                        this.setState(({prescriptionDialog}) => ({prescriptionDialog: {...prescriptionDialog, instruction: {...prescriptionDialog.instruction, amount}}}))
+                      }}
+                      style={{
+                        backgroundColor: '#fff',
+                        height: 36,
+                      }}
+                    >
+                    </TextInput>
+                  </View>
                   <Text style={{fontFamily: 'Nunito-Bold', fontSize: 16, color: '#3c4859'}}>Frequency Per Day</Text>
                   <HorizontalListPicker items={options} onSelect={(frequency) => {
                     this.setState(({prescriptionDialog}) => ({prescriptionDialog: {...prescriptionDialog, instruction: {...prescriptionDialog.instruction, frequency}}}))
                   }}/>
                   <Text style={{fontFamily: 'Nunito-Bold', fontSize: 16, color: '#3c4859'}}>Treatment Duration</Text>
-                  <View style={{height: 44, width: device.width*.8, borderColor: '#5F70A2', borderWidth: 2, borderRadius: 6, paddingHorizontal: 8, paddingVertical: 6, marginVertical: 12}}>
+                  <View style={{justifyContent: 'center', height: 44, width: device.width*.8, borderColor: '#5F70A2', borderWidth: 2, borderRadius: 6, paddingHorizontal: 8, paddingVertical: 6, marginVertical: 12}}>
                     <TextInput
                       underlineColorAndroid='transparent'
                       keyboardType="numeric"
@@ -690,7 +706,7 @@ class Session extends Component {
                       }}
                       style={{
                         backgroundColor: '#fff',
-                        height: '100%',
+                        height: 36,
                       }}
                     >
                     </TextInput>
@@ -705,19 +721,23 @@ class Session extends Component {
                   <Button 
                     title="Prescribe" 
                     onPress={() => {
-                      this.setState(({session, prescriptionDialog}) => ({
+                      const { instruction, description, unit, concentration } = this.state.prescriptionDialog
+                      const prescription = {
+                        instruction,
+                        description,
+                        unit,
+                        concentration
+                      }
+                      this.setState(({session}) => ({
                         session: {
                           ...session,
                           prescriptions: {
                             ...session.prescriptions,
-                            [prescriptionDialog.medId]: {
-                              instruction: prescriptionDialog.instruction,
-                              description: prescriptionDialog.description,
-                              unit: prescriptionDialog.unit,
-                              concentration: prescriptionDialog.concentration
-                            }
+                            [this.state.prescriptionDialog.medId]: prescription
                           }
-                        },
+                        }
+                      }))
+                      this.setState(({prescriptionDialog}) => ({
                         prescriptionDialog: {
                           ...prescriptionDialog,
                           show: false

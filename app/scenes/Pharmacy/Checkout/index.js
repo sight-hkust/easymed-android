@@ -12,9 +12,12 @@ import {
   TouchableOpacity
 } from 'react-native';
 import Icon from 'react-native-fontawesome-pro';
+import { Redirect } from 'react-router-native';
 import { IconButton, Button } from '../../../components/Button';
+import DropdownAlert from 'react-native-dropdownalert'
 import { dischargePatient } from '../../../actions/patient';
 import { fetchPrescription } from '../../../actions/record';
+import Loading from '../../../components/Loading'
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
@@ -145,25 +148,40 @@ const DrugTypeIcon = ({type}) => {
   }
 }
 
-const PrescribedDrugEntry = ({type, item, dosage, days, times, instructions, confirm}) => (
-  <TouchableOpacity style={styles.drugItem}>
-    <DrugTypeIcon type={type}/>
-    
-    <View style={{flexDirection:'column', width:'72%', paddingHorizontal: 16, justifyContent:'space-between', height:'80%'}}>
-      <Text style={styles.primaryInfo}>{item}</Text>
-      <Text style={styles.secondaryInfo}>{dosage}</Text>
-      <View style={styles.drugItemInfoRowContainer}>
-        <Text style={styles.tertiaryInfo}>{days}</Text>
-        <Text style={styles.tertiaryInfo}>{times}</Text>
-      </View>
-      <Text style={styles.tertiaryInfo}>{instructions}</Text>
-    </View>
-    
-    <View>
-      <Image source={confirm?require('../../../../assets/images/pharmacy/checked.png'):require('../../../../assets/images/pharmacy/notchecked.png')} style={{height:28, width:28}} />
-    </View>
-  </TouchableOpacity>
-)
+class PrescribedDrugEntry extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      isAvailable: false
+    }
+  }
+
+  render() {
+    return (
+      <TouchableOpacity 
+      style={styles.drugItem}
+      onPress={() => {
+        this.setState({isAvailable: !this.state.isAvailable})
+      }}>
+        <DrugTypeIcon type={this.props.type}/>
+        
+        <View style={{flexDirection:'column', width:'72%', paddingHorizontal: 16, justifyContent:'space-between', height:'80%'}}>
+          <Text style={styles.primaryInfo}>{this.props.item}</Text>
+          <Text style={styles.secondaryInfo}>{`${this.props.dosage} x ${this.props.amount}`}</Text>
+          <View style={styles.drugItemInfoRowContainer}>
+            <Text style={styles.tertiaryInfo}>{this.props.days}</Text>
+            <Text style={styles.tertiaryInfo}>{this.props.times}</Text>
+          </View>
+          <Text style={styles.tertiaryInfo}>{this.props.instructions}</Text>
+        </View>
+        
+        <View>
+          <Icon name={this.state.isAvailable?'check-square':'square'}  size={24}/>
+        </View>
+      </TouchableOpacity>
+    )
+  }
+}
 
 
 const Toolbar = () => (
@@ -179,32 +197,67 @@ class Checkout extends Component {
   constructor(props) {
     super(props)
     this.fetchPrescription = props.actions.fetchPrescription.bind(this)
+    this.dischargePatient = props.actions.dischargePatient.bind(this)
+    this.state = {
+      dismiss: false,
+      prescriptions: {}
+    }
   }
 
   componentWillReceiveProps(nextProps){
-    console.log(nextProps)
+    this.state.prescriptions = nextProps.patients[nextProps.match.params.queueId]
+    console.log(this.state.prescriptions)
+    if(!nextProps.patients.hasOwnProperty(nextProps.match.params.queueId)) {
+      this.dropdown.alertWithType('success', 'Success', `Patient has been discharged from pharmacy.`)
+    }
   }
 
   componentWillMount() {
     this.fetchPrescription(this.props.match.params.queueId)
   }
 
+  onClose(data) {
+    this.setState({dismiss: true})
+  }
+
   render() {
-    return (
-      <View style={styles.container}>
-        <Header title="Pharmacy" to='/pharmacy'/>
-        <Text style={styles.patientName}>Patient: Preah R</Text>
-        <ScrollView>
-          {prescribedDrugs.map(({type, item, days, times, dosage, instructions, confirm}, i) => (
-            <PrescribedDrugEntry key={i} type={type} item={item} dosage={dosage} days={days} times={times} instructions={instructions} confirm={confirm} />
-          ))}
-        </ScrollView>
-        <TouchableOpacity style={{...StyleSheet.flatten(styles.actionButtons), backgroundColor: '#5beed1'}} onPress={()=>{}}>
-          <Icon name="sign-out-alt" type="solid" size={20} color="#fff"/>
-          <Text style={{fontFamily: 'Quicksand-Bold', fontSize: 18, color: '#fff', marginLeft: 8}}>DISCHARGE</Text>
-        </TouchableOpacity>
-      </View>
-    )
+    if(this.state.dismiss) {
+      return <Redirect to={`/pharmacy`}/>
+    }
+    else {
+      return (
+        <View style={styles.container}>
+          <Header title="Pharmacy" to='/pharmacy'/>
+          {/* <Text style={styles.patientName}>Patient: Preah R</Text> */}
+          {
+            this.state.prescriptions && 
+            <ScrollView>
+              { 
+                Object.keys(this.state.prescriptions).map((id, i) => (
+                <PrescribedDrugEntry 
+                key={i} 
+                type="tab" 
+                item={this.state.prescriptions[id].description} 
+                amount={this.state.prescriptions[id].instruction.amount}
+                dosage={`${this.state.prescriptions[id].concentration} ${this.state.prescriptions[id].unit}`} 
+                days={`${this.state.prescriptions[id].instruction.duration} ${this.state.prescriptions[id].instruction.interval==='/7'?'Days':this.state.prescriptions[id].instruction.interval==='/52'?'Weeks':'Month'} ${this.state.prescriptions[id].instruction.interval}`} 
+                times={this.state.prescriptions[id].instruction.frequency} instructions={this.state.prescriptions[id].instruction.intake} />
+              ))}
+            </ScrollView>
+          }
+          <TouchableOpacity 
+            style={{...StyleSheet.flatten(styles.actionButtons), backgroundColor: '#5beed1'}} 
+            onPress={()=>{
+              this.dischargePatient(this.props.match.params.queueId)
+            }}>
+            <Icon name="sign-out-alt" type="solid" size={20} color="#fff"/>
+            <Text style={{fontFamily: 'Quicksand-Bold', fontSize: 18, color: '#fff', marginLeft: 8}}>DISCHARGE</Text>
+          </TouchableOpacity>
+          <Loading isLoading={this.props.loading} />
+          <DropdownAlert ref={ref => this.dropdown = ref} onClose={data => this.onClose(data)} closeInterval={2500}/>
+        </View>
+      )
+    }
   }
 }
 
@@ -212,10 +265,9 @@ const mapDispatchToProps = (dispatch) => ({
   actions: bindActionCreators({dischargePatient, fetchPrescription}, dispatch)
 })
 
-const mapStateToProps = (state, props) => ({
-  queue: state.patients.queue,
-  // prescription: state.records.patients[props.match.params.queueId],
-  isPatientDischarged: state.patients.queue.hasOwnProperty(props.match.params.queueId)
+const mapStateToProps = (state) => ({
+  loading: state.patients.loading.spinner,
+  patients: state.records.patients,
 })
 
 export default connect(mapStateToProps,mapDispatchToProps)(Checkout)

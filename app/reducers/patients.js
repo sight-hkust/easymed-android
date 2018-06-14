@@ -13,10 +13,7 @@ import {
   TRANSFER_PATIENT_ERROR,
   RESET_PATIENT_QUEUE,
   DISMISS_ERROR,
-  CHECK_TRIAGE_ITEM,
-  DISCHARGE_PATIENT_REQUEST,
-  DISCHARGE_PATIENT_SUCCESS,
-  DISCHARGE_PATIENT_ERROR
+  CHECK_TRIAGE_ITEM
 } from '../actions/constants'
 
 const initialState = {
@@ -81,17 +78,6 @@ const patientsReducer = (state = initialState, {type, payload}) => {
       }
       case DISMISS_ERROR: {
         return {...state, error: null}
-      }
-      case DISCHARGE_PATIENT_REQUEST: {
-        return {...state, loading: {...state.loading, spinner: true}}
-      }
-      case DISCHARGE_PATIENT_SUCCESS: {
-        let queue = state.queue
-        delete queue[payload.queueId]
-        return {...state, loading: {...state.loading, spinner: false}, queue}
-      }
-      case DISCHARGE_PATIENT_ERROR: {
-        return {...state, loading: {...state.loading, spinner: false}, payload: error}
       }
       default: return state;
   }

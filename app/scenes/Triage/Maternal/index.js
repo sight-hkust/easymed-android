@@ -1,180 +1,39 @@
 import React, { Component } from 'react'
-import { 
-  Alert,
+import {
   View,
-  KeyboardAvoidingView,
-  Image,
   ScrollView,
   StatusBar, 
   StyleSheet, 
   Text,
-  Dimensions
+  TextInput,
+  TouchableOpacity,
+  Dimensions,
+  Platform
 } from 'react-native'
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { IconButton, Button, KeyboardDismissButton } from '../../../components/Button'
 import { Redirect } from 'react-router-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import Icon from 'react-native-fontawesome-pro';
+import { Button } from '../../../components/Button'
 import Loading from '../../../components/Loading'
 import DropdownAlert from 'react-native-dropdownalert';
 import Header from '../../../components/Header';
-import TextField from '../../../components/TextField';
 import DatePicker from '../../../components/DatePicker';
 import BooleanSelect from '../../../components/BooleanSelect';
 import { addGynaecologyInfo } from '../../../actions/record';
 
-const screenWidth = Dimensions.get('window').width
-
-const Instruction = ({step}) => {
-  switch(step) {
-    case 'pregnant': {
-      return (
-        <View style={styles.textWrapper}>
-          <Text style={styles.instruction}>Is patient pregnant?</Text>
-        </View>
-      )
-    }
-    case 'lmp': {
-      return (
-        <View style={styles.textWrapper}>
-          <Text style={styles.instruction}>LMP Date</Text>
-        </View>
-      )
-    }
-    case 'gestation': {
-      return (
-        <View style={styles.textWrapper}>
-          <Text style={styles.instruction}>Gestational age</Text>
-        </View>
-      )
-    }
-    case 'breastFeeding': {
-      return (
-        <View style={styles.textWrapper}>
-          <Text style={styles.instruction}>Breast Feeding?</Text>
-        </View>
-      )
-    }
-    case 'contraceptiveUse': {
-      return (
-        <View style={styles.textWrapper}>
-          <Text style={styles.instruction}>Contraceptive Use</Text>
-        </View>
-      )
-    }
-    case 'abortion': {
-      return (
-        <View style={styles.textWrapper}>
-          <Text style={styles.instruction}>Abortion Rate</Text>
-        </View>
-      )
-    }
-    case 'stillBorn': {
-      return (
-        <View style={styles.textWrapper}>
-          <Text style={styles.instruction}>Still Born Rate</Text>
-        </View>
-      )
-    }
-  } 
+const device = {
+  height: Platform.select({ios: Dimensions.get('window').height, android: Dimensions.get('window').height - StatusBar.currentHeight}),
+  width: Dimensions.get('window').width
 }
-
-const Response = ({step, mutate, lmp}) => {
-  switch(step) {
-    case 'pregnant': {
-      return (
-        <View style={styles.response}>
-          <BooleanSelect onSelect={(isPatientPregnant) =>
-            mutate({questions: isPatientPregnant=='yes'?['pregnant' ,'lmp', 'gestation', 'abortion', 'stillBorn']:['pregnant', 'lmp', 'breastFeeding', 'contraceptiveUse']})
-          }/>
-        </View>
-      )
-    }
-    case 'lmp': {
-      return (
-        <View style={{height:'48%', justifyContent: 'space-between', marginTop:8}}>
-          <DatePicker onSelect={(lastMenstrualPeriodDate) =>
-          mutate( ({gynaecology}) => ({ gynaecology: { ...gynaecology, lastMenstrualPeriodDate }}) )
-          }/>
-          <View style={{backgroundColor:'#fff', borderRadius:5, height:52, width:'80%', alignSelf:'center' ,alignItems:'center', justifyContent:'center', shadowColor: '#e4e4e4', shadowOpacity: 0.5, shadowOffset: { width: 1, height: 3 }, shadowRadius: 5}}>
-            <Text style={{fontFamily:'Quicksand-Medium', color:lmp?'#3c4859':'#A8B0CE', fontSize:18}}>
-              {lmp?lmp.toDateString():'Last menstrual period date'}
-            </Text>
-          </View>
-        </View>
-      )
-    }
-    case 'gestation': {
-      return (
-        <View style={styles.response}>
-          <TextField placeholder="Weeks" width="80%" onChangeText={(gestationalAge) => mutate(
-            ({gynaecology}) => ({gynaecology: {...gynaecology, gestationalAge}})
-          )}/>
-        </View>
-      )
-    }
-    case 'breastFeeding': {
-      return(
-        <View style={{height:'56%'}}>
-          <BooleanSelect onSelect={(breastFeeding) =>
-            mutate( ({gynaecology}) => ({ gynaecology: { ...gynaecology, breastFeeding }}) )
-          }/>
-        </View>
-      )
-    }
-    case 'contraceptiveUse': {
-      return(
-        <View style={{height:'56%'}}>
-          <BooleanSelect  onSelect={(contraceptiveUse) =>
-            mutate( ({gynaecology}) => ({ gynaecology: { ...gynaecology, contraceptiveUse }}) )
-          }/>
-        </View>
-      )
-    }
-    case 'abortion': {
-      return (
-        <View style={styles.response}>
-          <TextField placeholder="Abortion" width="80%" onChangeText={(abortion) => mutate(
-            ({gynaecology}) => ({gynaecology: {...gynaecology, abortion}})
-          )}/>
-        </View>
-      )
-    }
-    case 'stillBorn': {
-      return (
-        <View style={styles.response}>
-          <TextField placeholder="Still Born" width="80%" onChangeText={(stillBorn) => mutate(
-            ({gynaecology}) => ({gynaecology: {...gynaecology, stillBorn}})
-          )}/>
-        </View>
-      )
-    }
-  }
-}
-
-const HeaderContainer = ({xOffset, mutate, stepsLength}) => (
-  <View style={styles.headerContainer}>
-    <Header light="true" title="Maternal" onPress={() => {
-      Alert.alert(
-        'Unsaved progress will be lost',
-        'Are you sure you want to continue?',
-        [
-          {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
-          {text: 'OK', onPress: () => {
-            mutate({dismiss: true})
-          }}
-        ]
-      )
-    }}/>
-  </View>
-)
 
 class Maternal extends Component {
   constructor(props) {
     super(props);
     this.state = {
       queueId: props.match.params.queueId,
-      xOffset:0,
-      questions: ['pregnant' ,'lmp', 'breastFeeding', 'contraceptiveUse'],
+      isPatientPregnant: false,
       gynaecology: {
         lastMenstrualPeriodDate: null,
         gestationalAge: '',
@@ -186,12 +45,6 @@ class Maternal extends Component {
       dismiss: false
     }
     this.addGynaecologyInfo = this.props.actions.addGynaecologyInfo.bind(this)
-    this.handleScroll = this.handleScroll.bind(this);
-  }
-
-  handleScroll({nativeEvent: { contentOffset: { x }}}){
-    this.setState({ xOffset: x})
-    this.refs.responseScroll.scrollTo({x: x, animated:false})
   }
 
   componentWillReceiveProps(nextProps) {
@@ -220,53 +73,167 @@ class Maternal extends Component {
     }
     else {
       return (
-        <KeyboardAvoidingView style={styles.parentContainer} behavior="position">
-          <HeaderContainer xOffset={this.state.xOffset} mutate={this.setState.bind(this)} stepsLength={this.state.questions.length-1}/>
-  
-          <ScrollView 
-            ref = 'questionScroll'
-            horizontal = {true} 
-            pagingEnabled = {true}
-            onScroll = {this.handleScroll}
-            scrollEventThrottle = {1}
-            showsHorizontalScrollIndicator = {false}
-            style={styles.questionContainer}
-            >
-            {this.state.questions.map((step, i) => (
-              <View style={{width: screenWidth}} key={i}>
-                <Instruction step={step}/>
-              </View>
-            ))}
-          </ScrollView>
-          
-          <ScrollView 
-            ref = 'responseScroll'
-            horizontal = {true} 
-            pagingEnabled ={true}
-            scrollEnabled = {false}
-            showsHorizontalScrollIndicator = {false}
-            style={styles.responseContainer}
-            >
-            {this.state.questions.map((step, i) => (
-              <View style={{width: screenWidth, justifyContent:'flex-start', paddingHorizontal: 24}} key={i}>
-                <Response step={step} mutate={this.setState.bind(this)} lmp={this.state.gynaecology.lastMenstrualPeriodDate}/>
-              </View>
-            ))}
-          </ScrollView>
-  
-          <View style={{height:'8%'}}>
-            <Button 
-                title="Submit" 
-                onPress={this.submit.bind(this)} 
-                bgColor="#1d9dff" titleColor="#fff" 
-                icon="chevron-right"
-                width="50%"
-                round
-              />
+        <KeyboardAwareScrollView style={styles.container}>
+          <View style={{backgroundColor: '#9687e3', height: device.height*.12}}>
+            <Header light="true" title="Maternal" style={styles.header} warning callback={()=>{this.setState({dismiss: true})}}/>
           </View>
+          <ScrollView
+            horizontal
+            pagingEnabled
+            scrollEventThrottle={1}
+            showsHorizontalScrollIndicator={false}
+          >
+            <View style={{width: device.width}}>
+              <View style={styles.pageTop}>
+                <View style={styles.textWrapper}>
+                  <Text style={styles.instruction}>Is patient pregnant?</Text>
+                </View>
+              </View>
+              <View style={styles.pageBottom}>
+                  <BooleanSelect onSelect={(isPatientPregnant) =>
+                    this.setState({ isPatientPregnant })}/>
+              </View>
+            </View>
+            <View style={{width: device.width}}>
+              <View style={styles.pageTop}>
+                <View style={styles.textWrapper}>
+                  <Text style={styles.instruction}>LMP Date</Text>
+                </View>
+              </View>
+              <View style={styles.pageBottom}>
+                <DatePicker onSelect={(lastMenstrualPeriodDate) =>
+                  this.setState( ({gynaecology}) => ({ gynaecology: { ...gynaecology, lastMenstrualPeriodDate }}) )
+                }/>
+                <View style={styles.dateDisplay}>
+                  <Text style={{fontFamily:'Quicksand-Medium', color:this.state.gynaecology.lastMenstrualPeriodDate?'#3c4859':'#A8B0CE', fontSize:18}}>
+                    {this.state.gynaecology.lastMenstrualPeriodDate?this.state.gynaecology.lastMenstrualPeriodDate.toDateString():'Last menstrual period date'}
+                  </Text>
+                </View>
+              </View>
+            </View>
+            { this.state.isPatientPregnant && <View style={{width: device.width}}>
+              <View style={styles.pageTop}>
+                <View style={styles.textWrapper}>
+                  <Text style={styles.instruction}>Gestational Age</Text>
+                </View>
+              </View>
+              <View style={styles.pageBottom}>
+                <View style={styles.inputWrapper}>
+                    <TextInput 
+                      onChangeText={(gestationalAge) => this.setState(
+                        ({gynaecology}) => ({gynaecology: {...gynaecology, gestationalAge}})
+                      )}
+                      placeholder="Month / Weeks"
+                      underlineColorAndroid='transparent'
+                      keyboardType="numeric"
+                      style={{
+                        height: '100%',
+                        width: '100%',
+                        backgroundColor: 'white',
+                        textAlignVertical: 'top',
+                        paddingHorizontal: 12,
+                        paddingVertical: 8,
+                        fontSize: 24,
+                        fontFamily: 'Nunito-Regular'
+                      }}
+                    />
+                  </View>
+              </View>
+            </View>}
+            { this.state.isPatientPregnant && <View style={{width: device.width}}>
+              <View style={styles.pageTop}>
+                <View style={styles.textWrapper}>
+                  <Text style={styles.instruction}>Still Born Rate</Text>
+                </View>
+              </View>
+              <View style={styles.pageBottom}>
+                <View style={styles.inputWrapper}>
+                    <TextInput 
+                      onChangeText={(stillBorn) => this.setState(
+                        ({gynaecology}) => ({gynaecology: {...gynaecology, stillBorn}})
+                      )}
+                      placeholder="Percentage"
+                      keyboardType="numeric"
+                      underlineColorAndroid='transparent'
+                      style={{
+                        height: '100%',
+                        width: '100%',
+                        backgroundColor: 'white',
+                        textAlignVertical: 'top',
+                        paddingHorizontal: 12,
+                        paddingVertical: 8,
+                        fontSize: 24,
+                        fontFamily: 'Nunito-Regular'
+                      }}
+                    />
+                  </View>
+              </View>
+            </View>}
+            { this.state.isPatientPregnant && <View style={{width: device.width}}>
+              <View style={styles.pageTop}>
+                <View style={styles.textWrapper}>
+                  <Text style={styles.instruction}>Abortion Rate</Text>
+                </View>
+              </View>
+              <View style={styles.pageBottom}>
+                <View style={styles.inputWrapper}>
+                    <TextInput 
+                      onChangeText={(abortion) => this.setState(
+                        ({gynaecology}) => ({gynaecology: {...gynaecology, abortion}})
+                      )}
+                      placeholder="Percentage"
+                      keyboardType="numeric"
+                      underlineColorAndroid='transparent'
+                      style={{
+                        height: '100%',
+                        width: '100%',
+                        backgroundColor: 'white',
+                        textAlignVertical: 'top',
+                        paddingHorizontal: 12,
+                        paddingVertical: 8,
+                        fontSize: 24,
+                        fontFamily: 'Nunito-Regular'
+                      }}
+                    />
+                  </View>
+              </View>
+            </View>}
+            {!this.state.isPatientPregnant && <View style={{width: device.width}}>
+              <View style={styles.pageTop}>
+                <View style={styles.textWrapper}>
+                  <Text style={styles.instruction}>Breast Feeding</Text>
+                </View>
+              </View>
+              <View style={styles.pageBottom}>
+                  <BooleanSelect onSelect={(breastFeeding) =>
+                    this.setState( ({gynaecology}) => ({ gynaecology: { ...gynaecology, breastFeeding }}) )
+                  }/>
+              </View>
+            </View>}
+            {!this.state.isPatientPregnant && <View style={{width: device.width}}>
+              <View style={styles.pageTop}>
+                <View style={styles.textWrapper}>
+                  <Text style={styles.instruction}>Contraceptive Use</Text>
+                </View>
+              </View>
+              <View style={styles.pageBottom}>
+                  <BooleanSelect onSelect={(contraceptiveUse) =>
+                    this.setState( ({gynaecology}) => ({ gynaecology: { ...gynaecology, contraceptiveUse }}) )
+                  }/>
+              </View>
+            </View>}
+          </ScrollView>
+            <Button 
+              title="Submit" 
+              onPress={this.submit.bind(this)} 
+              bgColor="#1d9dff" titleColor="#fff" 
+              icon="chevron-right"
+              width="50%"
+              round
+            />
           <Loading isLoading={this.props.loading} />
           <DropdownAlert ref={ref => this.dropdown = ref} onClose={data => this.onClose(data)} closeInterval={2500}/>
-        </KeyboardAvoidingView>
+        </KeyboardAwareScrollView>
       )
     }
   }
@@ -284,25 +251,12 @@ const mapDispatchToProps = (dispatch) => ({
 export default connect(mapStateToProps, mapDispatchToProps)(Maternal)
 
 const styles = StyleSheet.create({
-  parentContainer: {
+  container: {
     flex: 1,
-    justifyContent: 'flex-start',
     backgroundColor: '#f5f6fb',
-    paddingBottom: 16
   },
-  headerContainer: {
-    height: '20%',
-    justifyContent: 'space-around',
-    backgroundColor: '#9687E3',
-  },
-  questionContainer:{
-    height: '24%',
-    backgroundColor: '#9687E3',
-  },
-  responseContainer:{
-    height: '48%',
-    backgroundColor: '#f5f6fb',
-    paddingTop: 40,
+  header: {
+    marginTop: device.height*.04
   },
   textWrapper: {
     marginTop: 20,
@@ -316,19 +270,51 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     color: '#fff',
   },
-  response: {
-    height: '52%',
-    width: '100%',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+  pageTop: {
+    backgroundColor: '#9687e3',
+    height: device.height*.25
   },
-  loading: {
+  pageBottom: {
+    alignItems: 'center', 
+    paddingTop: device.height*.05
+  },
+  dateDisplay: {
+    backgroundColor:'#fff', 
+    borderRadius:5, 
+    marginVertical: 24,
+    height: 64, 
+    width: device.width * 0.65, 
+    alignSelf:'center',
+    alignItems:'center', 
+    justifyContent:'center', 
+    shadowColor: '#e4e4e4', 
+    shadowOpacity: 0.5, 
+    shadowOffset: {
+       width: 1,
+       height: 3 
+    }, 
+    shadowRadius: 5
+  },
+  submit: {
+    alignSelf:'flex-end', 
+    backgroundColor: '#fff', 
+    marginTop: 24, 
+    marginRight: 24 , 
+    borderRadius: 22, 
+    elevation: 2
+  },
+  inputWrapper: {
     alignSelf: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    height: 88,
-    width: 88,
-    justifyContent: 'center',
-    alignItems:'center',
-    borderRadius: 8
-  }
+    backgroundColor: '#fff',
+    borderRadius: 6,
+    shadowColor: '#e4e4e4',
+    shadowOpacity: 0.5,
+    shadowOffset: { width: 1, height: 3 },
+    shadowRadius: 5,
+    width: device.width * .55,
+    height: 64,
+    marginTop: 12,
+    paddingHorizontal: 4,
+    paddingVertical: 4
+  },
 })

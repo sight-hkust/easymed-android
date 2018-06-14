@@ -89,7 +89,7 @@ class Admission extends Component {
                 onRefresh={this.refreshPatientQueue.bind(this)}
               />
             }>
-              {this.props.queue.length === 0 && <EmptyStub />}
+              {Object.keys(this.props.queue).length === 0 && <EmptyStub />}
               {this.props.queue && Object.keys(this.props.queue).sort( (p,s) => { return this.props.queue[p].tag - this.props.queue[s].tag}).map((queueId, i) => <PatientQueueItem patient={this.props.queue[queueId]} key={i} to={`/triage/patients/${queueId}`}/> )}
             </ScrollView>
           </View>

@@ -8,10 +8,10 @@
     "test": "jest"
   },
   "dependencies": {
-    "@fortawesome/fontawesome-free-brands": "^5.0.8",
-    "@fortawesome/fontawesome-pro-light": "^5.0.8",
-    "@fortawesome/fontawesome-pro-regular": "^5.0.8",
-    "@fortawesome/fontawesome-pro-solid": "^5.0.8",
+    "@fortawesome/fontawesome-free-brands": "^5.0.13",
+    "@fortawesome/fontawesome-pro-light": "^5.0.13",
+    "@fortawesome/fontawesome-pro-regular": "^5.0.13",
+    "@fortawesome/fontawesome-pro-solid": "^5.0.13",
     "parse": "^1.11.1",
     "prop-types": "^15.6.1",
     "react": "^16.2.0",

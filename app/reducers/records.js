@@ -36,6 +36,9 @@ import {
   FETCH_PRESCRIPTION_REQUEST,
   FETCH_PRESCRIPTION_SUCCESS,
   FETCH_PRESCRIPTION_ERROR,
+  DISCHARGE_PATIENT_REQUEST,
+  DISCHARGE_PATIENT_SUCCESS,
+  DISCHARGE_PATIENT_ERROR
 } from '../actions/constants';
 
 const initialState = {
@@ -72,8 +75,7 @@ const medicalRecordReducer = (state = initialState, {payload, type}) => {
       return {...state, loading: {spinner: true}}
     }
     case FETCH_PRESCRIPTION_SUCCESS: {
-      console.log(payload)
-      return {...state, loading: {spinner: false}, patients: {...state.patients, [payload.queueId]: payload.prescription}}
+      return {...state, loading: {spinner: false}, patients: {...state.patients, [payload.queueId]: payload.prescriptions}}
     }
     case FETCH_PRESCRIPTION_ERROR: {
       return {...state, loading: {spinner: false}, error: payload.error}
@@ -162,6 +164,18 @@ const medicalRecordReducer = (state = initialState, {payload, type}) => {
     }
     case DISMISS_ERROR: {
       return {...state, error: null}
+    }
+    case DISCHARGE_PATIENT_REQUEST: {
+      return {...state, loading: {...state.loading, spinner: true}}
+    }
+    case DISCHARGE_PATIENT_SUCCESS: {
+      console.log(state, payload)
+      const patients = state.patients
+      delete patients[payload.queueId]
+      return {...state, loading: {...state.loading, spinner: false}, patients}
+    }
+    case DISCHARGE_PATIENT_ERROR: {
+      return {...state, loading: {...state.loading, spinner: false}, payload: error}
     }
     default: return state
   }

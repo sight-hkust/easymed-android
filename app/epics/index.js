@@ -5,7 +5,8 @@ import {
     queuePatientEpic,
     transferPatientEpic,
     fetchPatientListEpic,
-    fetchPatientQueueEpic
+    fetchPatientQueueEpic,
+    dischargePatientEpic
 } from './patients';
 import {
     fetchPrescriptionsEpic,
@@ -28,6 +29,7 @@ export const epics = combineEpics (
     logoutEpic,
     createPatientEpic,
     queuePatientEpic,
+    dischargePatientEpic,
     transferPatientEpic,
     fetchPatientListEpic,
     fetchPatientQueueEpic,

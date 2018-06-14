@@ -347,17 +347,19 @@ export const insertChiefComplaintsRecord = async (data) => {
 
 export const addMedicalCase = async (records, queueId) => {
   try {
+    const location = await getConfiguration('location')
     const Queue = Parse.Object.extend('Queue')
     const MedicalCase = Parse.Object.extend('MedicalCase')
     const _case = new MedicalCase()
     const patient = await new Parse.Query(Queue).get(queueId)
+    _case.set('location', location)
     _case.set('cc', patient.get('cc'))
     _case.set('vitals', patient.get('vitals'))
     _case.set('patient', patient.get('patient'))
-    const diagnosises = _case.relation('diagnosis')
+    console.log(records)
     const {
       diagnosis,
-      prescription,
+      prescriptions,
       hpi,
       physicalExaminations,
       investigation,
@@ -380,17 +382,8 @@ export const addMedicalCase = async (records, queueId) => {
       _case.set('refer', referNotice)
     }
     const newDiagnosises = await diagnosis.added.map(name => addDiagnosis(name))
-    newDiagnosises.forEach(diagnosis => {
-      diagnosises.add(diagnosis)
-    })
-
-    Object.keys(diagnosis.existing).forEach( async (key) => {
-      const MedicalCase = Parse.Object.extend('MedicalCase')
-      const _diagnosis = await new Parse.Query(MedicalCase).get(key)
-      diagnosises.add(_diagnosis)
-    })
-
-    _case.set('prescriptions', prescription)
+    _case.set('diagnosis', [...newDiagnosises, Object.keys(diagnosis.existing)])
+    _case.set('prescriptions', prescriptions)
     await _case.save()
     patient.set('case', _case)
     await patient.save()
@@ -406,15 +399,13 @@ export const fetchPrescriptions = async (queueId) => {
   try {
     const Queue = Parse.Object.extend('Queue')
     const Medicine = Parse.Object.extend('Medicine')
+    const MedicalCase = Parse.Object.extend('MedicalCase')
     const patient = await new Parse.Query(Queue).get(queueId)
-    const prescription = patient.get('prescription')
-    return Object.keys(prescription).map(async (key) => {
-      const medicine = await new Parse.Query(Medicine).get(queueId)
-      const { instruction } = prescription[key]
-      return {...medicine, instruction }
-    })
+    const _case = await new Parse.Query(MedicalCase).get(patient.get('case').id)
+    const {prescriptions} = _case.attributes
+    return prescriptions
   } catch (error) {
-    console.log('expected')
+    console.log(error)
     throw(error)
   }
 }
@@ -443,3 +434,12 @@ export const attachMetadata = async (recordId, recordType, queueId) => {
     throw error
   }
 }
+
+export const getConfiguration = async (param) => {
+  try {
+    const configuration = await Parse.Config.get()
+    return configuration.get(param)
+  } catch (error) {
+    throw (error)
+  }
+} 

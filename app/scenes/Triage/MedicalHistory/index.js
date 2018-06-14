@@ -123,18 +123,7 @@ class MedicalHistory extends Component {
     else {
       return (
         <View style={styles.container}>
-          <Header title="Medical History" onPress={() => {
-            Alert.alert(
-              'Unsaved progress will be lost',
-              'Are you sure you want to continue?',
-              [
-                {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
-                {text: 'OK', onPress: () => {
-                  this.setState({dismiss: true})
-                }}
-              ]
-            )
-          }}/>
+          <Header title="Medical History" warning callback={()=>{this.setState({dismiss: true})}}/>
             <ScrollView
               horizontal
               pagingEnabled

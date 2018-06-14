@@ -266,16 +266,16 @@ export const updateMedicalConditionEpic = action$ =>
 
 export const fetchPrescriptionsEpic = action$ =>
   action$.ofType(FETCH_PRESCRIPTION_REQUEST)
-  .switchMap(({queueId}) => Observable.fromPromise(fetchPrescriptions(queueId))
-  .map(prescriptions => ({
-    type: FETCH_PRESCRIPTION_SUCCESS,
-    payload: {prescriptions}
-  }))
-  .catch(error => Observable.of({
-    type: FETCH_PRESCRIPTION_ERROR,
-    payload: {error}
-  }))
-)
+  .switchMap(({payload: { queueId }}) => {
+    return Observable.fromPromise(fetchPrescriptions(queueId)).map(prescriptions => ({
+      type: FETCH_PRESCRIPTION_SUCCESS,
+      payload: {queueId, prescriptions}
+    }))
+    .catch(error => Observable.of({
+      type: FETCH_PRESCRIPTION_ERROR,
+      payload: {error}
+    }))
+  })
 
 export const fetchDiagnosisesEpic = action$ =>
   action$.ofType(FETCH_MEDICAL_DIAGNOSIS_REQUEST)

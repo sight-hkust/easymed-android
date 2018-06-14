@@ -1,8 +1,6 @@
 import React, { Component } from 'react'
-import { 
-  Alert,
+import {
   View,
-  KeyboardAvoidingView,
   Keyboard,
   StatusBar,
   StyleSheet,
@@ -13,6 +11,7 @@ import {
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Button } from '../../../components/Button'
 import DropdownAlert from 'react-native-dropdownalert'
 import Loading from '../../../components/Loading'
@@ -58,38 +57,20 @@ class ChiefComplaints extends Component {
     else {
       return (
         <TouchableWithoutFeedback onPress={()=>{Keyboard.dismiss()}}>
-          <KeyboardAvoidingView style={styles.container}>
+          <KeyboardAwareScrollView contentContainerStyle={styles.container}>
             <View>
               <View style={styles.header}>
-                <Header light="true" title="Chief Complaints" onPress={() => {
-                  Alert.alert(
-                    'Unsaved progress will be lost',
-                    'Are you sure you want to continue?',
-                    [
-                      {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
-                      {text: 'OK', onPress: () => {
-                        this.setState({dismiss: true})
-                      }}
-                    ]
-                  )
-                }}/>
+                <Header light="true" title="Chief Complaints" warning callback={() => {this.setState({dismiss: true})}}/>
               </View>
               <View style={styles.inputWrapper}>
                 <TextInput 
-                  multiline={true}
-                  placeholder="Enter patients' chief complaints here"
-                  underlineColorAndroid='transparent'
-                  onChangeText={(cheifComplaints) => {this.setState({cheifComplaints})}}
-                  style={{
-                    height: '100%',
-                    width: '100%',
-                    backgroundColor: 'white',
-                    textAlignVertical: 'top',
-                    paddingHorizontal: 6,
-                    paddingVertical: 4,
-                    fontSize: 16,
-                    fontFamily: 'Nunito-Regular'
-                  }}
+                    multiline={true}
+                    onChangeText={(ROS) => this.setState(
+                      ({miscellaneous}) => ({miscellaneous: {...miscellaneous, ROS}})
+                    )}
+                    placeholder="Enter information on the observation for ROS here"
+                    underlineColorAndroid='transparent'
+                    style={styles.input}
                 />
               </View>
             </View>
@@ -108,7 +89,7 @@ class ChiefComplaints extends Component {
             </View>
             <Loading isLoading={this.props.loading} />
             <DropdownAlert ref={ref => this.dropdown = ref} onClose={data => this.onClose(data)} closeInterval={2500}/>
-          </KeyboardAvoidingView>
+          </KeyboardAwareScrollView>
         </TouchableWithoutFeedback>
       )
     }
@@ -154,19 +135,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 4,
     paddingVertical: 4
   },
-  instruction: {
-    fontSize: 26,
-    fontFamily: 'Nunito-Bold',
-    textAlign: 'left',
-    color: '#fff',
-  },
-  loading: {
-    alignSelf: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    height: 88,
-    width: 88,
-    justifyContent: 'center',
-    alignItems:'center',
-    borderRadius: 8
+  input: {
+    height: '100%',
+    width: '100%',
+    backgroundColor: 'white',
+    textAlignVertical: 'top',
+    paddingHorizontal: 6,
+    paddingVertical: 4,
+    lineHeight: 36,
+    fontSize: 18,
+    fontFamily: 'Nunito-Regular'
   }
 })

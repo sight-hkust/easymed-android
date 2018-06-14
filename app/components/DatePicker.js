@@ -7,12 +7,17 @@ import {
   Platform,
   Text,
   TouchableOpacity,
+  StatusBar,
   StyleSheet
 } from 'react-native';
 import Modal from 'react-native-modal';
 import Icon from 'react-native-fontawesome-pro';
-import TextField from './TextField';
 import { Button } from './Button';
+
+const device = {
+  height: Platform.select({android: Dimensions.get('window').height - StatusBar.currentHeight, ios:  Dimensions.get('window').height}),
+  width: Dimensions.get('window').width
+}
 
 const styles = StyleSheet.create({
   response: {
@@ -21,8 +26,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   datePickerButton: {
-    height: 52,
-    width: '80%',
+    height: device.height * .065,
+    width: device.width * .55 ,
     borderRadius: 5,
     backgroundColor: '#1d9dff',
     shadowColor: '#3a4252',
@@ -31,7 +36,8 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
-    flexDirection: 'row'
+    flexDirection: 'row',
+    marginVertical: 12
   },
   datePickerButtonTitle: {
     fontSize: 18,

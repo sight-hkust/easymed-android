@@ -69,7 +69,7 @@ export const transferPatientEpic = action$ =>
 
 export const dischargePatientEpic = action$ =>
   action$.ofType(DISCHARGE_PATIENT_REQUEST)
-  .switchMap( ({payload: {queueId}}) => Observable.fromPromise(dischargePatient)
+  .switchMap( ({payload: {queueId}}) => Observable.fromPromise(dischargePatient(queueId))
   .map((queueId) => ({type: DISCHARGE_PATIENT_SUCCESS, payload: {queueId}}))
   .catch(error => Observable.of({type: DISCHARGE_PATIENT_ERROR, payload: {error}}))
   )

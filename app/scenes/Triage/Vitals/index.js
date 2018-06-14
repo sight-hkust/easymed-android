@@ -1,243 +1,42 @@
 import React, { Component } from 'react'
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { 
-  Alert,
+import {
   View,
-  KeyboardAvoidingView,
-  Image,
-  Keyboard,
   ScrollView,
   StatusBar,
   StyleSheet,
   Text,
-  TouchableOpacity,
+  TextInput,
   Dimensions,
-  Switch,
   Platform
 } from 'react-native'
 import { Redirect } from 'react-router-native';
 import DropdownAlert from 'react-native-dropdownalert'
-import { Button, KeyboardDismissButton } from '../../../components/Button'
 import { addVitalsRecord } from '../../../actions/record';
 import Icon from 'react-native-fontawesome-pro';
+import { Button } from '../../../components/Button'
 import Loading from '../../../components/Loading'
-import TextField from '../../../components/TextField'
 import Header from '../../../components/Header';
 import DatePicker from '../../../components/DatePicker';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
-const {width, height} = Dimensions.get('window')
-
-const Instruction = ({step}) => {
-  switch(step) {
-    case 'deworming': {
-      return (
-        <View style={styles.textWrapper}>
-          <Text style={styles.instruction}>Last Deworming Date</Text>
-        </View>
-      )
-    }
-    case 'bloodPressure': {
-      return (
-        <View style={styles.textWrapper}>
-          <Text style={styles.instruction}>Upper and Lower</Text>
-          <Text style={styles.instruction}>Blood Pressure</Text>
-        </View>
-      )
-    }
-    case 'pulseRateRespirationRate': {
-      return (
-        <View style={styles.textWrapper}>
-          <Text style={styles.instruction}>Pulse Rate</Text>
-          <Text style={styles.instruction}>and Respiration rate</Text>
-        </View>
-      )
-    }
-    case 'weightHeight': {
-      return (
-        <View style={styles.textWrapper}>
-          <Text style={styles.instruction}>Weight</Text>
-          <Text style={styles.instruction}>and Height</Text>
-        </View>
-      )
-    }
-    case 'temperature': {
-      return (
-        <View style={styles.textWrapper}>
-          <Text style={styles.instruction}>Body Temperature</Text>
-        </View>
-      )
-    }
-    case 'SpO2bloodSugar': {
-      return (
-        <View style={styles.textWrapper}>
-          <Text style={styles.instruction}>SpO2</Text>
-          <Text style={styles.instruction}>and Glucose level</Text>
-        </View>
-      )
-    }
-  } 
+const device = {
+  height: Platform.select({ios: Dimensions.get('window').height, android: Dimensions.get('window').height - StatusBar.currentHeight}),
+  width: Dimensions.get('window').width
 }
-
-const Response = ({step, mutate, ldw}) => {
-  switch(step) {
-    case 'bloodPressure': {
-      return (
-        <View style={styles.response}>
-          <TextField 
-            placeholder="Upper BP" 
-            width="80%" 
-            keyboardType="numeric" 
-            unit="mmHg"
-            onChangeText={(bloodPressure) => mutate(
-              ({vitals}) => ({ vitals: { ...vitals, bloodPressure }})
-            )}
-          />
-          <TextField 
-            placeholder="Lower BP" 
-            width="80%" 
-            keyboardType="numeric" 
-            unit="mmHg"
-            onChangeText={(bloodPressure) => mutate(
-              ({vitals}) => ({ vitals: { ...vitals, bloodPressure: `${vitals.bloodPressure.split('/')[0]}/${bloodPressure}` }})
-            )}
-          />
-        </View>
-      )
-    }
-    case 'pulseRateRespirationRate': {
-      return (
-        <View style={styles.response}>
-          <TextField 
-            placeholder="Pulse" 
-            width="80%" 
-            keyboardType="numeric" 
-            unit="bpm"
-            onChangeText={(pulseRate) => mutate(
-              ({vitals}) => ({ vitals: { ...vitals, pulseRate }})
-            )}
-          />
-          <TextField 
-            placeholder="Respiration" 
-            width="80%" 
-            keyboardType="numeric" 
-            unit="bpm"
-            onChangeText={(respiratoryRate) => mutate(
-              ({vitals}) => ({ vitals: { ...vitals, respiratoryRate }})
-            )}
-          />
-        </View>
-      )
-    }
-    case 'weightHeight': {
-      return(
-        <View style={styles.response}>
-          <TextField 
-            placeholder="Weight" 
-            width="80%" 
-            keyboardType="numeric" 
-            unit="kg"
-            onChangeText={(weight) => mutate(
-              ({vitals}) => ({ vitals: { ...vitals, weight }})
-            )}
-          />
-          <TextField 
-            placeholder="Height" 
-            width="80%" 
-            keyboardType="numeric" 
-            unit="cm"
-            onChangeText={(height) => mutate(
-              ({vitals}) => ({ vitals: { ...vitals, height }})
-            )}
-          />
-        </View>
-      )
-    }
-    case 'temperature': {
-      return(
-        <View style={styles.response}>
-          <TextField 
-            placeholder="Temperature" 
-            width="80%" 
-            keyboardType="numeric" 
-            unit="℃"
-            onChangeText={(temperature) => mutate(
-              ({vitals}) => ({ vitals: { ...vitals, temperature }})
-            )}
-          />
-        </View>
-      )
-    }
-    case 'SpO2bloodSugar': {
-      return(
-        <View style={styles.response}>
-          <TextField 
-            placeholder="SpO2" 
-            width="80%" 
-            keyboardType="numeric" 
-            unit="%"
-            onChangeText={(bloodOxygenSaturation) => mutate(
-              ({vitals}) => ({ vitals: { ...vitals, bloodOxygenSaturation }})
-            )}
-          />
-          <TextField 
-            placeholder="Blood Sugar" 
-            width="80%" 
-            keyboardType="numeric" 
-            unit="mmol/L"
-            onChangeText={(glucoseLevel) => mutate(
-              ({vitals}) => ({ vitals: { ...vitals, glucoseLevel }})
-            )}
-          />
-        </View>
-      )
-    }
-    case 'deworming': {
-      return (
-        <View style={{height:'48%', justifyContent: 'space-between', marginTop:8}}>
-          <DatePicker onSelect={(lastDewormingDate) =>
-          mutate( ({vitals}) => ({ vitals: { ...vitals, lastDewormingDate }}) )
-          }/>
-          <View style={{backgroundColor:'#fff', borderRadius:5, height:52, width:'80%', alignSelf:'center' ,alignItems:'center', justifyContent:'center', shadowColor: '#e4e4e4', shadowOpacity: 0.5, shadowOffset: { width: 1, height: 3 }, shadowRadius: 5}}>
-            <Text style={{fontFamily:'Quicksand-Medium', color:ldw?'#3c4859':'#A8B0CE', fontSize:18}}>
-              {ldw?ldw.toDateString():'Last deworming date'}
-            </Text>
-          </View>
-        </View>
-      )
-    }
-  }
-}
-
-const HeaderContainer = ({xOffset, mutate, stepsLength}) => (
-  <View style={styles.headerContainer}>
-    <Header light="true" title="Vitals" onPress={() => {
-                  Alert.alert(
-                    'Unsaved progress will be lost',
-                    'Are you sure you want to continue?',
-                    [
-                      {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
-                      {text: 'OK', onPress: () => {
-                        mutate({dismiss: true})
-                      }}
-                    ]
-                  )
-                }}/>
-  </View>
-)
 
 class Vitals extends Component {
   constructor(props) {
-    super(props);
-    this.handleScroll = this.handleScroll.bind(this);
+    super(props)
     this.state = {
-      questions: props.patient.age < 18 ? ['weightHeight', 'temperature', 'pulseRateRespirationRate', 'SpO2bloodSugar', 'deworming']: ['weightHeight', 'temperature', 'bloodPressure', 'pulseRateRespirationRate', 'SpO2bloodSugar', 'deworming'],
-      xOffset:0,
-      isKeyboardPresent: false,
       queueId: props.match.params.queueId,
       vitals: {
         pulseRate: '',
-        bloodPressure: '',
+        bloodPressure: {
+          systolic: '',
+          diastolic: ''
+        },
         respiratoryRate: '',
         temperature: '',
         glucoseLevel: '',
@@ -249,11 +48,6 @@ class Vitals extends Component {
       dismiss: false
     }
     this.addVitalsRecord = this.props.actions.addVitalsRecord.bind(this)
-  }
-
-  handleScroll({nativeEvent: { contentOffset: { x }}}){
-    this.setState({ xOffset: x})
-    this.refs.responseScroll.scrollTo({x: x, animated:false})
   }
   
   componentDidUpdate() {
@@ -268,16 +62,6 @@ class Vitals extends Component {
 
   componentWillMount() {
     StatusBar.setBarStyle('light-content')
-    this.keyboardWillShowListener = Keyboard.addListener('keyboardWillShow', this._keyboardWillShow.bind(this))
-    this.keyboardWillHideListener = Keyboard.addListener('keyboardWillHide', this._keyboardWillHide.bind(this))
-  }
-
-  _keyboardWillShow () {
-    this.setState(previousState => ({isKeyboardPresent: true}))
-  }
-
-  _keyboardWillHide () {
-    this.setState(previousState => ({isKeyboardPresent: false}))
   }
 
   submit() {
@@ -289,61 +73,214 @@ class Vitals extends Component {
       return <Redirect to={`/triage/patients/${this.state.queueId}`}/>
     } else {
       return (
-        <KeyboardAvoidingView style={styles.parentContainer} behavior= {(Platform.OS === 'ios')? "padding" : null}>
-          <HeaderContainer xOffset={this.state.xOffset} mutate={this.setState.bind(this)} stepsLength={this.state.questions.length-1}/>
-          <ScrollView 
-            ref = 'questionScroll'
-            horizontal = {true} 
-            pagingEnabled = {true}
-            onScroll = {this.handleScroll}
-            scrollEventThrottle = {1}
-            showsHorizontalScrollIndicator = {false}
-            style={styles.questionContainer}
-            >
-            {this.state.questions.map((step, i) => (
-              <View style={{width}} key={i}>
-                <Instruction step={step}/>
-              </View>
-            ))}
-          </ScrollView>
-          
-          <ScrollView 
-            ref = 'responseScroll'
-            horizontal = {true} 
-            pagingEnabled ={true}
-            scrollEnabled = {false}
-            showsHorizontalScrollIndicator = {false}
-            style={styles.responseContainer}
-            >
-            {this.state.questions.map((step, i) => (
-              <View style={{width, justifyContent:'flex-start'}} key={i}>
-                <Response step={step} mutate={this.setState.bind(this)} ldw={this.state.vitals.lastDewormingDate}/>
-                {this.state.isKeyboardPresent && <KeyboardDismissButton top={-42} left={8}/>}
-              </View>
-            ))}
-          </ScrollView>
-  
-          <View style={{height:'8%'}}>
-            {
-              this.state.vitals.pulseRate.length > 0 &&
-              this.state.vitals.respiratoryRate.length > 0 &&
-              this.state.vitals.temperature.length > 0 && 
-              this.state.vitals.bloodOxygenSaturation.length > 0 &&
-              this.state.vitals.height.length > 0 &&
-              this.state.vitals.weight.length > 0 &&
-              <Button 
-                title="Submit" 
-                onPress={this.submit.bind(this)} 
-                bgColor="#1d9dff" titleColor="#fff" 
-                icon="chevron-right"
-                width="50%"
-                round
-              />
-            }
+        <KeyboardAwareScrollView style={styles.container}>
+          <View style={{backgroundColor: '#f0788a', height: device.height*.12}}>
+            <Header light="true" title="Vitals" style={styles.header} warning callback={()=>{this.setState({dismiss: true})}}/>
           </View>
+          <ScrollView
+            horizontal
+            pagingEnabled
+            scrollEventThrottle={1}
+            showsHorizontalScrollIndicator={false}
+          >
+            <View style={{width: device.width}}>
+              <View style={styles.pageTop}>
+                <View style={styles.textWrapper}>
+                  <Text style={styles.instruction}>Weight and Height</Text>
+                </View>
+              </View>
+              <View style={styles.pageBottom}>
+                <View style={styles.inputWrapper}>
+                  <Icon name="weight" type="solid" size={24} color="#CED4D9" />
+                  <TextInput 
+                    onChangeText={(weight) => this.setState(
+                      ({vitals}) => ({vitals: {...vitals, weight}})
+                    )}
+                    placeholder="Weight"
+                    underlineColorAndroid='transparent'
+                    keyboardType="numeric"
+                    style={styles.input}
+                  />
+                  <View style={styles.unit}>
+                    <Text style={{fontFamily: 'Nunito-Bold', fontSize: 18, color: '#fff'}}>KG</Text>
+                  </View>
+                </View>
+                <View style={styles.inputWrapper}>
+                  <Icon name="ruler-vertical" type="solid" size={24} color="#CED4D9" />
+                  <TextInput 
+                    onChangeText={(height) => this.setState(
+                      ({vitals}) => ({vitals: {...vitals, height}})
+                    )}
+                    placeholder="Height"
+                    underlineColorAndroid='transparent'
+                    keyboardType="numeric"
+                    style={styles.input}
+                  />
+                  <View style={styles.unit}>
+                    <Text style={{fontFamily: 'Nunito-Bold', fontSize: 18, color: '#fff'}}>CM</Text>
+                  </View>
+                </View>
+              </View>
+            </View>
+            <View style={{width: device.width}}>
+              <View style={styles.pageTop}>
+                <View style={styles.textWrapper}>
+                  <Text style={styles.instruction}>Temperature</Text>
+                </View>
+              </View>
+              <View style={styles.pageBottom}>
+                <View style={styles.inputWrapper}>
+                  <Icon name="thermometer-half" type="solid" size={24} color="#CED4D9" />
+                  <TextInput 
+                    onChangeText={(temperature) => this.setState(
+                      ({vitals}) => ({vitals: {...vitals, temperature}})
+                    )}
+                    placeholder="Temperature"
+                    underlineColorAndroid='transparent'
+                    keyboardType="numeric"
+                    style={styles.input}
+                  />
+                  <View style={styles.unit}>
+                    <Text style={{fontFamily: 'Nunito-Bold', fontSize: 18, color: '#fff'}}>℃</Text>
+                  </View>
+                </View>
+              </View>
+            </View>
+            <View style={{width: device.width}}>
+              <View style={styles.pageTop}>
+                <View style={styles.textWrapper}>
+                  <Text style={styles.instruction}>Pulse and Respiration rate</Text>
+                </View>
+              </View>
+              <View style={styles.pageBottom}>
+                <View style={styles.inputWrapper}>
+                  <Icon name="heartbeat" type="solid" size={24} color="#CED4D9" />
+                  <TextInput 
+                    onChangeText={(pulseRate) => this.setState(
+                      ({vitals}) => ({vitals: {...vitals, pulseRate}})
+                    )}
+                    placeholder="Pulse Rate"
+                    underlineColorAndroid='transparent'
+                    keyboardType="numeric"
+                    style={styles.input}
+                  />
+                  <View style={styles.unit}>
+                    <Text style={{fontFamily: 'Nunito-Bold', fontSize: 18, color: '#fff'}}>BPM</Text>
+                  </View>
+                </View>
+                <View style={styles.inputWrapper}>
+                  <Icon name="chart-bar" type="solid" size={24} color="#CED4D9" />
+                  <TextInput 
+                    onChangeText={(respiratoryRate) => this.setState(
+                      ({vitals}) => ({vitals: {...vitals, respiratoryRate}})
+                    )}
+                    placeholder="Respiratory Rate"
+                    underlineColorAndroid='transparent'
+                    keyboardType="numeric"
+                    style={styles.input}
+                  />
+                  <View style={styles.unit}>
+                    <Text style={{fontFamily: 'Nunito-Bold', fontSize: 18, color: '#fff'}}>BPM</Text>
+                  </View>
+                </View>
+              </View>
+            </View>
+            <View style={{width: device.width}}>
+              <View style={styles.pageTop}>
+                <View style={styles.textWrapper}>
+                  <Text style={styles.instruction}>Blood Oxygen Saturation</Text>
+                </View>
+              </View>
+              <View style={styles.pageBottom}>
+                <View style={styles.inputWrapper}>
+                  <Icon name="tachometer-alt" type="solid" size={24} color="#CED4D9" />
+                  <TextInput 
+                    onChangeText={(bloodOxygenSaturation) => this.setState(
+                      ({vitals}) => ({vitals: {...vitals, bloodOxygenSaturation}})
+                    )}
+                    placeholder="SpO2"
+                    underlineColorAndroid='transparent'
+                    keyboardType="numeric"
+                    style={styles.input}
+                  />
+                  <View style={styles.unit}>
+                    <Text style={{fontFamily: 'Nunito-Bold', fontSize: 18, color: '#fff'}}>%</Text>
+                  </View>
+                </View>
+              </View>
+            </View>
+            { this.props.patient.age >= 18 && <View style={{width: device.width}}>
+              <View style={styles.pageTop}>
+                <View style={styles.textWrapper}>
+                  <Text style={styles.instruction}>Blood Pressure</Text>
+                </View>
+              </View>
+              <View style={styles.pageBottom}>
+                <View style={styles.inputWrapper}>
+                  <Icon name="arrow-to-top" type="solid" size={24} color="#CED4D9" />
+                  <TextInput 
+                    onChangeText={(systolic) => this.setState(
+                      ({vitals}) => ({vitals: {...vitals, bloodPressure: {...vitals.bloodPressure, systolic}}})
+                    )}
+                    placeholder="Upper"
+                    underlineColorAndroid='transparent'
+                    keyboardType="numeric"
+                    style={styles.input}
+                  />
+                  <View style={styles.unit}>
+                    <Text style={{fontFamily: 'Nunito-Bold', fontSize: 16, color: '#fff'}}>mmHg</Text>
+                  </View>
+                </View>
+                <View style={styles.inputWrapper}>
+                  <Icon name="arrow-to-bottom" type="solid" size={24} color="#CED4D9" />
+                  <TextInput 
+                    onChangeText={(diastolic) => this.setState(
+                      ({vitals}) => ({vitals: {...vitals, bloodPressure: {...vitals.bloodPressure, diastolic}}})
+                    )}
+                    placeholder="Lower"
+                    underlineColorAndroid='transparent'
+                    keyboardType="numeric"
+                    style={styles.input}
+                  />
+                  <View style={styles.unit}>
+                    <Text style={{fontFamily: 'Nunito-Bold', fontSize: 16, color: '#fff'}}>mmHg</Text>
+                  </View>
+                </View>
+              </View>
+            </View>}
+            <View style={{width: device.width}}>
+              <View style={styles.pageTop}>
+                <View style={styles.textWrapper}>
+                  <Text style={styles.instruction}>Last Deworming Date</Text>
+                </View>
+              </View>
+              <View style={styles.pageBottom}>
+                <DatePicker onSelect={(lastDewormingDate) =>
+                  this.setState( ({vitals}) => ({ vitals: { ...vitals, lastDewormingDate }}) )
+                }/>
+                <View style={styles.dateDisplay}>
+                  <Text style={{fontFamily:'Quicksand-Medium', color:this.state.vitals.lastDewormingDate?'#3c4859':'#A8B0CE', fontSize:18}}>
+                    {this.state.vitals.lastDewormingDate?this.state.vitals.lastDewormingDate.toDateString():'Last deworming date'}
+                  </Text>
+                </View>
+              </View>
+            </View>
+          </ScrollView>
+          {
+            this.state.vitals.temperature.length > 0 &&
+            this.state.vitals.weight.length > 0 &&
+            <Button 
+              title="Submit" 
+              onPress={this.submit.bind(this)} 
+              bgColor="#1d9dff" titleColor="#fff" 
+              icon="chevron-right"
+              width="50%"
+              round
+            />
+          }
           <Loading isLoading={this.props.loading} />
           <DropdownAlert ref={ref => this.dropdown = ref} onClose={data => this.onClose(data)} closeInterval={2500}/>
-        </KeyboardAvoidingView>
+        </KeyboardAwareScrollView>
       )
     }
   }
@@ -363,31 +300,18 @@ const mapStateToProps = (state, props) => ({
 export default connect(mapStateToProps, mapDispatchToProps)(Vitals)
 
 const styles = StyleSheet.create({
-  parentContainer: {
-    height: Platform.select({ios: Dimensions.get('window').height, android: Dimensions.get('window').height-StatusBar.currentHeight}),
-    width: Dimensions.get('window').width,
+  container: {
+    flex: 1,
     backgroundColor: '#f5f6fb',
-    paddingBottom: 16
   },
-  headerContainer: {
-    height: height*.2,
-    justifyContent: 'space-around',
-    backgroundColor: '#f0788a',
-  },
-  questionContainer:{
-    height: height*.24,
-    backgroundColor: '#f0788a',
-  },
-  responseContainer:{
-    height: height*.48,
-    backgroundColor: '#f5f6fb',
-    paddingTop: 40
+  header: {
+    marginTop: device.height*.04
   },
   textWrapper: {
     marginTop: 20,
     paddingHorizontal: 18,
     backgroundColor: 'transparent',
-    paddingBottom: height*.12
+    paddingBottom: '12%'
   },
   instruction: {
     fontSize: 26,
@@ -395,19 +319,74 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     color: '#fff',
   },
-  response: {
-    height: '52%',
-    width: '100%',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+  pageTop: {
+    backgroundColor: '#f0788a',
+    height: device.height*.25
   },
-  loading: {
+  pageBottom: {
+    alignItems: 'center', 
+    paddingTop: device.height*.05
+  },
+  dateDisplay: {
+    backgroundColor:'#fff', 
+    borderRadius:5, 
+    marginVertical: 24,
+    height: 64, 
+    width: device.width * 0.65, 
+    alignSelf:'center',
+    alignItems:'center', 
+    justifyContent:'center', 
+    shadowColor: '#e4e4e4', 
+    shadowOpacity: 0.5, 
+    shadowOffset: {
+       width: 1,
+       height: 3 
+    }, 
+    shadowRadius: 5
+  },
+  submit: {
+    alignSelf:'flex-end', 
+    backgroundColor: '#fff', 
+    marginTop: 24, 
+    marginRight: 24 , 
+    borderRadius: 22, 
+    elevation: 2
+  },
+  inputWrapper: {
     alignSelf: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    height: 88,
-    width: 88,
+    backgroundColor: '#fff',
+    borderTopLeftRadius: 6,
+    borderBottomLeftRadius: 6,
+    shadowColor: '#e4e4e4',
+    shadowOpacity: 0.5,
+    shadowOffset: { width: 1, height: 3 },
+    shadowRadius: 5,
+    width: device.width * .75,
+    height: device.height*.08,
+    marginTop: 12,
+    paddingLeft: 12,
+    alignItems: 'center',
+    flexDirection: 'row'
+  },
+  input: {
+    flex: 5,
+    backgroundColor: 'white',
+    textAlignVertical: 'top',
+    height: device.height*.08,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    marginLeft: 8,
+    marginVertical: 4,
+    fontSize: 18,
+    fontFamily: 'Nunito-Regular'
+  },
+  unit: {
+    backgroundColor: '#7D8E9C', 
+    borderTopRightRadius: 6, 
+    borderBottomRightRadius: 6,
+    height: '100%',
     justifyContent: 'center',
-    alignItems:'center',
-    borderRadius: 8
+    alignItems: 'center',
+    flex: 2
   }
 })

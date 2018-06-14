@@ -13,10 +13,16 @@ import {
 import { connect } from 'react-redux';
 import LinearGradient from 'react-native-linear-gradient';
 import { Redirect, Link } from 'react-router-native';
+import Modal from 'react-native-modal';
 import Icon from 'react-native-fontawesome-pro';
 import { IconButton } from '../../components/Button'
 
 const { width, height } = Dimensions.get('window')
+
+const device = {
+  height: Dimensions.get('window').height,
+  width: Dimensions.get('window').width
+}
 
 const destinations = [
   {
@@ -105,11 +111,13 @@ const Entry = ({layout, title, image, to}) => {
   )
 }
 
-const Toolbar = () => (
+const Toolbar = ({toggle}) => (
   <View style={styles.toolbar}>
     <IconButton name="cog" color="#3c4859" to="/settings" />
     <IconButton name="user-md" color="#3c4859" />
-    <IconButton name="bell" color="#3c4859" />
+    <IconButton name="map-marker-alt" color="#3c4859" type="solid" onPress={() => {
+      toggle({showLocationPicker: true})
+    }}/>
   </View>
 )
 
@@ -136,21 +144,61 @@ class Entrance extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      authenticated: props.authenticated
+      authenticated: props.authenticated,
+      showLocationPicker: false
     }
+
   }
 
   componentWillMount() {
     StatusBar.setBarStyle('dark-content');
   }
 
+  toggleLocationPicker() {
+    this.setState({showLocationPicker: !this.state.showLocationPicker})
+  }
+
   render() {
     if(this.state.authenticated) {
       return (
         <View style={styles.container}>
-          <Toolbar />
+          <Toolbar toggle={this.setState.bind(this)}/>
           <Header />
           <Navigations />
+          <Modal
+            isVisible={this.state.showLocationPicker}
+            onSwipe={this.toggleLocationPicker.bind(this)}
+            swipeDirection="down"
+          >
+            <View style={{flex: 1, justifyContent: 'flex-end', alignItems: 'center'}}>
+              <View style={{
+                height: device.height/2.5,
+                borderRadius: 6,
+                width: device.width*.9,
+                backgroundColor: '#fff',
+                paddingHorizontal: 16,
+                paddingVertical: 16, 
+                justifyContent: 'space-around'}}>
+                <ScrollView 
+                  horizontal
+                  pagingEnabled
+                  showsHorizontalScrollIndicator={false}
+                  scrollEventThrottle={1}
+                  contentContainerStyle={{flex: 1}}
+                >
+                  <View style={{width: '100%'}}>
+                    <Text>House Above Water</Text>
+                  </View>
+                  <View style={{width: '100%'}}>
+                    <Text>CMCC</Text>
+                  </View>
+                  <View style={{width: '100%'}}>
+                    <Text>Canal Side</Text>
+                  </View>
+                </ScrollView>
+              </View>
+            </View>
+          </Modal>
         </View>
       )
     }
