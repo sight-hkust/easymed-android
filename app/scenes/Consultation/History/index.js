@@ -19,43 +19,6 @@ export const Cases = () => (
         
         <IconButton name="chevron-circle-right" type="solid" color="#3c4859" size={24}/>
       </View>
-
-      <View style={styles.record}>
-        <View style={{height:24, width:64, backgroundColor: '#FFCE45', borderRadius: 8, alignItems:'center', justifyContent:'center'}}>
-          <Text style={{fontFamily: 'Nunito-Bold', color: '#fff', fontSize: 12}}>123456</Text>
-        </View>
-
-        <View style={{height:'80%', width:'60%', alignItems:'flex-start', justifyContent:'center', paddingLeft:8}}>
-          <Text style={{fontFamily: 'Nunito-Bold', color: '#A4A6AA', fontSize: 16}}>11/07/2017</Text>
-          <Text style={{fontFamily: 'Nunito-Bold', color: '#3c4859', fontSize: 18}}>Fever</Text>
-        </View>
-        
-        <IconButton name="chevron-circle-right" type="solid" color="#3c4859" size={24}/>
-      </View>
-      <View style={styles.record}>
-        <View style={{height:24, width:64, backgroundColor: '#FFCE45', borderRadius: 8, alignItems:'center', justifyContent:'center'}}>
-          <Text style={{fontFamily: 'Nunito-Bold', color: '#fff', fontSize: 12}}>123456</Text>
-        </View>
-
-        <View style={{height:'80%', width:'60%', alignItems:'flex-start', justifyContent:'center', paddingLeft:8}}>
-          <Text style={{fontFamily: 'Nunito-Bold', color: '#A4A6AA', fontSize: 16}}>11/07/2017</Text>
-          <Text style={{fontFamily: 'Nunito-Bold', color: '#3c4859', fontSize: 18}}>Fever</Text>
-        </View>
-        
-        <IconButton name="chevron-circle-right" type="solid" color="#3c4859" size={24}/>
-      </View>
-      <View style={styles.record}>
-        <View style={{height:24, width:64, backgroundColor: '#FFCE45', borderRadius: 8, alignItems:'center', justifyContent:'center'}}>
-          <Text style={{fontFamily: 'Nunito-Bold', color: '#fff', fontSize: 12}}>123456</Text>
-        </View>
-
-        <View style={{height:'80%', width:'60%', alignItems:'flex-start', justifyContent:'center', paddingLeft:8}}>
-          <Text style={{fontFamily: 'Nunito-Bold', color: '#A4A6AA', fontSize: 16}}>11/07/2017</Text>
-          <Text style={{fontFamily: 'Nunito-Bold', color: '#3c4859', fontSize: 18}}>Fever</Text>
-        </View>
-        
-        <IconButton name="chevron-circle-right" type="solid" color="#3c4859" size={24}/>
-      </View>
     </ScrollView>
   </View>
 )

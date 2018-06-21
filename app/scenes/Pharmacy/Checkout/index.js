@@ -210,6 +210,9 @@ class Checkout extends Component {
     if(!nextProps.patients.hasOwnProperty(nextProps.match.params.queueId)) {
       this.dropdown.alertWithType('success', 'Success', `Patient has been discharged from pharmacy.`)
     }
+    if(this.props.error !== nextProps.error) {
+      this.dropdown.alertWithType('error', 'Error', `Patient has already been checked out from the station.`)
+    }
   }
 
   componentWillMount() {
@@ -268,6 +271,7 @@ const mapDispatchToProps = (dispatch) => ({
 const mapStateToProps = (state) => ({
   loading: state.patients.loading.spinner,
   patients: state.records.patients,
+  error: state.records.error
 })
 
 export default connect(mapStateToProps,mapDispatchToProps)(Checkout)

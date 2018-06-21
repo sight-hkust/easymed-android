@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, StyleSheet, StatusBar } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, StyleSheet, StatusBar, Image } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Link, Redirect } from 'react-router-native';
 import Modal from 'react-native-modal';
 import Spinner from 'react-native-spinkit';
-import { transferPatient } from '../../../actions/patient';
+import { transferPatient, tagQueuedPatientLocation } from '../../../actions/patient';
 import Header from '../../../components/Header';
 import Icon from 'react-native-fontawesome-pro';
 import { Button } from '../../../components/Button'
@@ -57,15 +57,26 @@ const Metric = ({to, icon, color, title}) => (
   </Link>
 )
 
+const EmptyStub = () => (
+  <View style={{justifyContent: 'space-around', alignItems: 'center', width: '80%', alignSelf: 'center'}}>
+    <Image style={{width: 160, height: 160}} source={require('../../../../assets/images/empty/completed.png')}/>
+    <View>
+      <Text style={{fontFamily: 'Quicksand-Bold',fontSize: 20, textAlign: 'center', marginBottom: 12}}>{'All Triage procedures went through'.toUpperCase()}</Text>
+      <Text style={{fontFamily: 'Nunito-Medium', textAlign: 'center', color:'#848c9f'}}>You can now check out this patient to the consultation station.</Text>
+    </View>
+  </View>
+)
+
 class Menu extends Component {
   constructor(props) {
     super(props)
     this.state = {
       queueId: props.match.params.queueId,
+      location: props.location,
       patient: this.props.patient
     }
     this.transferPatient = props.actions.transferPatient.bind(this)
-    // this.fetchMedicalRecords = props.actions.fetchMedicalRecords.bind(this)
+    this.tagQueuedPatientLocation = props.actions.tagQueuedPatientLocation.bind(this)
   }
 
   componentWillReceiveProps(nextProps) {
@@ -76,6 +87,7 @@ class Menu extends Component {
 
   componentWillMount() {
     StatusBar.setBarStyle('dark-content', true)
+    this.tagQueuedPatientLocation(this.state.queueId, this.state.location)
   }
 
   transfer() {
@@ -102,12 +114,17 @@ class Menu extends Component {
                   key={i}
                 />
               ))}
+              {
+                menuItems.filter(({marker}) => { return this.props.checklist.includes(marker) }).length === 0 &&
+                !this.props.checklist.includes('gynaecology') &&
+                <EmptyStub />
+              }
               {this.state.patient.sex === 'Female' &&
                this.props.checklist.includes('gynaecology') &&
               <Metric title="Maternal"
-                                                              icon="female"
-                                                              color="#f4649e"
-                                                              to={`/triage/patients/${this.state.queueId}/maternal`}
+                      icon="female"
+                      color="#f4649e"
+                      to={`/triage/patients/${this.state.queueId}/maternal`}
               />}
             </ScrollView>
             <Button 
@@ -141,12 +158,13 @@ class Menu extends Component {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-  actions: bindActionCreators({transferPatient}, dispatch)
+  actions: bindActionCreators({transferPatient, tagQueuedPatientLocation}, dispatch)
 })
 
 const mapStateToProps = (state, props) => ({
   loading: state.patients.loading,
   isPatientTransferred: state.patients.queue.hasOwnProperty(props.match.params.queueId) === false,
+  location: state.patients.location,
   patient: state.patients.queue[props.match.params.queueId],
   checklist: state.patients.checklist[props.match.params.queueId]
 })

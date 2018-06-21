@@ -1,17 +1,21 @@
 import { 
   CREATE_PATIENT_REQUEST,
   CREATE_PATIENT_RESET,
-  SEARCH_PATIENT_REQUEST,
   FETCH_PATIENT_LIST_REQUEST,
   FETCH_PATIENT_QUEUE_REQUEST,
   QUEUE_PATIENT_REQUEST,
   TRANSFER_PATIENT_REQUEST,
   RESET_PATIENT_QUEUE,
-  CHECK_TRIAGE_ITEM,
-  DISCHARGE_PATIENT_REQUEST
+  DISCHARGE_PATIENT_REQUEST,
+  TAG_QUEUED_PATIENT_LOCATION_REQUEST,
+  SET_OPERATION_LOCATION
 } from './constants';
   
-  
+export const setOperationLocation = (location) => ({
+  type: SET_OPERATION_LOCATION,
+  payload: {location}
+})
+
 export const createPatient = (profile, tag, picture) => ({
   type: CREATE_PATIENT_REQUEST,
   payload: { profile, tag, picture }
@@ -33,6 +37,11 @@ export const fetchPatientQueue = (stage) => ({
 export const queuePatient = (tag, picture, patientId, stage) => ({
   type: QUEUE_PATIENT_REQUEST,
   payload: {tag, picture, patientId, stage}
+})
+
+export const tagQueuedPatientLocation = (queueId, location) => ({
+  type: TAG_QUEUED_PATIENT_LOCATION_REQUEST,
+  payload: {location, queueId}
 })
 
 export const transferPatient = (queueId, stage) => ({

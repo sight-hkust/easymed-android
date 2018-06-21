@@ -11,7 +11,8 @@ import {
   FETCH_MEDICAL_RECORDS_REQUEST,
   FETCH_MEDICINE_REQUEST,
   FETCH_MEDICAL_DIAGNOSIS_REQUEST,
-  FETCH_PRESCRIPTION_REQUEST
+  FETCH_PRESCRIPTION_REQUEST,
+  FETCH_PATIENT_CASES_REQUEST
 } from './constants'
 
 export const addCase = (session, queueId) => ({
@@ -75,4 +76,9 @@ export const fetchMedicines = () => ({
 
 export const fetchMedicalDiagnosises = () => ({
   type: FETCH_MEDICAL_DIAGNOSIS_REQUEST
+})
+
+export const fetchPatientCases = (patientId) => ({
+  type: FETCH_PATIENT_CASES_REQUEST,
+  payload: {patientId}
 })

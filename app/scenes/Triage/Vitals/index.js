@@ -49,6 +49,12 @@ class Vitals extends Component {
     }
     this.addVitalsRecord = this.props.actions.addVitalsRecord.bind(this)
   }
+
+  componentWillReceiveProps(nextProps) {
+    if(this.props.error !== nextProps.error) {
+      this.dropdown.alertWithType('error', 'Error', `${nextProps.error}`)
+    }
+  }
   
   componentDidUpdate() {
     if(this.props.hasTaskCompleted && !this.state.dismiss) {
@@ -57,7 +63,9 @@ class Vitals extends Component {
   }
 
   onClose(data) {
-    this.setState({dismiss: true})
+    if(data.type === 'success') {
+      this.setState({dismiss: true})
+    }
   }
 
   componentWillMount() {

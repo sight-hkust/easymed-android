@@ -364,7 +364,6 @@ class Profile extends Component {
 
   render() {
     if(this.state.dismiss) {
-      console.log(this.props.queueId)
       return <Redirect to={`/triage/patients/${this.props.queueId}`}/>
     }
     else {

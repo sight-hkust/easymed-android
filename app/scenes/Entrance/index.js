@@ -8,14 +8,17 @@ import {
   ScrollView,
   StatusBar,
   TouchableOpacity,
+  Picker,
   LayoutAnimation
 } from 'react-native';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import LinearGradient from 'react-native-linear-gradient';
 import { Redirect, Link } from 'react-router-native';
 import Modal from 'react-native-modal';
 import Icon from 'react-native-fontawesome-pro';
-import { IconButton } from '../../components/Button'
+import { setOperationLocation } from '../../actions/patient'
+import { IconButton, Button } from '../../components/Button'
 
 const { width, height } = Dimensions.get('window')
 
@@ -121,11 +124,11 @@ const Toolbar = ({toggle}) => (
   </View>
 )
 
-const Header = () => (
+const Header = ({title}) => (
   <View style={styles.header}>
     <View style={styles.headerTitle}>
       <Icon name="hospital" color="#3c4859" size={26} type="solid"/>
-      <Text style={styles.headerTitleText}>Home</Text>
+      <Text style={styles.headerTitleText}>{title}</Text>
     </View>
   </View>
 )
@@ -143,6 +146,7 @@ const Navigations = () => {
 class Entrance extends Component {
   constructor(props) {
     super(props)
+    this.setOperationLocation = props.actions.setOperationLocation.bind(this)
     this.state = {
       authenticated: props.authenticated,
       showLocationPicker: false
@@ -159,11 +163,22 @@ class Entrance extends Component {
   }
 
   render() {
+    const locations = {
+      haw: 'House Above Water',
+      cs: 'Canal Side',
+      ccmc: 'CCMC',
+      office: 'Clinic',
+      ls: 'Lake Side',
+      impact: 'Impact',
+      az: 'Azziza',
+      p2: 'Peace II',
+      ad: 'Angdoung'
+    }
     if(this.state.authenticated) {
       return (
         <View style={styles.container}>
           <Toolbar toggle={this.setState.bind(this)}/>
-          <Header />
+          <Header title={locations[this.props.location]}/>
           <Navigations />
           <Modal
             isVisible={this.state.showLocationPicker}
@@ -179,23 +194,20 @@ class Entrance extends Component {
                 paddingHorizontal: 16,
                 paddingVertical: 16, 
                 justifyContent: 'space-around'}}>
-                <ScrollView 
-                  horizontal
-                  pagingEnabled
-                  showsHorizontalScrollIndicator={false}
-                  scrollEventThrottle={1}
-                  contentContainerStyle={{flex: 1}}
-                >
-                  <View style={{width: '100%'}}>
-                    <Text>House Above Water</Text>
-                  </View>
-                  <View style={{width: '100%'}}>
-                    <Text>CMCC</Text>
-                  </View>
-                  <View style={{width: '100%'}}>
-                    <Text>Canal Side</Text>
-                  </View>
-                </ScrollView>
+                <Picker
+                  selectedValue={this.props.location}
+                  style={{ flex: 1 }}
+                  onValueChange={(itemValue) => this.setOperationLocation(itemValue)}>
+                  {Object.keys(locations).map((id, index) => <Picker.Item key={index} label={locations[id]} value={id} />)}
+                </Picker>
+                <Button 
+                  title="Done"
+                  onPress={this.toggleLocationPicker.bind(this)}
+                  bgColor="#1d9dff" titleColor="#fff" 
+                  icon="chevron-right"
+                  width="70%"
+                  round
+                />
               </View>
             </View>
           </Modal>
@@ -209,10 +221,15 @@ class Entrance extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  authenticated: state.auth.authenticated
+  authenticated: state.auth.authenticated,
+  location: state.patients.location
 })
 
-export default connect(mapStateToProps)(Entrance)
+const mapDispatchToProps = (dispatch) => ({
+  actions: bindActionCreators({setOperationLocation}, dispatch)
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(Entrance)
 
 const styles = StyleSheet.create({
   container: {

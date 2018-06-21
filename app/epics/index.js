@@ -6,7 +6,8 @@ import {
     transferPatientEpic,
     fetchPatientListEpic,
     fetchPatientQueueEpic,
-    dischargePatientEpic
+    dischargePatientEpic,
+    tagPatientLocationEpic
 } from './patients';
 import {
     fetchPrescriptionsEpic,
@@ -44,6 +45,7 @@ export const epics = combineEpics (
     updateMedicalHistoryEpic,
     updateScreeningResultEpic,
     updateMedicalConditionEpic,
+    tagPatientLocationEpic,
     addMedicalCaseEpic
 )
 

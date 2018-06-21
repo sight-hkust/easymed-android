@@ -172,16 +172,29 @@ const vitalsDemo = [
   }
 ]
 
-const Vitals = ({vitals}) => (
-  <View style={styles.vitals}>
-    {vitalsDemo.map(({icon, unit, key}, i) => (
-      <View key={i} style={{width: 64, height: 64, marginVertical: 12, flexGrow: 1, width: '30%', alignItems: 'center', justifyContent: 'space-around'}}>
-        <Image style={{width: 40, height: 40}} source={icon} />
-        <Text style={{fontFamily: 'Nunito-Bold', color: '#3c4859'}}>{vitals[key]} {unit.toUpperCase()}</Text>
-      </View>
-    ))}
-  </View>
-)
+const Vitals = ({vitals}) => {
+  return (
+    <View style={styles.vitals}>
+      {vitalsDemo.map(({icon, unit, key}, i) => {
+        if(key === 'bloodPressure'){
+          return (
+            <View key={i} style={{width: 64, height: 64, marginVertical: 12, flexGrow: 1, width: '30%', alignItems: 'center', justifyContent: 'space-around'}}>
+              <Image style={{width: 40, height: 40}} source={icon} />
+              <Text style={{fontFamily: 'Nunito-Bold', color: '#3c4859'}}>{`${vitals[key].systolic}/${vitals[key].diastolic}`} {unit.toUpperCase()}</Text>
+            </View>
+          )
+        }
+        else {
+          return (
+          <View key={i} style={{width: 64, height: 64, marginVertical: 12, flexGrow: 1, width: '30%', alignItems: 'center', justifyContent: 'space-around'}}>
+            <Image style={{width: 40, height: 40}} source={icon} />
+            <Text style={{fontFamily: 'Nunito-Bold', color: '#3c4859'}}>{vitals[key]} {unit.toUpperCase()}</Text>
+          </View>)
+        }
+      })}
+    </View>
+  )
+}
 
 export default class Record extends Component {
   constructor(props) {

@@ -65,10 +65,8 @@ class ChiefComplaints extends Component {
               <View style={styles.inputWrapper}>
                 <TextInput 
                     multiline={true}
-                    onChangeText={(ROS) => this.setState(
-                      ({miscellaneous}) => ({miscellaneous: {...miscellaneous, ROS}})
-                    )}
-                    placeholder="Enter information on the observation for ROS here"
+                    onChangeText={(cheifComplaints) => this.setState({cheifComplaints})}
+                    placeholder="Enter patients' chief complaints here"
                     underlineColorAndroid='transparent'
                     style={styles.input}
                 />

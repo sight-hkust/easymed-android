@@ -13,19 +13,24 @@ import {
   TRANSFER_PATIENT_ERROR,
   RESET_PATIENT_QUEUE,
   DISMISS_ERROR,
-  CHECK_TRIAGE_ITEM
+  CHECK_TRIAGE_ITEM,
+  SET_OPERATION_LOCATION
 } from '../actions/constants'
 
 const initialState = {
   all: [],
   queue: {},
   checklist: {},
+  location: 'office',
   loading: { queue: false, all: false, spinner: false },
   error: null
 };
 
 const patientsReducer = (state = initialState, {type, payload}) => {
   switch(type) {
+      case SET_OPERATION_LOCATION: {
+        return {...state, location: payload.location }
+      }
       case FETCH_PATIENT_LIST_REQUEST: {
         return {...state, loading: {...state.loading, all:true} };
       }

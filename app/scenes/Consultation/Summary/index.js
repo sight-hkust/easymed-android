@@ -29,9 +29,6 @@ class Summary extends Component {
     }
     this.fetchMedicalRecords = this.props.actions.fetchMedicalRecords.bind(this)
   }
-  componentWillReceiveProps(nextProps) {
-    console.log(nextProps)
-  }
 
   componentWillMount() {
     this.fetchMedicalRecords(this.props.match.params.patientId)

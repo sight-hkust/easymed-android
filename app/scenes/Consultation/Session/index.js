@@ -26,6 +26,7 @@ import { Button } from '../../../components/Button'
 import Loading from '../../../components/Loading';
 import Icon from 'react-native-fontawesome-pro';
 import Header from '../../../components/Header';
+import HorizontalListPicker from '../../../components/HorizontalListPicker'
 
 const device = {
   height: Dimensions.get('window').height,
@@ -34,59 +35,8 @@ const device = {
 
 const methods = ['PO', 'VR', 'Topical', 'IV', 'Eye Drop', 'Nose Drop', 'Ear Drop', 'Chewing', 'Sucking', 'Anal Route', 'Sublingual', 'Clean', 'SC'];
 const options = ['OD', 'BID', 'TID', 'QID', 'NA'];
-const units = ['mg', 'ml', 'mg/ml', 'tube']
+const units = ['mg', 'ml', 'mg/ml', 'tube'];
 const dayIntervals = ['/7', '/52', '/12', '/30'];
-
-class HorizontalListPicker extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      selected: ''
-    }
-  }
-
-  render() {
-    const outlineButtonBaseStyle = {
-      borderRadius: device.height*.025, 
-      borderWidth: 2, 
-      borderColor: '#5F70A2', 
-      marginHorizontal: 6, 
-      justifyContent: 'center', 
-      alignItems: 'center', 
-      width: device.width*.2, 
-      height: device.height*.05
-    }
-    const selectedButtonStyle = {
-      ...outlineButtonBaseStyle,
-      backgroundColor: '#5F70A2',
-    }
-    const textStyle = {
-      fontFamily: 'Nunito-Regular',
-      fontSize: 14
-    }
-    return (
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={{alignItems: 'center', height: 56}}
-      >
-        {
-          this.props.items.map((item, i) =>
-          <TouchableOpacity 
-            key={i} 
-            style={this.state.selected === item?{...selectedButtonStyle}:{...outlineButtonBaseStyle}}
-            onPress={() => {
-              this.props.onSelect(item)
-              this.setState({selected: item})
-            }}
-          >
-            <Text style={{...textStyle, color: this.state.selected===item?'#fff':'#5F70A2'}}>{item}</Text>
-          </TouchableOpacity>)
-        }
-      </ScrollView>
-    )
-  }
-}
 
 const screenWidth = Dimensions.get('window').width
 
@@ -130,8 +80,6 @@ class Session extends Component {
     this.state = {
       pathPrefix: props.match.url,
       toolSelected: SketchDrawConstants.toolType.pen.id,
-      xOffset:0,
-      pictureSource: null,
       isCurrentlyDrawing: false,
       displayPrescriptionDetailDialog: false,
       session: {
@@ -168,13 +116,6 @@ class Session extends Component {
       diagnosisQueryText: '',
       prescriptionQueryText: '',
       drawingColor: '#f00',
-      options: {
-        title: 'Select Picture',
-        storageOptions: {
-          skipBackup: true,
-          path: 'images'
-        }
-      },
       dismiss: false
     }
   }
@@ -217,6 +158,10 @@ class Session extends Component {
     if(this.props.isPatientTransferred !== nextProps.isPatientTransferred) {
       this.dropdown.alertWithType('info', 'Info', `Patient has been transferred to pharmacy`)
     }
+
+    if(this.props.error !== nextProps.error) {
+      this.dropdown.alertWithType('error', 'Error', `${nextProps.error}`)
+    }
   }
 
   onClose(data) {
@@ -231,7 +176,7 @@ class Session extends Component {
 
   render() {
     if(this.state.dismiss) {
-      return <Redirect to={`/consultations`}/>
+      return <Redirect to={`/consultation/patients/${this.props.match.params.patientId}`}/>
     }
     else {
       return (
@@ -432,7 +377,6 @@ class Session extends Component {
                                       ...session.diagnosis,
                                       added: session.diagnosis.added.filter(diagnosis => diagnosis!==name)
                                     }}}))
-                                    console.log(this.state.session.diagnosis)
                                   }}
                                 ]
                               )
@@ -652,10 +596,6 @@ class Session extends Component {
             </ScrollView>
             <View>
               {
-                // this.state.session.hpi.length > 0 &&
-                // this.state.session.physicalExaminations.length > 0 &&
-                // this.state.session.advise.length > 0 &&
-                // this.state.session.followUp.length > 0 &&
               <Button 
                 title="checkout" 
                 onPress={this.submit.bind(this)} 
@@ -672,7 +612,7 @@ class Session extends Component {
               avoidKeyboard={true}
               >
               <View style={{flex: 1, justifyContent: 'flex-end', alignItems: 'center'}}>
-                <View style={{height: this.state.prescriptionDialog.isCustomizable?device.height/1.4:device.height/1.5, borderRadius: 6, width: device.width*.9, backgroundColor: '#fff', paddingHorizontal: 16, paddingVertical: 16, justifyContent: 'space-around'}}>
+                <View style={{flex: 5, borderRadius: 6, width: device.width*.9, backgroundColor: '#fff', paddingHorizontal: 16, paddingVertical: 16, justifyContent: 'space-around'}}>
                   <Text style={{fontFamily: 'Nunito-Bold', fontSize: 16, color: '#3c4859'}}>Intake Method</Text>
                   <HorizontalListPicker items={methods} onSelect={(intake) => {
                     this.setState(({prescriptionDialog}) => ({prescriptionDialog: {...prescriptionDialog, instruction: {...prescriptionDialog.instruction, intake}}}))
@@ -769,7 +709,9 @@ const mapStateToProps = (state, props) =>({
   medicines: state.records.medicines,
   diagnosises: state.records.diagnosises,
   loading: state.records.loading.spinner,
-  isPatientTransferred: state.patients.queue.hasOwnProperty(props.match.params.patientId) === false
+  patients: state.records.patients,
+  isPatientTransferred: !state.records.patients.hasOwnProperty(props.match.params.patientId),
+  error: state.records.error
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Session)
@@ -781,15 +723,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#f5f6fb',
     paddingTop: device.height*.04,
     paddingBottom: 16
-  },
-  questionContainer:{
-    height: '24%',
-    backgroundColor: '#00DBAF',
-  },
-  responseContainer:{
-    height: '48%',
-    backgroundColor: '#f5f6fb',
-    paddingTop: 40,
   },
   textWrapper: {
     marginTop: 20,
