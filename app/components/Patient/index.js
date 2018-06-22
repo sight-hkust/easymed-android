@@ -1,6 +1,6 @@
-import React from 'react'
-import { View, StyleSheet, Text, TouchableOpacity } from 'react-native'
-import { Link } from 'react-router-native'
+import React, { Component } from 'react';
+import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { withNavigation } from 'react-navigation';
 import Icon from 'react-native-fontawesome-pro';
 import { IconButton } from '../Button'
 
@@ -10,33 +10,38 @@ const Tag = ({tag}) => (
   </View>
 )
 
-const nameFormatter = ({regular}) => {
-  if(regular) {
-    return regular.split(' ').map((part, i) => { if(i == 0) { return part } else if (i == 1) { return part.substring(0,1) } else return ''}).join(' ').toUpperCase()
+class PatientQueueItem extends Component {
+  constructor(props) {
+    super(props)
+    this.viewActions = this.viewActions.bind(this)
   }
-  else {
-    return 'Patient Name'
+
+  viewActions() {
+    this.props.navigation.push('Menu', {queueId: this.props.key})
+  }
+
+  render() {
+    const {tag, name, age, sex} = this.props.patient
+    return (
+      <TouchableOpacity onPress={this.viewActions} style={styles.patient}>
+        <Tag tag={tag}/>
+        <View style={styles.patientInfoContainer}>
+          <Text style={styles.patientName}>{name}</Text>
+          <View style={styles.patientPhysicalRemarks}>
+            <Text style={styles.patientPhysicalAttributeText}>AGE: {age<1?'<1':age}</Text>
+            <View style={styles.patientGender}>
+              <Text style={styles.patientPhysicalAttributeText}>SEX: </Text>
+              <Icon name={sex==='Female'?'venus':'mars'} color={sex==='Female'?'#ff5273':'#4c79fc'} size={18}/>
+            </View>
+          </View>
+        </View>
+        <IconButton name="chevron-circle-right" type="solid" color="#3c4859" size={24}/>
+      </TouchableOpacity>
+    )
   }
 }
 
-const PatientQueueItem = ({patient: {age, sex, name, tag=0}, to}) => (
-    <Link component={TouchableOpacity} to={to} style={styles.patient} activeOpacity={0.4}>
-      <Tag tag={tag}/>
-      <View style={styles.patientInfoContainer}>
-        <Text style={styles.patientName}>{name}</Text>
-        <View style={styles.patientPhysicalRemarks}>
-          <Text style={styles.patientPhysicalAttributeText}>AGE: {age<1?'<1':age}</Text>
-          <View style={styles.patientGender}>
-            <Text style={styles.patientPhysicalAttributeText}>SEX: </Text>
-            <Icon name={sex==='Female'?'venus':'mars'} color={sex==='Female'?'#ff5273':'#4c79fc'} size={18}/>
-          </View>
-        </View>
-      </View>
-      <IconButton name="chevron-circle-right" type="solid" color="#3c4859" size={24}/>
-    </Link>
-  )
-
-const PatientListItem = ({patient: {age, sex, name}, onPress}) => {
+export const PatientListItem = ({patient: {age, sex, name}, onPress}) => {
   const gender = {
     height: 56,
     width: 56,
@@ -56,7 +61,7 @@ const PatientListItem = ({patient: {age, sex, name}, onPress}) => {
         <Icon name={sex==='Female'?'venus':'mars'} color="white" size={24}/>
       </View>
       <View style={styles.patientInfoContainer}>
-        <Text style={styles.patientName}>{nameFormatter(name)}</Text>
+        <Text style={styles.patientName}>test</Text>
         <View style={styles.patientPhysicalRemarks}>
           <Text style={styles.patientPhysicalAttributeText}>AGE: {age<1?'<1':age}</Text>
         </View>
@@ -96,7 +101,7 @@ const styles = StyleSheet.create({
   patientName: {
     fontFamily: 'Nunito-Bold',
     color: '#3c4859',
-    fontSize: 16
+    fontSize: 15
   },
   patientPhysicalRemarks: {
     flexDirection: 'row',
@@ -127,9 +132,9 @@ const styles = StyleSheet.create({
   },
   tagNumberText: {
     fontFamily: 'Nunito-Bold',
-    fontSize: 28,
+    fontSize: 26,
     color: 'white'
   }
 })
 
-export { PatientListItem, PatientQueueItem }
+export default withNavigation(PatientQueueItem)

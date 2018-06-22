@@ -1,6 +1,5 @@
 import React from 'react'
-import { Keyboard, View, StyleSheet, Text, TouchableOpacity } from 'react-native'
-import { Link } from 'react-router-native';
+import { Keyboard, StyleSheet, Text, TouchableOpacity } from 'react-native'
 import Icon from 'react-native-fontawesome-pro';
 
 const KeyboardDismissButton = ({top, bottom, right, left}) => (
@@ -21,14 +20,6 @@ const Button = ({title, icon, onPress, round=false, opaque=true, titleColor, bgC
     borderWidth: StyleSheet.hairlineWidth,
     width: width?width:title.length*20,
   }
-  if(to){
-    return (
-      <Link to={to} component={TouchableOpacity} style={{...styles.default, ...style}} activeOpacity={0.25}>
-        <Text style={{fontFamily: 'Quicksand-Bold', fontSize: 16, marginRight: icon?8:0, color: titleColor?titleColor:'#fff'}}>{title.toUpperCase()}</Text>
-        { icon && <Icon name={icon} type="solid" color={titleColor?titleColor:'#fff'}/> }
-      </Link>
-    )
-  }
   return (
     <TouchableOpacity style={{...styles.default, ...style}} onPress={onPress}>
       <Text style={{fontFamily: 'Quicksand-Bold', fontSize: 16 , marginRight: icon?8:0, color: titleColor?titleColor:'#fff'}}>{title.toUpperCase()}</Text>
@@ -37,20 +28,12 @@ const Button = ({title, icon, onPress, round=false, opaque=true, titleColor, bgC
   )
 }
 
-const IconButton = ({back=false, name, color="white", type, size=24, onPress, to}) => {
-  if(to) {
-    return (
-      <Link to={to} style={{...styles.iconButton}} component={TouchableOpacity} activeOpacity={0.25}>
-        <Icon name={name} color={color} type={type} size={size} type={type}/>
-      </Link>
-    )
-  }
+const IconButton = ({back=false, name, color="white", type, size=24, onPress}) => {
   return (
     <TouchableOpacity style={{...styles.iconButton}} onPress={onPress}>
       <Icon name={name} color={color} type={type} size={size}/>
     </TouchableOpacity>
   )
-
 }
 
 const styles = {

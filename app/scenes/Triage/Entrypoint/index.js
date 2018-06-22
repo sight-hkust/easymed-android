@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import { View, Image, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { View, Image, StatusBar, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import { Link } from 'react-router-native';
 import Header from '../../../components/Header'
 
 const createGradient = {
@@ -18,27 +17,28 @@ const loadGradient = {
   locations: [0, 1.1]
 };
 
-const CreatePatientProfile = () => (
-  <Link style={styles.card} to='/triage/profile' component={TouchableOpacity} activeOpacity={0.25}>
+const CreatePatientProfile = ({navigate}) => (
+  <TouchableOpacity style={styles.card} onPress={() => {navigate('Profile')}}>
     <LinearGradient {...createGradient} style={styles.create}>
       <Image style={styles.primaryButtonImage} source={require('../../../../assets/images/triage/create_profiles.png')} />
       <Text style={styles.primaryButtonText}>CREATE PATIENT PROFILE</Text>
     </LinearGradient>
-  </Link>
+  </TouchableOpacity>
 )
 
-const LoadPatientProfile = () => (
-  <Link style={styles.card} to='/triage/patients/admission' component={TouchableOpacity} activeOpacity={0.25}>
+const LoadPatientProfile = ({navigate}) => (
+  <TouchableOpacity style={styles.card} onPress={() => {navigate('Admission')}}>
     <LinearGradient {...loadGradient} style={styles.load}>
       <Image style={styles.secondaryButtonImage} source={require('../../../../assets/images/triage/archives.png')} />
       <Text style={styles.secondaryButtonText}>CHOOSE EXISTING PATIENT</Text>
     </LinearGradient>
-  </Link>
+  </TouchableOpacity>
 )
 
 export default class Entrypoint extends Component {
   constructor(props) {
     super(props)
+    this.navigate = this.props.navigation.navigate.bind(this)
   }
 
   componentWillMount() {
@@ -49,8 +49,8 @@ export default class Entrypoint extends Component {
     return (
       <View style={styles.container}>
         <Header title="Triage" />
-        <CreatePatientProfile />
-        <LoadPatientProfile />
+        <CreatePatientProfile navigate={this.navigate}/>
+        <LoadPatientProfile navigate={this.navigate}/>
       </View>
     )
   }

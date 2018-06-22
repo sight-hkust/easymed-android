@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {
   Dimensions,
+  Platform,
   StyleSheet,
   Text,
   View,
@@ -8,8 +9,7 @@ import {
   ScrollView,
   StatusBar,
   TouchableOpacity,
-  Picker,
-  LayoutAnimation
+  Picker
 } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -20,17 +20,18 @@ import Icon from 'react-native-fontawesome-pro';
 import { setOperationLocation } from '../../actions/patient'
 import { IconButton, Button } from '../../components/Button'
 
-const { width, height } = Dimensions.get('window')
 
 const device = {
-  height: Dimensions.get('window').height,
+  height: Platform.select({
+    android: Dimensions.get('window').height - StatusBar.currentHeight,
+    ios: Dimensions.get('window').height
+  }),
   width: Dimensions.get('window').width
 }
 
 const destinations = [
   {
-    to: '/triage',
-    title: 'Triage',
+    routeName: 'Triage',
     image: require('../../../assets/images/triage.png'),
     layout: {
       colors: ['#57DAAD','#29DE56'],
@@ -40,8 +41,7 @@ const destinations = [
     }
   },
   {
-    to: '/consultation',
-    title: 'Consultation',
+    routeName: 'Consultation',
     image: require('../../../assets/images/consultation.png'),
     layout: {
       colors: ['#4BE4D2','#51AAF6'],
@@ -51,8 +51,7 @@ const destinations = [
     }
   },
   {
-    to: '/pharmacy',
-    title: 'Pharmacy',
+    routeName: 'Pharmacy',
     image: require('../../../assets/images/pharmacy.png'),
     layout: {
       colors: ['#F98E6F','#F665AB'],
@@ -63,10 +62,10 @@ const destinations = [
   }
 ];
 
-const Entry = ({layout, title, image, to}) => {
+const Entry = ({layout, routeName, image, navigate}) => {
   const style = StyleSheet.create({
     card:{
-      height: height*.22,
+      height: device.height*.22,
       backgroundColor: 'transparent',
       justifyContent: 'center',
       marginLeft: 16,
@@ -87,8 +86,8 @@ const Entry = ({layout, title, image, to}) => {
     },
   
     image: {
-      height: height*.16,
-      width: height*.16,
+      height: device.height*.16,
+      width: device.height*.16,
       resizeMode: 'contain',
       marginTop: 20,
     },
@@ -105,12 +104,12 @@ const Entry = ({layout, title, image, to}) => {
   })
 
   return (
-    <Link style={style.card} to={to} component={TouchableOpacity} activeOpacity={0.25}>
+    <TouchableOpacity style={style.card} onPress={() => { navigate(routeName)}}>
       <LinearGradient {...layout} style={style.linearGradient}>
         <Image style={style.image} source={image}/>
-        <Text style={style.title}>{title}</Text>
+        <Text style={style.title}>{routeName}</Text>
       </LinearGradient>
-    </Link>
+    </TouchableOpacity>
   )
 }
 
@@ -133,11 +132,11 @@ const Header = ({title}) => (
   </View>
 )
 
-const Navigations = () => {
+const Navigations = ({onPress}) => {
   return (
     <ScrollView>
-      {destinations.map(({to, layout, title, image}, i) => (
-        <Entry key={i} to={to} layout={layout} title={title} image={image} />
+      {destinations.map(({to, layout, routeName, image}, i) => (
+        <Entry key={i} to={to} layout={layout} routeName={routeName} image={image} navigate={onPress} />
       ))}
     </ScrollView>
   )
@@ -147,6 +146,7 @@ class Entrance extends Component {
   constructor(props) {
     super(props)
     this.setOperationLocation = props.actions.setOperationLocation.bind(this)
+    this.navigate = this.props.navigation.navigate.bind(this)
     this.state = {
       authenticated: props.authenticated,
       showLocationPicker: false
@@ -174,54 +174,48 @@ class Entrance extends Component {
       p2: 'Peace II',
       ad: 'Angdoung'
     }
-    if(this.state.authenticated) {
-      return (
-        <View style={styles.container}>
-          <Toolbar toggle={this.setState.bind(this)}/>
-          <Header title={locations[this.props.location]}/>
-          <Navigations />
-          <Modal
-            isVisible={this.state.showLocationPicker}
-            onSwipe={this.toggleLocationPicker.bind(this)}
-            swipeDirection="down"
-          >
-            <View style={{flex: 1, justifyContent: 'flex-end', alignItems: 'center'}}>
-              <View style={{
-                height: device.height/2.5,
-                borderRadius: 6,
-                width: device.width*.9,
-                backgroundColor: '#fff',
-                paddingHorizontal: 16,
-                paddingVertical: 16, 
-                justifyContent: 'space-around'}}>
-                <Picker
-                  selectedValue={this.props.location}
-                  style={{ flex: 1 }}
-                  onValueChange={(itemValue) => this.setOperationLocation(itemValue)}>
-                  {Object.keys(locations).map((id, index) => <Picker.Item key={index} label={locations[id]} value={id} />)}
-                </Picker>
-                <Button 
-                  title="Done"
-                  onPress={this.toggleLocationPicker.bind(this)}
-                  bgColor="#1d9dff" titleColor="#fff" 
-                  icon="chevron-right"
-                  width="70%"
-                  round
-                />
-              </View>
+    return (
+      <View style={styles.container}>
+        <Toolbar toggle={this.setState.bind(this)}/>
+        <Header title={locations[this.props.location]}/>
+        <Navigations onPress={this.navigate}/>
+        <Modal
+          isVisible={this.state.showLocationPicker}
+          onSwipe={this.toggleLocationPicker.bind(this)}
+          swipeDirection="down"
+        >
+          <View style={{flex: 1, justifyContent: 'flex-end', alignItems: 'center'}}>
+            <View style={{
+              height: device.height/2.5,
+              borderRadius: 6,
+              width: device.width*.9,
+              backgroundColor: '#fff',
+              paddingHorizontal: 16,
+              paddingVertical: 16, 
+              justifyContent: 'space-around'}}>
+              <Picker
+                selectedValue={this.props.location}
+                style={{ flex: 1 }}
+                onValueChange={(itemValue) => this.setOperationLocation(itemValue)}>
+                {Object.keys(locations).map((id, index) => <Picker.Item key={index} label={locations[id]} value={id} />)}
+              </Picker>
+              <Button 
+                title="Done"
+                onPress={this.toggleLocationPicker.bind(this)}
+                bgColor="#1d9dff" titleColor="#fff" 
+                icon="chevron-right"
+                width="70%"
+                round
+              />
             </View>
-          </Modal>
-        </View>
-      )
-    }
-    else {
-      return <Redirect to="/login" />
-    }
+          </View>
+        </Modal>
+      </View>
+    )
   }
 }
 
 const mapStateToProps = (state) => ({
-  authenticated: state.auth.authenticated,
   location: state.patients.location
 })
 

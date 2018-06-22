@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 import { Image, Keyboard, Dimensions, View, Text, KeyboardAvoidingView, TextInput, StyleSheet, StatusBar, Platform, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
-import { Link } from 'react-router-native';
 import DropdownAlert from 'react-native-dropdownalert'
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { Redirect } from 'react-router-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-fontawesome-pro';
 import { logIn, resetError } from '../../actions/auth';
@@ -12,7 +10,10 @@ import Loading from '../../components/Loading'
 import { KeyboardDismissButton } from '../../components/Button';
 
 const device = {
-  height: Platform.select({ios: Dimensions.get('window').height, android: Dimensions.get('window').height-StatusBar.currentHeight}),
+  height: Platform.select({
+    ios: Dimensions.get('window').height,
+    android: Dimensions.get('window').height-StatusBar.currentHeight
+  }),
   width: Dimensions.get('window').width
 }
 
@@ -42,8 +43,7 @@ class Login extends Component {
     super(props)
     this.state = {
       username: '',
-      password: '',
-      isKeyboardPresent: false
+      password: ''
     }
     this.logIn = props.actions.logIn.bind(this)
   }
@@ -64,39 +64,34 @@ class Login extends Component {
   }
 
   render() {
-    if(this.props.authenticated) {
-      return <Redirect to="/" />
-    }
-    else {
-      return (
-          <LinearGradient {...gradientLayout} style={styles.container}>
-            { this.state.isKeyboardPresent && <KeyboardDismissButton top={24} right={6} />}
-            <TouchableWithoutFeedback onPress={() => {Keyboard.dismiss()}}>
-              <View style={{height: device.height, width: device.width, justifyContent: 'space-between'}}>
-                <View style={{height: device.height*.6, justifyContent: 'space-between'}}>
-                  <Header />
-                  <View style={styles.crendentials}>
-                    <Textfield icon='user' placeholder='Username' onChangeText={(username)=>this.setState({username})}/>
-                    <Textfield icon='key' obfuscate={true} placeholder='Password' onChangeText={(password)=>this.setState({password})}/>
-                  </View>
-                </View>
-                <View style={styles.footer}>
-                  <TouchableOpacity style={{...StyleSheet.flatten(styles.actionButtons), backgroundColor: '#9196f0'}} onPress={this.authenticate.bind(this)}>
-                    <Icon name="caret-circle-right" size={20} color="#fff"/>
-                    <Text style={{fontFamily: 'Quicksand-Bold', fontSize: 18, color: '#fff', marginLeft: 8}}>LOGIN</Text>
-                  </TouchableOpacity>
-                  <Link to='/register' component={TouchableOpacity} style={{...StyleSheet.flatten(styles.actionButtons), backgroundColor: '#5beed1'}} activeOpacity={0.25}>
-                    <Icon name="user-plus" size={20} color="#fff"/>
-                    <Text style={{fontFamily: 'Quicksand-Bold', fontSize: 18, color: '#fff', marginLeft: 8}}>REGISTER</Text>
-                  </Link>
-                </View>
-                <Loading isLoading={this.props.loading} />
+    return (
+      <LinearGradient {...gradientLayout} style={styles.container}>
+        { this.state.isKeyboardPresent && <KeyboardDismissButton top={24} right={6} />}
+        <TouchableWithoutFeedback onPress={() => {Keyboard.dismiss()}}>
+          <View style={{height: device.height, width: device.width, justifyContent: 'space-between'}}>
+            <View style={{height: device.height*.6, justifyContent: 'space-between'}}>
+              <Header />
+              <View style={styles.crendentials}>
+                <Textfield icon='user' placeholder='Username' onChangeText={(username)=>this.setState({username})}/>
+                <Textfield icon='key' obfuscate={true} placeholder='Password' onChangeText={(password)=>this.setState({password})}/>
               </View>
-            </TouchableWithoutFeedback>
-            <DropdownAlert ref={ref => this.dropdown = ref} />
-          </LinearGradient>
-      )
-    }
+            </View>
+            <View style={styles.footer}>
+              <TouchableOpacity style={{...StyleSheet.flatten(styles.actionButtons), backgroundColor: '#9196f0'}} onPress={this.authenticate.bind(this)}>
+                <Icon name="caret-circle-right" size={20} color="#fff"/>
+                <Text style={{fontFamily: 'Quicksand-Bold', fontSize: 18, color: '#fff', marginLeft: 8}}>LOGIN</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => {this.props.navigation.navigate('Registration')}} style={{...StyleSheet.flatten(styles.actionButtons), backgroundColor: '#5beed1'}}>
+                <Icon name="user-plus" size={20} color="#fff"/>
+                <Text style={{fontFamily: 'Quicksand-Bold', fontSize: 18, color: '#fff', marginLeft: 8}}>REGISTER</Text>
+              </TouchableOpacity>
+            </View>
+            <Loading isLoading={this.props.loading} />
+          </View>
+        </TouchableWithoutFeedback>
+        <DropdownAlert ref={ref => this.dropdown = ref} />
+      </LinearGradient>
+    )
   }
 }
 

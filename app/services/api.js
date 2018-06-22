@@ -1,5 +1,14 @@
 import Parse from './parse';
 
+export const isSessionValid = async () => {
+  try {
+    const userData = Parse.Session.current()
+    return true
+  } catch (error) {
+    return false
+  }
+}
+
 export const register = async (username, password) => {
   const user = new Parse.User()
   user.set('username', username)

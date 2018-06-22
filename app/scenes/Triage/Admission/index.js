@@ -4,11 +4,11 @@ import DropdownAlert from 'react-native-dropdownalert';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import Modal from 'react-native-modal';
-import { fetchPatientList, fetchPatientQueue, resetPatientQueue } from '../../../actions/patient';
+import { fetchPatientList, fetchPatientQueue } from '../../../actions/patient';
 import Header from '../../../components/Header';
 import Loading from '../../../components/Loading';
 import { Button } from '../../../components/Button';
-import { PatientListItem, PatientQueueItem } from '../../../components/Patient';
+import PatientQueueItem, { PatientListItem } from '../../../components/Patient';
 
 const SelectOperation = ({toggle, addPatient, viewRecord}) => (
   <View style={styles.operations}>
@@ -74,7 +74,7 @@ class Admission extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Header title={this.state.viewing} to="/triage" />
+        <Header title={this.state.viewing} />
         <ScrollView
           horizontal
           pagingEnabled
@@ -90,7 +90,11 @@ class Admission extends Component {
               />
             }>
               {Object.keys(this.props.queue).length === 0 && <EmptyStub />}
-              {this.props.queue && Object.keys(this.props.queue).sort( (p,s) => { return this.props.queue[p].tag - this.props.queue[s].tag}).map((queueId, i) => <PatientQueueItem patient={this.props.queue[queueId]} key={i} to={`/triage/patients/${queueId}`}/> )}
+              {
+                this.props.queue &&
+                Object.keys(this.props.queue)
+                .sort( (p,s) => { return this.props.queue[p].tag - this.props.queue[s].tag})
+                .map(queueId => <PatientQueueItem patient={this.props.queue[queueId]} key={queueId}/> )}
             </ScrollView>
           </View>
           <View style={{width: Dimensions.get('window').width}}>

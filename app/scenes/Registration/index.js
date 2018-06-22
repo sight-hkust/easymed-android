@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { View, Dimensions, StatusBar, StyleSheet, Keyboard, Text, TextInput, Platform, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
-import { Redirect } from 'react-router-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { bindActionCreators } from 'redux';
 import { register } from '../../actions/auth';
@@ -55,31 +54,26 @@ class Registration extends Component {
   }
 
   render() {
-    if(this.props.authenticated){
-      return <Redirect to="/" />
-    }
-    else {
-      return (
-        <LinearGradient {...gradientLayout} style={styles.container}>
-          <Header title="Registration"/>
-          <TouchableWithoutFeedback onPress={() => {Keyboard.dismiss()}}>
-            <View style={styles.form}>
-              <View>
-                <Textfield icon='user' placeholder='Username' onChangeText={(username)=>this.setState({username})}/>
-                <Textfield icon='lock' obfuscate={true} placeholder='Password' onChangeText={(password)=>this.setState({password})}/>
-                <Textfield icon='lock-alt' obfuscate={true} placeholder='Confirm Password'/>
-              </View>
-              <TouchableOpacity style={{...StyleSheet.flatten(styles.actionButtons), backgroundColor: '#5beed1'}} onPress={this.signUp.bind(this)}>
-                <Icon name="user-plus" size={20} color="#fff"/>
-                <Text style={{fontFamily: 'Quicksand-Bold', fontSize: 18, color: '#fff', marginLeft: 8}}>REGISTER</Text>
-              </TouchableOpacity>
+    return (
+      <LinearGradient {...gradientLayout} style={styles.container}>
+        <Header title="Registration"/>
+        <TouchableWithoutFeedback onPress={() => {Keyboard.dismiss()}}>
+          <View style={styles.form}>
+            <View>
+              <Textfield icon='user' placeholder='Username' onChangeText={(username)=>this.setState({username})}/>
+              <Textfield icon='lock' obfuscate={true} placeholder='Password' onChangeText={(password)=>this.setState({password})}/>
+              <Textfield icon='lock-alt' obfuscate={true} placeholder='Confirm Password'/>
             </View>
-          </TouchableWithoutFeedback>
-          <Loading isLoading={this.props.loading}/>
-          <DropdownAlert ref={ref => this.dropdown = ref}/>
-        </LinearGradient>
-      )
-    }
+            <TouchableOpacity style={{...StyleSheet.flatten(styles.actionButtons), backgroundColor: '#5beed1'}} onPress={this.signUp.bind(this)}>
+              <Icon name="user-plus" size={20} color="#fff"/>
+              <Text style={{fontFamily: 'Quicksand-Bold', fontSize: 18, color: '#fff', marginLeft: 8}}>REGISTER</Text>
+            </TouchableOpacity>
+          </View>
+        </TouchableWithoutFeedback>
+        <Loading isLoading={this.props.loading}/>
+        <DropdownAlert ref={ref => this.dropdown = ref}/>
+      </LinearGradient>
+    )
   }
 }
 
