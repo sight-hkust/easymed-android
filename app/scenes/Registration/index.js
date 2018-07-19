@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { View, Dimensions, StatusBar, StyleSheet, Keyboard, Text, TextInput, Platform, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
 import { bindActionCreators } from 'redux';
-import { register } from '../../actions/auth';
 import { connect } from 'react-redux';
-import DropdownAlert from 'react-native-dropdownalert';
-import Loading from '../../components/Loading';
+import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-fontawesome-pro';
+import DropdownAlert from 'react-native-dropdownalert';
+import { register } from '../../actions/auth';
+import Loading from '../../components/Loading';
 import Header from '../../components/Header';
 
 const gradientLayout = {
@@ -17,7 +17,9 @@ const gradientLayout = {
 }
 
 const device = {
-  height: Platform.select({ios: Dimensions.get('window').height, android: Dimensions.get('window').height-StatusBar.currentHeight}),
+  height: Platform.select({
+    ios: Dimensions.get('window').height,
+    android: Dimensions.get('window').height-StatusBar.currentHeight}),
   width: Dimensions.get('window').width
 }
 
@@ -83,7 +85,6 @@ const mapDispatchToProps = (dispatch) => ({
 
 const mapStateToProps = (state) => ({
   loading: state.auth.loading,
-  authenticated: state.auth.authenticated,
   error: state.auth.error
 })
 

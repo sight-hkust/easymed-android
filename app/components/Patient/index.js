@@ -17,7 +17,7 @@ class PatientQueueItem extends Component {
   }
 
   viewActions() {
-    this.props.navigation.push('Menu', {queueId: this.props.key})
+    this.props.navigation.push('Menu', {queueId: this.props.queueId})
   }
 
   render() {

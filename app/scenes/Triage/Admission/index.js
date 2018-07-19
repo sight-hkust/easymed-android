@@ -94,7 +94,7 @@ class Admission extends Component {
                 this.props.queue &&
                 Object.keys(this.props.queue)
                 .sort( (p,s) => { return this.props.queue[p].tag - this.props.queue[s].tag})
-                .map(queueId => <PatientQueueItem patient={this.props.queue[queueId]} key={queueId}/> )}
+                .map(queueId => <PatientQueueItem patient={this.props.queue[queueId]} queueId={queueId} key={queueId}/> )}
             </ScrollView>
           </View>
           <View style={{width: Dimensions.get('window').width}}>

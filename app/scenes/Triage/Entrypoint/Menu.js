@@ -5,6 +5,7 @@ import { bindActionCreators } from 'redux';
 import { transferPatient, tagQueuedPatientLocation } from '../../../actions/patient';
 import Header from '../../../components/Header';
 import { Button } from '../../../components/Button'
+import Loading from '../../../components/Loading'
 
 const menuItems = [
   {
@@ -60,11 +61,13 @@ class Menu extends Component {
       location: props.location,
       patient: this.props.patient
     }
+    console.log(props)
     this.transferPatient = props.actions.transferPatient.bind(this)
     this.tagQueuedPatientLocation = props.actions.tagQueuedPatientLocation.bind(this)
   }
 
   componentWillReceiveProps(nextProps) {
+    console.log(nextProps)
     if(this.props.isPatientTransferred !== nextProps.isPatientTransferred) {
       this.props.navigation.goBack()
     }
@@ -83,7 +86,7 @@ class Menu extends Component {
     return (
       <View style={styles.container}>
         <Header title="Add Records"/>
-        <ScrollView>
+        {/* <ScrollView>
           {menuItems
           .filter(({marker}) => { return this.props.checklist.includes(marker) })
           .map(({icon, color, title}, i) => (
@@ -105,7 +108,7 @@ class Menu extends Component {
                   icon="female"
                   color="#f4649e"
           />}
-        </ScrollView>
+        </ScrollView> */}
         <Button 
               title="Checkout"
               bgColor="#1d9dff"
